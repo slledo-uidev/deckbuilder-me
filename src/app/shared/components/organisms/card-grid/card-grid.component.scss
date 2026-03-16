@@ -39,13 +39,43 @@
     border-radius: $border-radius-md;
     overflow: hidden;
     cursor: pointer;
-    transition: all $transition-base;
+    transition: all 0.2s ease-in-out;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    
+    &::after {
+      content: '+ Add to Deck';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba($color-primary, 0.95);
+      color: $color-white;
+      padding: $spacing-2 $spacing-3;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-bold;
+      text-align: center;
+      border-radius: $border-radius-md;
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+      pointer-events: none;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
     
     &:hover {
       transform: translateY(-4px);
-      box-shadow: $shadow-lg;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
       border-color: $color-primary;
+      
+      &::after {
+        opacity: 1;
+      }
+    }
+    
+    &:active {
+      transform: translateY(-2px);
     }
     
     &:focus {
@@ -117,6 +147,7 @@
     overflow: hidden;
     background-color: $color-background;
     position: relative;
+    flex-shrink: 0;
   }
   
   &__image {
@@ -131,62 +162,85 @@
   }
   
   &__info {
-    padding: $spacing-3;
+    padding: $spacing-1 $spacing-2;
+    
+    @media (min-width: $breakpoint-md) {
+      padding: $spacing-2;
+    }
   }
   
   &__name {
-    font-size: $font-size-base;
+    font-size: $font-size-xs;
     font-weight: $font-weight-bold;
-    margin: 0 0 $spacing-2 0;
+    margin: 0 0 2px 0;
     color: $color-text-primary;
+    line-height: 1.2;
     @include truncate;
+    
+    @media (min-width: $breakpoint-md) {
+      font-size: $font-size-sm;
+      margin-bottom: 4px;
+    }
+  }
+  
+  &__set {
+    font-size: 10px;
+    color: $color-text-secondary;
+    margin: 0 0 2px 0;
+    @include truncate;
+    
+    @media (min-width: $breakpoint-md) {
+      font-size: $font-size-xs;
+    }
+  }
+  
+  &__id {
+    font-size: 10px;
+    color: $color-text-secondary;
+    margin: 0 0 4px 0;
+    font-family: monospace;
+    font-weight: $font-weight-medium;
+    
+    @media (min-width: $breakpoint-md) {
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
   }
   
   &__meta {
     display: flex;
     flex-wrap: wrap;
-    gap: $spacing-1;
-    margin-bottom: $spacing-2;
+    gap: 4px;
   }
   
-  &__stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: $spacing-2;
-    font-size: $font-size-sm;
-    color: $color-text-secondary;
-    margin-bottom: $spacing-3;
-  }
-  
-  &__stat {
-    strong {
-      color: $color-text-primary;
-    }
-  }
-  
-  &__add-btn {
+  // Load More trigger (infinite scroll)
+  &__load-trigger {
     width: 100%;
-    padding: $spacing-2;
-    background-color: $color-primary;
-    color: $color-white;
-    border: none;
-    border-radius: $border-radius-sm;
-    font-size: $font-size-sm;
-    font-weight: $font-weight-bold;
-    cursor: pointer;
-    transition: all $transition-fast;
+    min-height: 100px;
+    padding: $spacing-4 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+  }
+  
+  &__loading-indicator {
+    text-align: center;
     
-    &:hover {
-      background-color: darken($color-primary, 10%);
+    p {
+      color: $color-text-secondary;
+      font-size: $font-size-sm;
+      margin: 0;
+      animation: pulse 1.5s ease-in-out infinite;
     }
-    
-    &:focus {
-      outline: 2px solid $color-primary;
-      outline-offset: 2px;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 0.5;
     }
-    
-    &:active {
-      transform: scale(0.98);
+    50% {
+      opacity: 1;
     }
   }
 }

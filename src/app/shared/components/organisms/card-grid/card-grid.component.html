@@ -10,64 +10,60 @@
   </div>
   
   <!-- Card Grid -->
-  <div *ngIf="!loading && cards.length > 0" class="card-grid__container">
-    <div
-      *ngFor="let card of cards"
-      class="card-grid__item"
-      [ngClass]="getCardColorClass(card)"
-      (click)="onCardClick(card)"
-      [attr.aria-label]="'Card: ' + card.name"
-      tabindex="0"
-      role="button"
-    >
-      <div class="card-grid__image-container">
-        <img
-          class="card-grid__image"
-          [src]="card.imageUrl"
-          [alt]="card.name"
-          loading="lazy"
-          (error)="onImageError($event)"
-        />
+  <div *ngIf="!loading && cards.length > 0">
+    <div class="card-grid__container">
+      <div
+        *ngFor="let card of displayedCards"
+        class="card-grid__item"
+        [ngClass]="getCardColorClass(card)"
+        (click)="onAddCard(card)"
+        [attr.aria-label]="'Add ' + card.name + ' to deck'"
+        tabindex="0"
+        role="button"
+      >
+        <div class="card-grid__image-container">
+          <img
+            class="card-grid__image"
+            [src]="card.imageUrl"
+            [alt]="card.name"
+            loading="lazy"
+            (error)="onImageError($event)"
+          />
+        </div>
+        
+        <div class="card-grid__info">
+          <h4 class="card-grid__name">{{ card.name }}</h4>
+          <p class="card-grid__set">{{ card.set }}</p>
+          <p class="card-grid__id">{{ card.id }}</p>
+          
+          <div class="card-grid__meta">
+            <app-badge
+              [variant]="card.type === 'Digimon' ? 'primary' : card.type === 'Tamer' ? 'secondary' : 'warning'"
+              size="small"
+            >
+              {{ card.type }}
+            </app-badge>
+            <app-badge
+              *ngFor="let color of card.color"
+              [variant]="getColorBadgeVariant(color)"
+              size="small"
+            >
+              {{ color }}
+            </app-badge>
+          </div>
+        </div>
       </div>
-      
-      <div class="card-grid__info">
-        <h4 class="card-grid__name">{{ card.name }}</h4>
-        <div class="card-grid__meta">
-          <app-badge
-            [variant]="card.type === 'Digimon' ? 'primary' : card.type === 'Tamer' ? 'secondary' : 'warning'"
-            size="small"
-          >
-            {{ card.type }}
-          </app-badge>
-          <app-badge
-            *ngFor="let color of card.color"
-            variant="default"
-            size="small"
-          >
-            {{ color }}
-          </app-badge>
-        </div>
-        
-        <div class="card-grid__stats">
-          <span *ngIf="card.cost !== undefined" class="card-grid__stat">
-            <strong>Cost:</strong> {{ card.cost }}
-          </span>
-          <span *ngIf="card.level !== undefined" class="card-grid__stat">
-            <strong>Lv.{{ card.level }}</strong>
-          </span>
-          <span *ngIf="card.dp !== undefined" class="card-grid__stat">
-            <strong>DP:</strong> {{ card.dp }}
-          </span>
-        </div>
-        
-        <button
-          class="card-grid__add-btn"
-          (click)="onAddCard(card, $event)"
-          aria-label="Add card to deck"
-          type="button"
-        >
-          + Add
-        </button>
+    </div>
+    
+    <!-- Load More Trigger (invisible) -->
+    <div 
+      *ngIf="hasMoreCards" 
+      #loadMoreTrigger
+      class="card-grid__load-trigger"
+    >
+      <div class="card-grid__loading-indicator">
+        <p *ngIf="isLoadingMore">Loading more cards...</p>
+        <p *ngIf="!isLoadingMore">Scroll for more ({{ remainingCardsCount }} remaining)</p>
       </div>
     </div>
   </div>
