@@ -1,0 +1,21 @@
+<div class="search-bar">
+  <div class="search-bar__container">
+    <input
+      type="text"
+      class="search-bar__input"
+      [placeholder]="placeholder"
+      [value]="searchText"
+      (input)="onSearchInput($any($event.target).value)"
+      aria-label="Search cards"
+    />
+    <button
+      *ngIf="searchText"
+      class="search-bar__clear"
+      (click)="onClearSearch()"
+      aria-label="Clear search"
+      type="button"
+    >
+      ✕
+    </button>
+  </div>
+</div>

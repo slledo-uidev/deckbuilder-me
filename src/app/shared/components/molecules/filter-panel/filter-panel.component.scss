@@ -1,0 +1,121 @@
+@import 'variables';
+@import 'mixins';
+
+.filter-panel {
+  
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-3;
+  }
+  
+  &__title {
+    font-size: $font-size-base;
+    font-weight: $font-weight-bold;
+    margin: 0;
+    color: $color-text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+  }
+  
+  &__content {
+    display: grid;
+    gap: $spacing-4;
+    grid-template-columns: 1fr;
+    
+    @media (min-width: $breakpoint-md) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: $spacing-5;
+    }
+    
+    @media (min-width: $breakpoint-lg) {
+      grid-template-columns: repeat(3, 1fr);
+      gap: $spacing-6;
+    }
+  }
+  
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+    
+    &-title {
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      color: $color-text-secondary;
+      margin: 0 0 $spacing-1 0;
+    }
+  }
+  
+  &__options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-2;
+    
+    &--vertical {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  
+  &__chip {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: transform $transition-fast;
+    
+    &:hover {
+      transform: translateY(-2px);
+    }
+    
+    &:focus {
+      outline: 2px solid $color-primary;
+      outline-offset: 2px;
+      border-radius: $border-radius-sm;
+    }
+    
+    &--active {
+      app-badge {
+        opacity: 1;
+        box-shadow: $shadow-md;
+      }
+    }
+    
+    &:not(&--active) {
+      app-badge {
+        opacity: 0.6;
+      }
+    }
+  }
+  
+  &__range {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    
+    &-separator {
+      color: $color-text-secondary;
+      font-weight: $font-weight-bold;
+    }
+    
+    app-input {
+      flex: 1;
+    }
+  }
+  
+  @media (min-width: $breakpoint-md) {
+    padding: $spacing-5;
+    
+    &__content {
+      gap: $spacing-5;
+    }
+  }
+}

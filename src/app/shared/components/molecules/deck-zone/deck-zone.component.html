@@ -1,0 +1,68 @@
+<div class="deck-zone" [class.deck-zone--digi-eggs]="zoneType === 'digi-eggs'" 
+     [class.deck-zone--main]="zoneType === 'main'" 
+     [class.deck-zone--side]="zoneType === 'side'">
+  
+  <!-- Zone Header -->
+  <div class="deck-zone__header">
+    <h3 class="deck-zone__title">{{ title }}</h3>
+    <div class="deck-zone__counter" [class.deck-zone__counter--valid]="statusClass === 'valid'"
+         [class.deck-zone__counter--warning]="statusClass === 'warning'"
+         [class.deck-zone__counter--error]="statusClass === 'error'">
+      <span class="deck-zone__counter-text">
+        {{ totalCards }}{{ maxCards > 0 ? '/' + maxCards : '' }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="isEmpty || deckCards.length === 0" class="deck-zone__empty">
+    <p class="deck-zone__empty-text">
+      {{ zoneType === 'digi-eggs' ? 'Añade 5 Digi-Eggs' : 
+         zoneType === 'main' ? 'Añade cartas al mazo principal' : 
+         'Añade cartas al Side Deck' }}
+    </p>
+  </div>
+
+  <!-- Cards List -->
+  <div *ngIf="!isEmpty && deckCards.length > 0" class="deck-zone__cards">
+    <div *ngFor="let deckCard of deckCards" 
+         class="deck-zone__card"
+         [class.deck-zone__card--red]="getCardColorClass(deckCard.card.color) === 'red'"
+         [class.deck-zone__card--blue]="getCardColorClass(deckCard.card.color) === 'blue'"
+         [class.deck-zone__card--yellow]="getCardColorClass(deckCard.card.color) === 'yellow'"
+         [class.deck-zone__card--green]="getCardColorClass(deckCard.card.color) === 'green'"
+         [class.deck-zone__card--black]="getCardColorClass(deckCard.card.color) === 'black'"
+         [class.deck-zone__card--purple]="getCardColorClass(deckCard.card.color) === 'purple'"
+         [class.deck-zone__card--white]="getCardColorClass(deckCard.card.color) === 'white'">
+      
+      <div class="deck-zone__card-info">
+        <span class="deck-zone__card-name">{{ deckCard.card.name }}</span>
+        <div class="deck-zone__card-meta">
+          <app-badge [variant]="'default'" [size]="'small'">{{ deckCard.card.type }}</app-badge>
+          <span class="deck-zone__card-code">{{ deckCard.card.id }}</span>
+        </div>
+      </div>
+
+      <div class="deck-zone__card-controls">
+        <button class="deck-zone__btn deck-zone__btn--decrease" 
+                (click)="onDecreaseQuantity(deckCard.card)"
+                [disabled]="deckCard.quantity <= 1"
+                aria-label="Disminuir cantidad">
+          -
+        </button>
+        <span class="deck-zone__quantity">{{ deckCard.quantity }}</span>
+        <button class="deck-zone__btn deck-zone__btn--increase" 
+                (click)="onIncreaseQuantity(deckCard.card)"
+                [disabled]="deckCard.quantity >= 5"
+                aria-label="Aumentar cantidad">
+          +
+        </button>
+        <button class="deck-zone__btn deck-zone__btn--remove" 
+                (click)="onRemoveCard(deckCard.card)"
+                aria-label="Eliminar carta">
+          ×
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

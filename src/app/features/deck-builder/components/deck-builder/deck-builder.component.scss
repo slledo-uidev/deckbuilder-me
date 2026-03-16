@@ -2,82 +2,385 @@
 @import 'mixins';
 
 .deck-builder {
-  min-height: 60vh;
-  padding: $spacing-4;
+  min-height: 100vh;
+  background-color: $color-background;
   
   &__container {
     @include container;
+    padding: $spacing-2;
+    
+    @media (min-width: $breakpoint-md) {
+      padding: $spacing-4;
+    }
   }
-  
-  &__title {
-    @include heading-2;
-    margin-bottom: $spacing-2;
-    text-align: center;
+
+  // Header
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-2;
+    margin-bottom: $spacing-4;
+    padding-bottom: $spacing-3;
+    border-bottom: 1px solid rgba($color-text-primary, 0.1);
+    flex-wrap: wrap;
+
+    @media (max-width: $breakpoint-sm - 1px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
   }
-  
-  &__subtitle {
-    @include small-text;
-    margin-bottom: $spacing-6;
-    text-align: center;
-  }
-  
-  &__content {
+
+  &__header-info {
     display: flex;
     flex-direction: column;
-    gap: $spacing-4;
+    gap: 4px;
   }
-  
-  &__section-title {
-    @include heading-3;
-    margin-bottom: $spacing-3;
-  }
-  
-  &__subsection-title {
-    font-size: $font-size-base;
+
+  &__title {
+    font-size: $font-size-2xl;
     font-weight: $font-weight-bold;
-    margin: $spacing-3 0 $spacing-2;
-    color: $color-text-secondary;
+    color: $color-text-primary;
+    margin: 0;
+    
+    @media (min-width: $breakpoint-md) {
+      font-size: $font-size-3xl;
+    }
   }
-  
-  &__showcase {
+
+  &__active-deck {
+    font-size: $font-size-sm;
+    color: $color-primary;
+    font-weight: $font-weight-medium;
+  }
+
+  &__header-actions {
     display: flex;
-    flex-wrap: wrap;
     gap: $spacing-2;
-    align-items: flex-start;
+    flex-wrap: wrap;
     
-    &--vertical {
+    @media (max-width: $breakpoint-sm - 1px) {
+      width: 100%;
+      
+      app-button {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+  }
+
+  &__notify {
+    background-color: rgba($color-success, 0.12);
+    color: darken($color-success, 15%);
+    border: 1px solid rgba($color-success, 0.3);
+    border-radius: $border-radius-md;
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-sm;
+    margin-bottom: $spacing-3;
+    text-align: center;
+  }
+
+  &__deck-list-section {
+    margin-bottom: $spacing-4;
+  }
+
+  // Filters Section (Top, Full Width, Collapsible)
+  &__filters-section {
+    margin-bottom: $spacing-4;
+    background-color: rgba($color-primary, 0.02);
+    border: 1px solid rgba($color-primary, 0.1);
+    border-radius: $border-radius-lg;
+    padding: $spacing-3;
+    
+    @media (min-width: $breakpoint-md) {
+      padding: $spacing-4;
+    }
+  }
+
+  &__filters-header {
+    display: flex;
+    gap: $spacing-3;
+    align-items: center;
+    flex-wrap: wrap;
+    
+    @media (max-width: $breakpoint-sm - 1px) {
       flex-direction: column;
-      max-width: 400px;
+      gap: $spacing-2;
     }
   }
-  
-  &__status {
-    margin-top: $spacing-4;
+
+  &__search-bar {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__filters-toggle {
+    padding: $spacing-2 $spacing-4;
+    background-color: $color-white;
+    border: 1px solid $color-border;
+    border-radius: $border-radius-md;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+    min-height: 44px;
     
-    &-content {
-      display: flex;
-      align-items: center;
-      gap: $spacing-3;
-      
-      h3 {
-        margin: 0 0 $spacing-1 0;
-        font-size: $font-size-xl;
-        font-weight: $font-weight-bold;
-        color: $color-success;
-      }
-      
-      p {
-        margin: 0;
-        color: $color-text-secondary;
-      }
+    @media (max-width: $breakpoint-sm - 1px) {
+      width: 100%;
+    }
+    
+    &:hover {
+      background-color: $color-background;
+      border-color: $color-primary;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    &:focus {
+      outline: 2px solid $color-primary;
+      outline-offset: 2px;
+    }
+    
+    &[aria-expanded="true"] {
+      background-color: rgba($color-primary, 0.08);
+      border-color: $color-primary;
+    }
+  }
+
+  &__filters-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                margin 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    margin-top: 0;
+    
+    &--expanded {
+      max-height: 2000px;
+      opacity: 1;
+      margin-top: $spacing-3;
+      padding-top: $spacing-3;
+      border-top: 1px solid rgba($color-text-primary, 0.1);
     }
   }
   
-  @media (min-width: $breakpoint-md) {
-    &__showcase {
-      &--vertical {
-        max-width: 600px;
+  &__filters-inner {
+    transform: translateY(-10px);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+    
+    .deck-builder__filters-content--expanded & {
+      transform: translateY(0);
+    }
+  }
+
+  // Main Layout: 2 Columns (Cards + Deck)
+  &__layout {
+    display: grid;
+    gap: $spacing-4;
+    grid-template-columns: 1fr;
+    
+    @media (min-width: $breakpoint-lg) {
+      grid-template-columns: 2fr 1fr;
+      gap: $spacing-5;
+    }
+    
+    @media (min-width: $breakpoint-xl) {
+      grid-template-columns: 2fr 1fr;
+      gap: $spacing-6;
+    }
+  }
+  // RIGHT: Your Deck Sidebar
+  &__deck-sidebar {
+    @media (max-width: $breakpoint-lg - 1px) {
+      order: 2;
+      margin-top: $spacing-4;
+    }
+    
+    @media (min-width: $breakpoint-lg) {
+      max-height: 100dvh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      
+      // Custom scrollbar
+      &::-webkit-scrollbar {
+        width: 6px;
       }
+      
+      &::-webkit-scrollbar-track {
+        background: rgba($color-text-primary, 0.05);
+        border-radius: 3px;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background: rgba($color-primary, 0.3);
+        border-radius: 3px;
+        
+        &:hover {
+          background: rgba($color-primary, 0.5);
+        }
+      }
+    }
+  }
+  // LEFT: Card Results
+  &__main {
+    @media (max-width: $breakpoint-lg - 1px) {
+      order: 1;
+    }
+  }
+
+  // Card Results Section
+  &__card-results {
+    margin-bottom: $spacing-6;
+    display: flex;
+    flex-direction: column;
+    max-height: 100dvh;
+    
+    @media (min-width: $breakpoint-md) {
+      margin-bottom: $spacing-8;
+    }
+  }
+
+  &__results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-3;
+    flex-shrink: 0;
+  }
+  
+  &__results-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: $spacing-2;
+    min-height: 0;
+    
+    // Custom scrollbar
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: rgba($color-text-primary, 0.05);
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba($color-primary, 0.3);
+      border-radius: 4px;
+      
+      &:hover {
+        background: rgba($color-primary, 0.5);
+      }
+    }
+  }
+
+  &__section-title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+    margin: 0;
+    
+    @media (min-width: $breakpoint-md) {
+      font-size: $font-size-2xl;
+    }
+  }
+
+  // Deck Construction Section
+  &__deck-construction {
+    background-color: rgba($color-primary, 0.02);
+    border: 1px solid rgba($color-primary, 0.1);
+    border-radius: $border-radius-lg;
+    padding: $spacing-3;
+    
+    @media (min-width: $breakpoint-md) {
+      padding: $spacing-4;
+    }
+    
+    @media (min-width: $breakpoint-lg) {
+      padding: $spacing-4;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  &__deck-header {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+    margin-bottom: $spacing-3;
+    padding-bottom: $spacing-3;
+    border-bottom: 1px solid rgba($color-text-primary, 0.1);
+    flex-shrink: 0;
+    
+    @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  &__zone-selector {
+    display: flex;
+    gap: $spacing-1;
+    flex-wrap: wrap;
+    
+    @media (max-width: $breakpoint-sm - 1px) {
+      flex-direction: column;
+      
+      app-button {
+        width: 100%;
+      }
+    }
+    
+    @media (min-width: $breakpoint-lg) {
+      flex-direction: column;
+      gap: $spacing-1;
+      
+      app-button {
+        width: 100%;
+      }
+    }
+  }
+
+  &__zones {
+    display: grid;
+    gap: $spacing-3;
+    grid-template-columns: 1fr;
+    margin-bottom: $spacing-4;
+    
+    @media (min-width: $breakpoint-sm) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (min-width: $breakpoint-lg) {
+      grid-template-columns: 1fr;
+      gap: $spacing-3;
+    }
+  }
+
+  // Validation & Stats
+  &__deck-info {
+    display: grid;
+    gap: $spacing-3;
+    grid-template-columns: 1fr;
+    
+    @media (min-width: $breakpoint-md) {
+      grid-template-columns: 1fr 1fr;
+      gap: $spacing-4;
+    }
+    
+    @media (min-width: $breakpoint-lg) {
+      grid-template-columns: 1fr;
+      gap: $spacing-3;
     }
   }
 }

@@ -1,0 +1,190 @@
+@import 'variables';
+@import 'mixins';
+
+// TCG color palette for deck dots
+$color-tcg-red: #E74C3C;
+$color-tcg-blue: #3498DB;
+$color-tcg-yellow: #F1C40F;
+$color-tcg-green: #27AE60;
+$color-tcg-black: #2C3E50;
+$color-tcg-purple: #9B59B6;
+$color-tcg-white: #ECF0F1;
+
+.deck-list-panel {
+  background-color: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-2 $spacing-3;
+    background-color: $color-background;
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+    margin: 0;
+  }
+
+  &__count {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    background-color: $color-border;
+    padding: 2px $spacing-1;
+    border-radius: $border-radius-sm;
+  }
+
+  &__empty {
+    padding: $spacing-4;
+    text-align: center;
+  }
+
+  &__empty-text {
+    color: $color-text-secondary;
+    font-size: $font-size-sm;
+    margin: 0;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 360px;
+    overflow-y: auto;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-2 $spacing-3;
+    border-bottom: 1px solid $color-border;
+    transition: background-color $transition-fast;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: $color-background;
+    }
+
+    &--active {
+      background-color: rgba($color-primary, 0.06);
+      border-left: 3px solid $color-primary;
+      padding-left: calc(#{$spacing-3} - 3px);
+    }
+  }
+
+  &__item-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__item-name {
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__item-meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    flex-wrap: wrap;
+  }
+
+  &__item-stats {
+    font-size: $font-size-xs;
+    color: $color-text-secondary;
+  }
+
+  &__item-date {
+    font-size: $font-size-xs;
+    color: $color-text-secondary;
+  }
+
+  &__item-colors {
+    display: flex;
+    gap: 4px;
+    margin-top: 2px;
+  }
+
+  &__color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: $border-radius-circle;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    display: inline-block;
+
+    &--red    { background-color: $color-tcg-red; }
+    &--blue   { background-color: $color-tcg-blue; }
+    &--yellow { background-color: $color-tcg-yellow; }
+    &--green  { background-color: $color-tcg-green; }
+    &--black  { background-color: $color-tcg-black; }
+    &--purple { background-color: $color-tcg-purple; }
+    &--white  { background-color: $color-tcg-white; }
+  }
+
+  &__item-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  &__confirm-text {
+    font-size: $font-size-xs;
+    color: $color-error;
+    font-weight: $font-weight-medium;
+  }
+
+  &__action-btn {
+    padding: 4px 8px;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    border: 1px solid $color-border;
+    border-radius: $border-radius-sm;
+    background-color: $color-surface;
+    color: $color-text-primary;
+    cursor: pointer;
+    transition: background-color $transition-fast, border-color $transition-fast;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: $color-background;
+      border-color: darken($color-border, 10%);
+    }
+
+    &--primary {
+      background-color: $color-primary;
+      border-color: $color-primary;
+      color: #fff;
+
+      &:hover {
+        background-color: darken($color-primary, 8%);
+      }
+    }
+
+    &--danger {
+      border-color: $color-error;
+      color: $color-error;
+
+      &:hover {
+        background-color: rgba($color-error, 0.08);
+      }
+    }
+  }
+}

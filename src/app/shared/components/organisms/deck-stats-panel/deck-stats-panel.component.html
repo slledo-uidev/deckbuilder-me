@@ -1,0 +1,107 @@
+<div class="deck-stats-panel">
+  <!-- Panel Header -->
+  <div class="deck-stats-panel__header">
+    <h3 class="deck-stats-panel__title">📊 Deck Statistics</h3>
+    <p class="deck-stats-panel__subtitle">Visual analysis of your deck composition</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!hasData" class="deck-stats-panel__empty">
+    <p class="deck-stats-panel__empty-text">
+      Add cards to your deck to see statistics and visualizations
+    </p>
+  </div>
+
+  <!-- Statistics Content -->
+  <div *ngIf="hasData" class="deck-stats-panel__content">
+    <!-- Quick Stats -->
+    <div class="deck-stats-panel__quick-stats">
+      <div class="deck-stats-panel__stat-card">
+        <span class="deck-stats-panel__stat-label">Average Cost</span>
+        <span class="deck-stats-panel__stat-value">{{ averageCost }}</span>
+      </div>
+      <div class="deck-stats-panel__stat-card">
+        <span class="deck-stats-panel__stat-label">Average Level</span>
+        <span class="deck-stats-panel__stat-value">{{ averageLevel }}</span>
+      </div>
+      <div class="deck-stats-panel__stat-card">
+        <span class="deck-stats-panel__stat-label">Total Cards</span>
+        <span class="deck-stats-panel__stat-value">{{ totalCards }}</span>
+      </div>
+      <div class="deck-stats-panel__stat-card" *ngIf="costGaps.length > 0">
+        <span class="deck-stats-panel__stat-label">Cost Gaps</span>
+        <span class="deck-stats-panel__stat-value deck-stats-panel__stat-value--warning">
+          {{ costGaps.length }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Cost Gaps Warning -->
+    <div *ngIf="costGaps.length > 0" class="deck-stats-panel__warning">
+      <span class="deck-stats-panel__warning-icon">⚠️</span>
+      <div class="deck-stats-panel__warning-content">
+        <p class="deck-stats-panel__warning-title">Cost Curve Gaps Detected</p>
+        <p class="deck-stats-panel__warning-text">
+          Missing cards at costs: {{ costGaps.join(', ') }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="deck-stats-panel__charts">
+      <!-- Cost Curve Chart -->
+      <div class="deck-stats-panel__chart-container">
+        <h4 class="deck-stats-panel__chart-title">Cost Curve</h4>
+        <div class="deck-stats-panel__chart">
+          <canvas baseChart
+            [data]="costCurveChartData"
+            [options]="costCurveChartOptions"
+            [type]="costCurveChartType">
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Color Distribution Chart -->
+      <div class="deck-stats-panel__chart-container">
+        <h4 class="deck-stats-panel__chart-title">Color Distribution</h4>
+        <div class="deck-stats-panel__chart">
+          <canvas baseChart
+            [data]="colorDistributionChartData"
+            [options]="colorDistributionChartOptions"
+            [type]="colorDistributionChartType">
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Type Distribution Chart -->
+      <div class="deck-stats-panel__chart-container">
+        <h4 class="deck-stats-panel__chart-title">Type Distribution</h4>
+        <div class="deck-stats-panel__chart">
+          <canvas baseChart
+            [data]="typeDistributionChartData"
+            [options]="typeDistributionChartOptions"
+            [type]="typeDistributionChartType">
+          </canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Type Breakdown Table -->
+    <div class="deck-stats-panel__breakdown">
+      <h4 class="deck-stats-panel__breakdown-title">Card Type Breakdown</h4>
+      <div class="deck-stats-panel__breakdown-grid">
+        <div *ngFor="let item of typeBreakdown" class="deck-stats-panel__breakdown-item">
+          <span class="deck-stats-panel__breakdown-label">{{ item.type }}</span>
+          <div class="deck-stats-panel__breakdown-bar">
+            <div class="deck-stats-panel__breakdown-fill" 
+                 [style.width.%]="item.percentage">
+            </div>
+          </div>
+          <span class="deck-stats-panel__breakdown-value">
+            {{ item.count }} ({{ item.percentage }}%)
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

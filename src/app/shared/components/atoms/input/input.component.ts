@@ -20,10 +20,9 @@ export class InputComponent implements ControlValueAccessor {
   @Input() disabled: boolean = false;
   @Input() error: string = '';
   @Input() fullWidth: boolean = false;
+  @Input() value: string | number = '';
   
   @Output() valueChange = new EventEmitter<string>();
-  
-  value: string = '';
   isFocused: boolean = false;
   
   // ControlValueAccessor implementation

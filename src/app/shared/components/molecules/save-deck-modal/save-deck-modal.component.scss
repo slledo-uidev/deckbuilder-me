@@ -1,0 +1,131 @@
+@import 'variables';
+@import 'mixins';
+
+.save-deck-modal {
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: $spacing-2;
+    
+    @media (max-width: $breakpoint-sm - 1px) {
+      padding: $spacing-1;
+      align-items: flex-end;
+    }
+  }
+
+  &__dialog {
+    background-color: $color-surface;
+    border-radius: $border-radius-lg;
+    box-shadow: $shadow-lg;
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+    overflow: hidden;
+    
+    @media (max-width: $breakpoint-sm - 1px) {
+      max-width: 100%;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-2 $spacing-3;
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+    margin: 0;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    font-size: $font-size-lg;
+    color: $color-text-secondary;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: $border-radius-sm;
+    transition: color $transition-fast;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      color: $color-text-primary;
+    }
+  }
+
+  &__body {
+    padding: $spacing-2 $spacing-3;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-1;
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+  }
+
+  &__input {
+    width: 100%;
+    padding: $spacing-2 $spacing-2;
+    font-size: $font-size-base;
+    border: 1px solid $color-border;
+    border-radius: $border-radius-md;
+    color: $color-text-primary;
+    background-color: $color-surface;
+    transition: border-color $transition-fast;
+    box-sizing: border-box;
+    min-height: 44px;
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary;
+    }
+
+    &--error {
+      border-color: $color-error;
+
+      &:focus {
+        border-color: $color-error;
+      }
+    }
+  }
+
+  &__error {
+    font-size: $font-size-xs;
+    color: $color-error;
+  }
+
+  &__char-count {
+    font-size: $font-size-xs;
+    color: $color-text-secondary;
+    text-align: right;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-1;
+    padding: $spacing-2 $spacing-3;
+    border-top: 1px solid $color-border;
+  }
+}

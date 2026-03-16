@@ -1,131 +1,181 @@
 <div class="deck-builder">
   <div class="deck-builder__container">
-    <h2 class="deck-builder__title">Digimon TCG Deck Builder</h2>
-    <p class="deck-builder__subtitle">Atomic Design Components Showcase</p>
-    
-    <div class="deck-builder__content">
-      <!-- Buttons Section -->
-      <app-card variant="default" padding="large">
-        <h3 class="deck-builder__section-title">Buttons</h3>
-        <div class="deck-builder__showcase">
-          <app-button variant="primary" (clicked)="handleButtonClick('Primary')">
-            Primary Button
-          </app-button>
-          <app-button variant="secondary" (clicked)="handleButtonClick('Secondary')">
-            Secondary Button
-          </app-button>
-          <app-button variant="outline" (clicked)="handleButtonClick('Outline')">
-            Outline Button
-          </app-button>
-          <app-button variant="ghost" (clicked)="handleButtonClick('Ghost')">
-            Ghost Button
-          </app-button>
+    <!-- Header -->
+    <header class="deck-builder__header">
+      <div class="deck-builder__header-info">
+        <h1 class="deck-builder__title">Digimon TCG Deck Builder</h1>
+        <span *ngIf="currentDeckId" class="deck-builder__active-deck">{{ deckName }}</span>
+      </div>
+      <div class="deck-builder__header-actions">
+        <app-button variant="outline" size="small" (clicked)="newDeck()">New Deck</app-button>
+        <app-button variant="outline" size="small" (clicked)="toggleDeckList()">
+          My Decks ({{ savedDecks.length }})
+        </app-button>
+        <app-button variant="secondary" size="small" (clicked)="exportCurrentDeck()">Export</app-button>
+        <app-button variant="primary" size="small" (clicked)="openSaveModal()">Save Deck</app-button>
+      </div>
+    </header>
+
+    <!-- Success notification -->
+    <div *ngIf="saveSuccessMessage" class="deck-builder__notify">
+      {{ saveSuccessMessage }}
+    </div>
+
+    <!-- Save deck modal -->
+    <app-save-deck-modal
+      [isVisible]="showSaveModal"
+      [currentName]="deckName"
+      (save)="onSaveConfirm($event)"
+      (cancel)="onSaveCancel()">
+    </app-save-deck-modal>
+
+    <!-- Deck list panel -->
+    <div *ngIf="showDeckList" class="deck-builder__deck-list-section">
+      <app-deck-list-panel
+        [decks]="savedDecks"
+        [activeDeckId]="currentDeckId"
+        (loadDeck)="onLoadDeck($event)"
+        (deleteDeck)="onDeleteDeck($event)"
+        (duplicateDeck)="onDuplicateDeck($event)"
+        (exportDeck)="onExportDeck($event)">
+      </app-deck-list-panel>
+    </div>
+
+    <!-- Filters Section (Top, Collapsible) -->
+    <div class="deck-builder__filters-section">
+      <div class="deck-builder__filters-header">
+        <div class="deck-builder__search-bar">
+          <app-search-bar
+            placeholder="Search cards by name..."
+            (searchChange)="onSearchChange($event)">
+          </app-search-bar>
         </div>
-        
-        <h4 class="deck-builder__subsection-title">Sizes</h4>
-        <div class="deck-builder__showcase">
-          <app-button variant="primary" size="small">Small</app-button>
-          <app-button variant="primary" size="medium">Medium</app-button>
-          <app-button variant="primary" size="large">Large</app-button>
-        </div>
-        
-        <h4 class="deck-builder__subsection-title">States</h4>
-        <div class="deck-builder__showcase">
-          <app-button variant="primary" [disabled]="true">Disabled</app-button>
-          <app-button variant="primary" [fullWidth]="true">Full Width</app-button>
-        </div>
-      </app-card>
+        <button
+          class="deck-builder__filters-toggle"
+          (click)="toggleFilters()"
+          [attr.aria-expanded]="filtersExpanded"
+          aria-label="Toggle advanced filters">
+          {{ filtersExpanded ? 'Hide Filters' : 'Show Filters' }} {{ filtersExpanded ? '▲' : '▼' }}
+        </button>
+      </div>
       
-      <!-- Inputs Section -->
-      <app-card variant="default" padding="large">
-        <h3 class="deck-builder__section-title">Inputs</h3>
-        <div class="deck-builder__showcase deck-builder__showcase--vertical">
-          <app-input 
-            label="Card Name" 
-            placeholder="Search for a card..."
-            type="text"
-          ></app-input>
-          
-          <app-input 
-            label="Cost Range" 
-            placeholder="Enter cost"
-            type="number"
-          ></app-input>
-          
-          <app-input 
-            label="With Error" 
-            placeholder="This field has an error"
-            error="This field is required"
-          ></app-input>
-          
-          <app-input 
-            label="Disabled Input" 
-            placeholder="Disabled"
-            [disabled]="true"
-          ></app-input>
+      <div 
+        class="deck-builder__filters-content" 
+        [class.deck-builder__filters-content--expanded]="filtersExpanded">
+        <div class="deck-builder__filters-inner">
+          <app-filter-panel
+            (filterChange)="onFilterChange($event)"
+            (filterClear)="onFilterClear()">
+          </app-filter-panel>
         </div>
-      </app-card>
+      </div>
+    </div>
+
+    <!-- Main Layout: 2 columns -->
+    <div class="deck-builder__layout">
       
-      <!-- Badges Section -->
-      <app-card variant="default" padding="large">
-        <h3 class="deck-builder__section-title">Badges</h3>
-        <div class="deck-builder__showcase">
-          <app-badge variant="default">Default</app-badge>
-          <app-badge variant="primary">Primary</app-badge>
-          <app-badge variant="secondary">Secondary</app-badge>
-          <app-badge variant="success">Success</app-badge>
-          <app-badge variant="error">Error</app-badge>
-          <app-badge variant="warning">Warning</app-badge>
-          <app-badge variant="info">Info</app-badge>
-        </div>
-        
-        <h4 class="deck-builder__subsection-title">TCG Colors</h4>
-        <div class="deck-builder__showcase">
-          <app-badge variant="error" [rounded]="true">Red</app-badge>
-          <app-badge variant="info" [rounded]="true">Blue</app-badge>
-          <app-badge variant="warning" [rounded]="true">Yellow</app-badge>
-          <app-badge variant="success" [rounded]="true">Green</app-badge>
-          <app-badge variant="default" [rounded]="true">Black</app-badge>
-          <app-badge variant="primary" [rounded]="true">Purple</app-badge>
-          <app-badge variant="default" [rounded]="true">White</app-badge>
-        </div>
-        
-        <h4 class="deck-builder__subsection-title">Sizes</h4>
-        <div class="deck-builder__showcase">
-          <app-badge variant="primary" size="small">Small</app-badge>
-          <app-badge variant="primary" size="medium">Medium</app-badge>
-          <app-badge variant="primary" size="large">Large</app-badge>
-        </div>
-      </app-card>
-      
-      <!-- Card Variants Section -->
-      <app-card variant="default" padding="large">
-        <h3 class="deck-builder__section-title">Card Components</h3>
-        <div class="deck-builder__showcase deck-builder__showcase--vertical">
-          <app-card variant="default" padding="medium">
-            <p>Default Card with Shadow</p>
-          </app-card>
-          
-          <app-card variant="hover" padding="medium" [clickable]="true">
-            <p>Hover Card (hover me!)</p>
-          </app-card>
-          
-          <app-card variant="flat" padding="medium">
-            <p>Flat Card with Border</p>
-          </app-card>
-        </div>
-      </app-card>
-      
-      <!-- Status Message -->
-      <app-card variant="hover" padding="large" class="deck-builder__status">
-        <div class="deck-builder__status-content">
-          <app-badge variant="success" size="large" [rounded]="true">✓</app-badge>
-          <div>
-            <h3>Phase 0 Complete!</h3>
-            <p>All atomic components are ready. Next: Build Phase 1 features (Card Search & Deck Builder)</p>
+      <!-- LEFT: Card Results -->
+      <main class="deck-builder__main">
+        <!-- Card Results Section -->
+        <section class="deck-builder__card-results">
+          <div class="deck-builder__results-header">
+            <h2 class="deck-builder__section-title">Card Results</h2>
+            <app-badge variant="info" size="medium">
+              {{ filteredCards.length }} cards
+            </app-badge>
           </div>
-        </div>
-      </app-card>
+          <div class="deck-builder__results-scroll">
+            <app-card-grid
+              [cards]="filteredCards"
+              [loading]="loading"
+              [emptyMessage]="searchText || currentFilter.colors?.length ? 'No cards match your filters' : 'Use filters to find cards'"
+              (cardClick)="onCardClick($event)"
+              (cardAdd)="onCardAdd($event)">
+            </app-card-grid>
+          </div>
+        </section>
+      </main>
+
+      <!-- RIGHT: Your Deck -->
+      <aside class="deck-builder__deck-sidebar">
+        <section class="deck-builder__deck-construction">
+          <div class="deck-builder__deck-header">
+            <h2 class="deck-builder__section-title">Your Deck</h2>
+            <div class="deck-builder__zone-selector">
+              <app-button 
+                [variant]="selectedZone === 'digi-eggs' ? 'secondary' : 'outline'" 
+                size="small"
+                (clicked)="selectZone('digi-eggs')">
+                Digi-Eggs
+              </app-button>
+              <app-button 
+                [variant]="selectedZone === 'main' ? 'primary' : 'outline'" 
+                size="small"
+                (clicked)="selectZone('main')">
+                Main Deck
+              </app-button>
+              <app-button 
+                [variant]="selectedZone === 'side' ? 'ghost' : 'outline'" 
+                size="small"
+                (clicked)="selectZone('side')">
+                Side Deck
+              </app-button>
+            </div>
+          </div>
+
+          <!-- Deck Zones Grid -->
+          <div class="deck-builder__zones">
+            <app-deck-zone
+              title="Digi-Eggs"
+              [deckCards]="digiEggs"
+              [maxCards]="5"
+              [zoneType]="'digi-eggs'"
+              [isEmpty]="digiEggs.length === 0"
+              (removeCard)="removeCardFromZone($event, 'digi-eggs')"
+              (increaseQuantity)="increaseCardQuantity($event, 'digi-eggs')"
+              (decreaseQuantity)="decreaseCardQuantity($event, 'digi-eggs')">
+            </app-deck-zone>
+            
+            <app-deck-zone
+              title="Main Deck"
+              [deckCards]="mainDeck"
+              [maxCards]="50"
+              [zoneType]="'main'"
+              [isEmpty]="mainDeck.length === 0"
+              (removeCard)="removeCardFromZone($event, 'main')"
+              (increaseQuantity)="increaseCardQuantity($event, 'main')"
+              (decreaseQuantity)="decreaseCardQuantity($event, 'main')">
+            </app-deck-zone>
+            
+            <app-deck-zone
+              title="Side Deck"
+              [deckCards]="sideDeck"
+              [maxCards]="0"
+              [zoneType]="'side'"
+              [isEmpty]="sideDeck.length === 0"
+              (removeCard)="removeCardFromZone($event, 'side')"
+              (increaseQuantity)="increaseCardQuantity($event, 'side')"
+              (decreaseQuantity)="decreaseCardQuantity($event, 'side')">
+            </app-deck-zone>
+          </div>
+
+          <!-- Validation & Stats Tabs -->
+          <div class="deck-builder__deck-info">
+            <app-validation-panel
+              [digiEggs]="digiEggs"
+              [mainDeck]="mainDeck"
+              [sideDeck]="sideDeck"
+              [deckName]="'Current Deck'">
+            </app-validation-panel>
+
+            <app-deck-stats-panel
+              [digiEggs]="digiEggs"
+              [mainDeck]="mainDeck"
+              [sideDeck]="sideDeck">
+            </app-deck-stats-panel>
+          </div>
+        </section>
+      </aside>
     </div>
   </div>
 </div>

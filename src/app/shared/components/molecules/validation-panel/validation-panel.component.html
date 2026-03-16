@@ -1,0 +1,91 @@
+<div class="validation-panel" 
+     [class.validation-panel--valid]="statusClass === 'valid'"
+     [class.validation-panel--error]="statusClass === 'error'"
+     [class.validation-panel--warning]="statusClass === 'warning'"
+     [class.validation-panel--collapsed]="!isExpanded">
+  
+  <!-- Panel Header -->
+  <div class="validation-panel__header" (click)="toggleExpanded()">
+    <div class="validation-panel__status">
+      <span class="validation-panel__icon">
+        <span *ngIf="statusClass === 'valid'">✓</span>
+        <span *ngIf="statusClass === 'error'">✗</span>
+        <span *ngIf="statusClass === 'warning'">!</span>
+        <span *ngIf="statusClass === 'unknown'">?</span>
+      </span>
+      <div class="validation-panel__status-text">
+        <h3 class="validation-panel__title">Deck Validation</h3>
+        <p class="validation-panel__subtitle">{{ statusText }}</p>
+      </div>
+    </div>
+    <button 
+      class="validation-panel__toggle"
+      [attr.aria-label]="isExpanded ? 'Collapse panel' : 'Expand panel'"
+      type="button">
+      {{ isExpanded ? '−' : '+' }}
+    </button>
+  </div>
+
+  <!-- Panel Content -->
+  <div class="validation-panel__content" *ngIf="isExpanded && validation">
+    <!-- Deck Summary -->
+    <div class="validation-panel__summary">
+      <div class="validation-panel__stat">
+        <span class="validation-panel__stat-label">Total Cards:</span>
+        <span class="validation-panel__stat-value">{{ totalCards }}</span>
+      </div>
+      <div class="validation-panel__stat">
+        <span class="validation-panel__stat-label">Digi-Eggs:</span>
+        <span class="validation-panel__stat-value">{{ digiEggsCount }}/5</span>
+      </div>
+      <div class="validation-panel__stat">
+        <span class="validation-panel__stat-label">Main Deck:</span>
+        <span class="validation-panel__stat-value">{{ mainDeckCount }}/50</span>
+      </div>
+      <div class="validation-panel__stat">
+        <span class="validation-panel__stat-label">Side Deck:</span>
+        <span class="validation-panel__stat-value">{{ sideDeckCount }}</span>
+      </div>
+    </div>
+
+    <!-- Errors Section -->
+    <div class="validation-panel__section" *ngIf="validation.errors.length > 0">
+      <h4 class="validation-panel__section-title validation-panel__section-title--error">
+        Errors ({{ validation.errors.length }})
+      </h4>
+      <ul class="validation-panel__list">
+        <li *ngFor="let error of validation.errors" class="validation-panel__item validation-panel__item--error">
+          <span class="validation-panel__item-icon">✗</span>
+          <div class="validation-panel__item-content">
+            <p class="validation-panel__item-message">{{ error.message }}</p>
+            <span class="validation-panel__item-code" *ngIf="error.field">{{ error.field }}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Warnings Section -->
+    <div class="validation-panel__section" *ngIf="validation.warnings.length > 0">
+      <h4 class="validation-panel__section-title validation-panel__section-title--warning">
+        Warnings ({{ validation.warnings.length }})
+      </h4>
+      <ul class="validation-panel__list">
+        <li *ngFor="let warning of validation.warnings" class="validation-panel__item validation-panel__item--warning">
+          <span class="validation-panel__item-icon">!</span>
+          <div class="validation-panel__item-content">
+            <p class="validation-panel__item-message">{{ warning.message }}</p>
+            <span class="validation-panel__item-code" *ngIf="warning.field">{{ warning.field }}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Success Message -->
+    <div class="validation-panel__success" *ngIf="validation.isValid">
+      <span class="validation-panel__success-icon">✓</span>
+      <p class="validation-panel__success-message">
+        Your deck is valid and ready to save!
+      </p>
+    </div>
+  </div>
+</div>

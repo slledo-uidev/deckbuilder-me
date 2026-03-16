@@ -1,0 +1,119 @@
+<div class="filter-panel">
+  <div class="filter-panel__header">
+    <h3 class="filter-panel__title">Advanced Filters</h3>
+    <div class="filter-panel__actions">
+      <app-button
+        variant="ghost"
+        size="small"
+        (clicked)="clearFilters()"
+      >
+        Clear All
+      </app-button>
+    </div>
+  </div>
+  
+  <div class="filter-panel__content">
+    <!-- Colors Section -->
+    <div class="filter-panel__section">
+      <h4 class="filter-panel__section-title">Colors</h4>
+      <div class="filter-panel__options">
+        <button
+          *ngFor="let color of colors"
+          class="filter-panel__chip"
+          [class.filter-panel__chip--active]="isColorSelected(color)"
+          (click)="toggleColor(color)"
+          type="button"
+        >
+          <app-badge
+            [variant]="getColorBadgeVariant(color)"
+            size="medium"
+          >
+            {{ color }}
+          </app-badge>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Types Section -->
+    <div class="filter-panel__section">
+      <h4 class="filter-panel__section-title">Card Types</h4>
+      <div class="filter-panel__options">
+        <button
+          *ngFor="let type of types"
+          class="filter-panel__chip"
+          [class.filter-panel__chip--active]="isTypeSelected(type)"
+          (click)="toggleType(type)"
+          type="button"
+        >
+          <app-badge
+            variant="primary"
+            size="medium"
+          >
+            {{ type }}
+          </app-badge>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Cost Range Section -->
+    <div class="filter-panel__section">
+      <h4 class="filter-panel__section-title">Cost Range</h4>
+      <div class="filter-panel__range">
+        <app-input
+          type="number"
+          placeholder="Min"
+          [value]="costMin?.toString() || ''"
+          (valueChange)="costMin = $event ? +$event : undefined; onCostChange()"
+        ></app-input>
+        <span class="filter-panel__range-separator">-</span>
+        <app-input
+          type="number"
+          placeholder="Max"
+          [value]="costMax?.toString() || ''"
+          (valueChange)="costMax = $event ? +$event : undefined; onCostChange()"
+        ></app-input>
+      </div>
+    </div>
+    
+    <!-- Level Range Section -->
+    <div class="filter-panel__section">
+      <h4 class="filter-panel__section-title">Level (Digimon)</h4>
+      <div class="filter-panel__range">
+        <app-input
+          type="number"
+          placeholder="Min"
+          [value]="levelMin?.toString() || ''"
+          (valueChange)="levelMin = $event ? +$event : undefined; onLevelChange()"
+        ></app-input>
+        <span class="filter-panel__range-separator">-</span>
+        <app-input
+          type="number"
+          placeholder="Max"
+          [value]="levelMax?.toString() || ''"
+          (valueChange)="levelMax = $event ? +$event : undefined; onLevelChange()"
+        ></app-input>
+      </div>
+    </div>
+    
+    <!-- Rarity Section -->
+    <div class="filter-panel__section">
+      <h4 class="filter-panel__section-title">Rarity</h4>
+      <div class="filter-panel__options filter-panel__options--vertical">
+        <button
+          *ngFor="let rarity of rarities"
+          class="filter-panel__chip"
+          [class.filter-panel__chip--active]="isRaritySelected(rarity)"
+          (click)="toggleRarity(rarity)"
+          type="button"
+        >
+          <app-badge
+            variant="secondary"
+            size="small"
+          >
+            {{ rarity }}
+          </app-badge>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

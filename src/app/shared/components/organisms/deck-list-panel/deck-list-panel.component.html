@@ -1,0 +1,58 @@
+<div class="deck-list-panel">
+  <div class="deck-list-panel__header">
+    <h3 class="deck-list-panel__title">My Saved Decks</h3>
+    <span class="deck-list-panel__count">{{ decks.length }} deck{{ decks.length !== 1 ? 's' : '' }}</span>
+  </div>
+
+  <div *ngIf="decks.length === 0" class="deck-list-panel__empty">
+    <p class="deck-list-panel__empty-text">No saved decks yet. Build a deck and save it!</p>
+  </div>
+
+  <ul *ngIf="decks.length > 0" class="deck-list-panel__list">
+    <li
+      *ngFor="let deck of decks"
+      class="deck-list-panel__item"
+      [class.deck-list-panel__item--active]="deck.id === activeDeckId">
+
+      <div class="deck-list-panel__item-info">
+        <div class="deck-list-panel__item-name">{{ deck.name }}</div>
+        <div class="deck-list-panel__item-meta">
+          <span class="deck-list-panel__item-stats">
+            {{ getDigiEggCount(deck) }}/5 Eggs &bull; {{ getMainCount(deck) }}/50 Main
+          </span>
+          <span class="deck-list-panel__item-date">{{ formatDate(deck.updatedAt) }}</span>
+        </div>
+        <div *ngIf="deck.colors?.length" class="deck-list-panel__item-colors">
+          <span
+            *ngFor="let color of getColorDots(deck)"
+            class="deck-list-panel__color-dot"
+            [class]="'deck-list-panel__color-dot ' + colorToClass(color)"
+            [title]="color">
+          </span>
+        </div>
+      </div>
+
+      <div class="deck-list-panel__item-actions">
+        <!-- Confirm delete state -->
+        <ng-container *ngIf="confirmDeleteId === deck.id; else normalActions">
+          <span class="deck-list-panel__confirm-text">Delete?</span>
+          <button class="deck-list-panel__action-btn deck-list-panel__action-btn--danger"
+                  (click)="onConfirmDelete(deck.id)" title="Confirm delete">Yes</button>
+          <button class="deck-list-panel__action-btn"
+                  (click)="onCancelDelete()" title="Cancel">No</button>
+        </ng-container>
+
+        <ng-template #normalActions>
+          <button class="deck-list-panel__action-btn deck-list-panel__action-btn--primary"
+                  (click)="onLoad(deck)" title="Load deck">Load</button>
+          <button class="deck-list-panel__action-btn"
+                  (click)="onDuplicate(deck.id)" title="Duplicate deck">Copy</button>
+          <button class="deck-list-panel__action-btn"
+                  (click)="onExport(deck.id)" title="Export deck">Export</button>
+          <button class="deck-list-panel__action-btn deck-list-panel__action-btn--danger"
+                  (click)="onRequestDelete(deck.id)" title="Delete deck">Del</button>
+        </ng-template>
+      </div>
+    </li>
+  </ul>
+</div>
