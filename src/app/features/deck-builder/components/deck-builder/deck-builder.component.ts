@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { StorageService, ValidationService, CardService } from '@core/services';
 import { Deck, Card, CardFilter, Color } from '@core/models';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DeckCard as StorageDeckCard } from '@core/models/deck.model';
+import { FilterPanelComponent } from '@shared/components/molecules/filter-panel/filter-panel.component';
 
 export interface DeckCard {
   card: Card;
@@ -16,6 +17,8 @@ export interface DeckCard {
   styleUrls: ['./deck-builder.component.scss']
 })
 export class DeckBuilderComponent implements OnInit, OnDestroy {
+  @ViewChild(FilterPanelComponent) filterPanel!: FilterPanelComponent;
+  
   cards: Card[] = [];
   filteredCards: Card[] = [];
   loading = false;
@@ -28,10 +31,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   // Deck zones
   digiEggs: DeckCard[] = [];
   mainDeck: DeckCard[] = [];
-  sideDeck: DeckCard[] = [];
-  
-  // Selected zone for adding cards
-  selectedZone: 'digi-eggs' | 'main' | 'side' = 'main';
+  // Note: Side deck removed - Digimon TCG doesn't use side decks
 
   // Deck persistence state
   currentDeckId: string | null = null;
@@ -97,17 +97,27 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       searchText: this.searchText || undefined
     };
     this.applyFilters();
+    // Collapse filters panel after applying
+    this.filtersExpanded = false;
   }
   
   onFilterClear(): void {
     this.currentFilter = {
       searchText: this.searchText || undefined
     };
+    // Clear filters in the filter panel component
+    if (this.filterPanel) {
+      this.filterPanel.clearFilters();
+    }
     this.applyFilters();
   }
   
   toggleFilters(): void {
     this.filtersExpanded = !this.filtersExpanded;
+  }
+  
+  getActiveFilterCount(): number {
+    return this.filterPanel?.getActiveFilterCount() || 0;
   }
   
   onCardClick(card: Card): void {
@@ -116,13 +126,11 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   }
   
   onCardAdd(card: Card): void {
-    console.log('Add card to deck:', card, 'Zone:', this.selectedZone);
+    console.log('Add card to deck:', card);
     
-    // Validate card type for zone
-    if (this.selectedZone === 'digi-eggs' && card.type !== 'Digi-Egg') {
-      console.warn('Only Digi-Egg cards can be added to Digi-Eggs zone');
-      return;
-    }
+    // Automatically determine zone based on card level
+    // Level 2 cards go to Digi-Eggs, all others to Main Deck
+    const targetZone = card.level === 2 ? 'digi-eggs' : 'main';
     
     // Check maximum 5 copies across all zones
     const totalCopies = this.getTotalCopiesOfCard(card.id);
@@ -131,18 +139,12 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       return;
     }
     
-    // Add to selected zone
-    this.addCardToZone(card, this.selectedZone);
+    // Add to appropriate zone
+    this.addCardToZone(card, targetZone);
   }
   
-  selectZone(zone: 'digi-eggs' | 'main' | 'side'): void {
-    this.selectedZone = zone;
-  }
-  
-  addCardToZone(card: Card, zone: 'digi-eggs' | 'main' | 'side'): void {
-    const targetZone = zone === 'digi-eggs' ? this.digiEggs :
-                       zone === 'main' ? this.mainDeck :
-                       this.sideDeck;
+  addCardToZone(card: Card, zone: 'digi-eggs' | 'main'): void {
+    const targetZone = zone === 'digi-eggs' ? this.digiEggs : this.mainDeck;
     
     const existingCard = targetZone.find(dc => dc.card.id === card.id);
     
@@ -155,10 +157,8 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     }
   }
   
-  removeCardFromZone(card: Card, zone: 'digi-eggs' | 'main' | 'side'): void {
-    const targetZone = zone === 'digi-eggs' ? this.digiEggs :
-                       zone === 'main' ? this.mainDeck :
-                       this.sideDeck;
+  removeCardFromZone(card: Card, zone: 'digi-eggs' | 'main'): void {
+    const targetZone = zone === 'digi-eggs' ? this.digiEggs : this.mainDeck;
     
     const index = targetZone.findIndex(dc => dc.card.id === card.id);
     if (index !== -1) {
@@ -166,10 +166,8 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     }
   }
   
-  increaseCardQuantity(card: Card, zone: 'digi-eggs' | 'main' | 'side'): void {
-    const targetZone = zone === 'digi-eggs' ? this.digiEggs :
-                       zone === 'main' ? this.mainDeck :
-                       this.sideDeck;
+  increaseCardQuantity(card: Card, zone: 'digi-eggs' | 'main'): void {
+    const targetZone = zone === 'digi-eggs' ? this.digiEggs : this.mainDeck;
     
     const deckCard = targetZone.find(dc => dc.card.id === card.id);
     if (deckCard && deckCard.quantity < 5 && this.getTotalCopiesOfCard(card.id) < 5) {
@@ -177,10 +175,8 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     }
   }
   
-  decreaseCardQuantity(card: Card, zone: 'digi-eggs' | 'main' | 'side'): void {
-    const targetZone = zone === 'digi-eggs' ? this.digiEggs :
-                       zone === 'main' ? this.mainDeck :
-                       this.sideDeck;
+  decreaseCardQuantity(card: Card, zone: 'digi-eggs' | 'main'): void {
+    const targetZone = zone === 'digi-eggs' ? this.digiEggs : this.mainDeck;
     
     const deckCard = targetZone.find(dc => dc.card.id === card.id);
     if (deckCard) {
@@ -195,8 +191,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   getTotalCopiesOfCard(cardId: string): number {
     const inDigiEggs = this.digiEggs.find(dc => dc.card.id === cardId)?.quantity || 0;
     const inMain = this.mainDeck.find(dc => dc.card.id === cardId)?.quantity || 0;
-    const inSide = this.sideDeck.find(dc => dc.card.id === cardId)?.quantity || 0;
-    return inDigiEggs + inMain + inSide;
+    return inDigiEggs + inMain;
   }
   
   // ─── Persistence ────────────────────────────────────────────────────────────
@@ -224,7 +219,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       name,
       digiEggs: this.digiEggs.map(dc => ({ cardId: dc.card.id, quantity: dc.quantity })),
       mainDeck: this.mainDeck.map(dc => ({ cardId: dc.card.id, quantity: dc.quantity })),
-      sideDeck: this.sideDeck.map(dc => ({ cardId: dc.card.id, quantity: dc.quantity })),
+      sideDeck: [], // Empty - Digimon TCG doesn't use side deck
       colors,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -243,7 +238,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
 
     this.digiEggs = this.hydrateDeckCards(deck.digiEggs);
     this.mainDeck = this.hydrateDeckCards(deck.mainDeck);
-    this.sideDeck = this.hydrateDeckCards(deck.sideDeck);
+    // Side deck not used in Digimon TCG
 
     this.showDeckList = false;
     this.showSuccessMessage(`"${deck.name}" loaded!`);
@@ -276,7 +271,6 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     this.deckName = 'My Deck';
     this.digiEggs = [];
     this.mainDeck = [];
-    this.sideDeck = [];
   }
 
   toggleDeckList(): void {
@@ -290,7 +284,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       name: this.deckName,
       digiEggs: this.digiEggs.map(dc => ({ cardId: dc.card.id, quantity: dc.quantity })),
       mainDeck: this.mainDeck.map(dc => ({ cardId: dc.card.id, quantity: dc.quantity })),
-      sideDeck: this.sideDeck.map(dc => ({ cardId: dc.card.id, quantity: dc.quantity })),
+      sideDeck: [], // Empty - Digimon TCG doesn't use side deck
       colors: [],
       createdAt: new Date(),
       updatedAt: new Date()
@@ -302,7 +296,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
 
   getTotalCardCount(): number {
     const count = (arr: DeckCard[]) => arr.reduce((s, dc) => s + dc.quantity, 0);
-    return count(this.digiEggs) + count(this.mainDeck) + count(this.sideDeck);
+    return count(this.digiEggs) + count(this.mainDeck);
   }
 
   // ─── Private helpers ─────────────────────────────────────────────────────────
@@ -342,9 +336,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     };
     format(deck.digiEggs, 'Digi-Eggs');
     format(deck.mainDeck, 'Main Deck');
-    if (deck.sideDeck.length > 0) {
-      format(deck.sideDeck, 'Side Deck');
-    }
+    // Side deck not included - Digimon TCG doesn't use side decks
     return lines.join('\n').trim();
   }
 

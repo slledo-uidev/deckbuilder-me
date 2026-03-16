@@ -31,6 +31,7 @@ interface DigimonCardIOResponse {
   set_name?: string[];
   image_url?: string;  // Added: API provides image_url
   cardnumber?: string;
+  parallel_id?: number;  // Added: Might indicate alternate art version
 }
 
 @Injectable({
@@ -144,6 +145,11 @@ export class CardService {
    */
   private loadFromLocalJSON(): Observable<Card[]> {
     return this.http.get<Card[]>('/assets/data/cards.json').pipe(
+      map(cards => {
+        // Sort cards by set and card number (natural sort)
+        cards.sort((a, b) => this.compareCardIds(a.id, b.id));
+        return cards;
+      }),
       tap(cards => {
         console.log(`✓ Loaded ${cards.length} cards from local JSON (fallback)`);
         this.cardsCache$.next(cards);
@@ -161,9 +167,32 @@ export class CardService {
   
   /**
    * Map DigimonCard.io API response to our Card model
+   * Removes duplicate cards by keeping only the first occurrence of each card
    */
   private mapApiCardsToCards(apiCards: DigimonCardIOResponse[]): Card[] {
-    return apiCards.map(apiCard => this.mapApiCardToCard(apiCard));
+    // Group cards by base ID to remove duplicates
+    const uniqueCards = new Map<string, DigimonCardIOResponse>();
+    
+    for (const apiCard of apiCards) {
+      // Use cardnumber as the key if available, otherwise use id
+      let cardKey = apiCard.cardnumber || apiCard.id;
+      
+      // Remove common parallel/alternate art suffixes to group duplicates
+      cardKey = cardKey.replace(/_P\d+$/, '').replace(/_p\d+$/, '').replace(/[_-]?alt\d*$/i, '');
+      
+      // Keep only the first occurrence (base version)
+      if (!uniqueCards.has(cardKey)) {
+        uniqueCards.set(cardKey, apiCard);
+      }
+    }
+    
+    // Convert to Card model and sort by ID
+    const cards = Array.from(uniqueCards.values()).map(apiCard => this.mapApiCardToCard(apiCard));
+    
+    // Sort cards by set and card number (natural sort)
+    cards.sort((a, b) => this.compareCardIds(a.id, b.id));
+    
+    return cards;
   }
   
   /**
@@ -190,20 +219,8 @@ export class CardService {
     // Extract card number from ID (e.g., "BT1-085" → "085")
     const cardNumber = apiCard.id.split('-')[1] || apiCard.id;
     
-    // Construct image URL - try multiple patterns
-    // Pattern 1: API provided image_url (if available)
-    let imageUrl = apiCard.image_url || '';
-    
-    // Pattern 2: DigimonCard.io standard format
-    if (!imageUrl) {
-      const cardId = apiCard.id.toUpperCase();
-      imageUrl = `https://images.digimoncard.io/images/cards/${cardId}.jpg`;
-    }
-    
-    // Log first few cards for debugging
-    if (this.cardsCache$.value.length < 3) {
-      console.log(`Card ${apiCard.id} -> Image URL: ${imageUrl}`);
-    }
+    // Construct image URL
+    const imageUrl = this.constructImageUrl(apiCard.id, apiCard.image_url);
     
     return {
       id: apiCard.id,
@@ -225,6 +242,20 @@ export class CardService {
       securityEffect: apiCard.alt_effect || '',
       keywords: this.extractKeywords(apiCard.main_effect || '')
     };
+  }
+  
+  /**
+   * Construct image URL for a card
+   */
+  private constructImageUrl(cardId: string, apiImageUrl?: string): string {
+    // Pattern 1: API provided image_url (if available)
+    if (apiImageUrl) {
+      return apiImageUrl;
+    }
+    
+    // Pattern 2: DigimonCard.io standard format
+    const normalizedId = cardId.toUpperCase();
+    return `https://images.digimoncard.io/images/cards/${normalizedId}.jpg`;
   }
   
   /**
@@ -351,6 +382,8 @@ export class CardService {
     );
   }
   
+
+  
   /**
    * Apply filters to card array
    * @param cards - Cards to filter
@@ -435,7 +468,57 @@ export class CardService {
       );
     }
     
+    // Sort by set and card number (natural sort)
+    filtered.sort((a, b) => {
+      return this.compareCardIds(a.id, b.id);
+    });
+    
     return filtered;
+  }
+  
+  /**
+   * Compare two card IDs for natural sorting (BT1-001, BT1-002, ..., BT1-114, BT2-001, etc.)
+   */
+  private compareCardIds(idA: string, idB: string): number {
+    // Extract set prefix and number (e.g., "BT1-085" -> ["BT", 1, 85])
+    const parseCardId = (id: string): [string, number, number] => {
+      const match = id.match(/^([A-Z]+)(\d+)-(\d+)/i);
+      if (!match) return ['', 0, 0];
+      return [match[1].toUpperCase(), parseInt(match[2], 10), parseInt(match[3], 10)];
+    };
+    
+    const [prefixA, setNumA, cardNumA] = parseCardId(idA);
+    const [prefixB, setNumB, cardNumB] = parseCardId(idB);
+    
+    // Custom prefix order: AD, BT, EX, LM, P, ST
+    const prefixOrder: { [key: string]: number } = {
+      'AD': 1,
+      'BT': 2,
+      'EX': 3,
+      'LM': 4,
+      'P': 5,
+      'ST': 6
+    };
+    
+    // Compare prefix first with custom order
+    if (prefixA !== prefixB) {
+      const orderA = prefixOrder[prefixA] || 999;
+      const orderB = prefixOrder[prefixB] || 999;
+      
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+      // If both have unknown prefixes, use alphabetical
+      return prefixA.localeCompare(prefixB);
+    }
+    
+    // Then compare set number
+    if (setNumA !== setNumB) {
+      return setNumA - setNumB;
+    }
+    
+    // Finally compare card number
+    return cardNumA - cardNumB;
   }
   
   /**

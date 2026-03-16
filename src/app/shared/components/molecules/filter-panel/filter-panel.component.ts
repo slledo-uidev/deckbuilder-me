@@ -1,84 +1,174 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { CardFilter, Color, CardType, Rarity } from '@models/index';
 import { BadgeVariant } from '../../atoms/badge/badge.component';
+import { CardService } from '@services/card.service';
 
 @Component({
   selector: 'app-filter-panel',
   templateUrl: './filter-panel.component.html',
   styleUrls: ['./filter-panel.component.scss']
 })
-export class FilterPanelComponent {
+export class FilterPanelComponent implements OnInit {
   @Output() filterChange = new EventEmitter<CardFilter>();
   @Output() filterClear = new EventEmitter<void>();
+  
+  constructor(private cardService: CardService) {}
   
   // Enums for template
   readonly colors = Object.values(Color);
   readonly types = Object.values(CardType);
   readonly rarities = Object.values(Rarity);
+  readonly costs = Array.from({ length: 16 }, (_, i) => i); // 0-15
+  readonly levels = [2, 3, 4, 5, 6, 7];
+  
+  // Sets list - will be populated dynamically
+  availableSets: string[] = [];
   
   // Filter state
   selectedColors: Color[] = [];
   selectedTypes: CardType[] = [];
   selectedRarities: Rarity[] = [];
-  costMin: number | undefined;
-  costMax: number | undefined;
-  levelMin: number | undefined;
-  levelMax: number | undefined;
+  selectedSets: string[] = [];
+  selectedCost: number | undefined;
+  selectedLevel: number | undefined;
   
   isExpanded = true;
+  
+  ngOnInit(): void {
+    // Get unique sets from loaded cards
+    this.cardService.cards$.subscribe(cards => {
+      if (cards.length > 0) {
+        const uniqueSets = Array.from(new Set(cards.map(c => c.set)));
+        this.availableSets = this.sortSets(uniqueSets);
+      }
+    });
+  }
+  
+  private sortSets(sets: string[]): string[] {
+    return sets.sort((a, b) => {
+      const extractSetNumber = (set: string): number => {
+        const match = set.match(/^(AD|BT|EX|LM|P|ST)-(\d+)/i);
+        if (!match) return 9999; // Unknown sets go last
+        return parseInt(match[2], 10);
+      };
+
+      const extractSetType = (set: string): string => {
+        const match = set.match(/^(AD|BT|EX|LM|P|ST)-/i);
+        return match ? match[1].toUpperCase() : 'ZZZ'; // Unknown goes last
+      };
+
+      const typeA = extractSetType(a);
+      const typeB = extractSetType(b);
+      
+      // Custom prefix order: AD, BT, EX, LM, P, ST
+      const prefixOrder: { [key: string]: number } = {
+        'AD': 1,
+        'BT': 2,
+        'EX': 3,
+        'LM': 4,
+        'P': 5,
+        'ST': 6
+      };
+      
+      const orderA = prefixOrder[typeA] || 999;
+      const orderB = prefixOrder[typeB] || 999;
+      
+      // Sort by type first
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+      
+      // Then sort by number
+      return extractSetNumber(a) - extractSetNumber(b);
+    });
+  }
   
   toggleExpand(): void {
     this.isExpanded = !this.isExpanded;
   }
   
-  toggleColor(color: Color): void {
-    const index = this.selectedColors.indexOf(color);
-    if (index > -1) {
-      this.selectedColors.splice(index, 1);
-    } else {
-      this.selectedColors.push(color);
+  onColorChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const options = Array.from(select.selectedOptions);
+    
+    // Limit to 3 colors max
+    if (options.length > 3) {
+      // Prevent selection of more than 3
+      event.preventDefault();
+      // Keep only first 3
+      this.selectedColors = options.slice(0, 3).map(opt => opt.value as Color);
+      // Update select visual state
+      setTimeout(() => {
+        Array.from(select.options).forEach((opt, idx) => {
+          opt.selected = this.selectedColors.includes(opt.value as Color);
+        });
+      }, 0);
+      return;
     }
-    this.emitFilter();
+    
+    this.selectedColors = options.map(opt => opt.value as Color);
   }
   
-  toggleType(type: CardType): void {
-    const index = this.selectedTypes.indexOf(type);
-    if (index > -1) {
-      this.selectedTypes.splice(index, 1);
-    } else {
-      this.selectedTypes.push(type);
-    }
-    this.emitFilter();
+  onTypeChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.selectedTypes = select.value ? [select.value as CardType] : [];
   }
   
-  toggleRarity(rarity: Rarity): void {
-    const index = this.selectedRarities.indexOf(rarity);
-    if (index > -1) {
-      this.selectedRarities.splice(index, 1);
-    } else {
-      this.selectedRarities.push(rarity);
-    }
-    this.emitFilter();
+  onSetChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const options = Array.from(select.selectedOptions);
+    this.selectedSets = options.map(opt => opt.value);
   }
   
-  onCostChange(): void {
-    this.emitFilter();
+  onRarityChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const options = Array.from(select.selectedOptions);
+    this.selectedRarities = options.map(opt => opt.value as Rarity);
   }
   
-  onLevelChange(): void {
-    this.emitFilter();
+  onCostChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.selectedCost = select.value ? Number(select.value) : undefined;
+  }
+  
+  onLevelChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.selectedLevel = select.value ? Number(select.value) : undefined;
   }
   
   clearFilters(): void {
     this.selectedColors = [];
     this.selectedTypes = [];
     this.selectedRarities = [];
-    this.costMin = undefined;
-    this.costMax = undefined;
-    this.levelMin = undefined;
-    this.levelMax = undefined;
+    this.selectedSets = [];
+    this.selectedCost = undefined;
+    this.selectedLevel = undefined;
+    
+    // Reset all select elements to their default values
+    setTimeout(() => {
+      const selects = document.querySelectorAll('.filter-panel select');
+      selects.forEach((select: any) => {
+        select.value = '';
+      });
+    }, 0);
+    
     this.filterClear.emit();
+    this.emitFilter(); // Apply immediately when clearing
+  }
+  
+  applyFilters(): void {
     this.emitFilter();
+  }
+  
+  getActiveFilterCount(): number {
+    let count = 0;
+    if (this.selectedColors.length > 0) count++;
+    if (this.selectedTypes.length > 0) count++;
+    if (this.selectedRarities.length > 0) count++;
+    if (this.selectedSets.length > 0) count++;
+    if (this.selectedCost !== undefined) count++;
+    if (this.selectedLevel !== undefined) count++;
+    return count;
   }
   
   private emitFilter(): void {
@@ -93,44 +183,18 @@ export class FilterPanelComponent {
     if (this.selectedRarities.length > 0) {
       filter.rarities = this.selectedRarities;
     }
-    if (this.costMin !== undefined) {
-      filter.costMin = this.costMin;
+    if (this.selectedSets.length > 0) {
+      filter.sets = this.selectedSets;
     }
-    if (this.costMax !== undefined) {
-      filter.costMax = this.costMax;
+    if (this.selectedCost !== undefined) {
+      filter.costMin = this.selectedCost;
+      filter.costMax = this.selectedCost;
     }
-    if (this.levelMin !== undefined) {
-      filter.levelMin = this.levelMin;
-    }
-    if (this.levelMax !== undefined) {
-      filter.levelMax = this.levelMax;
+    if (this.selectedLevel !== undefined) {
+      filter.levelMin = this.selectedLevel;
+      filter.levelMax = this.selectedLevel;
     }
     
     this.filterChange.emit(filter);
-  }
-  
-  isColorSelected(color: Color): boolean {
-    return this.selectedColors.includes(color);
-  }
-  
-  isTypeSelected(type: CardType): boolean {
-    return this.selectedTypes.includes(type);
-  }
-  
-  isRaritySelected(rarity: Rarity): boolean {
-    return this.selectedRarities.includes(rarity);
-  }
-  
-  getColorBadgeVariant(color: Color): BadgeVariant {
-    const colorMap: Record<Color, BadgeVariant> = {
-      [Color.Red]: 'error',
-      [Color.Blue]: 'info',
-      [Color.Yellow]: 'warning',
-      [Color.Green]: 'success',
-      [Color.Black]: 'default',
-      [Color.Purple]: 'secondary',
-      [Color.White]: 'default'
-    };
-    return colorMap[color] || 'default';
   }
 }

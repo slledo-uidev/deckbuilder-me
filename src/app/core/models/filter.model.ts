@@ -31,6 +31,9 @@ export interface CardFilter {
   // Attributes (Digimon only)
   attributes?: string[];       // Filter by attribute (Vaccine, Virus, Data)
   forms?: string[];            // Filter by form (Rookie, Champion, etc.)
+  
+  // Alternate arts
+  showAlternateArts?: boolean; // Show alternate art variants (default: false)
 }
 
 /**

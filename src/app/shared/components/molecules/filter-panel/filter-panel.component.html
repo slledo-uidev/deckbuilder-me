@@ -15,105 +15,125 @@
   <div class="filter-panel__content">
     <!-- Colors Section -->
     <div class="filter-panel__section">
-      <h4 class="filter-panel__section-title">Colors</h4>
-      <div class="filter-panel__options">
-        <button
-          *ngFor="let color of colors"
-          class="filter-panel__chip"
-          [class.filter-panel__chip--active]="isColorSelected(color)"
-          (click)="toggleColor(color)"
-          type="button"
-        >
-          <app-badge
-            [variant]="getColorBadgeVariant(color)"
-            size="medium"
-          >
+      <label for="color-select" class="filter-panel__label">Colors</label>
+      <div class="filter-panel__input-wrapper">
+        <select 
+          id="color-select"
+          class="filter-panel__input filter-panel__input--dropdown" 
+          (change)="onColorChange($event)"
+          [value]="selectedColors[0] || ''">
+          <option value="">All Colors</option>
+          <option *ngFor="let color of colors" [value]="color" [selected]="selectedColors.includes(color)">
             {{ color }}
-          </app-badge>
-        </button>
+          </option>
+        </select>
       </div>
+      <p class="filter-panel__hint" *ngIf="selectedColors.length > 0">
+        {{ selectedColors.length }} color(s) selected
+      </p>
     </div>
     
-    <!-- Types Section -->
+    <!-- Set Section -->
     <div class="filter-panel__section">
-      <h4 class="filter-panel__section-title">Card Types</h4>
-      <div class="filter-panel__options">
-        <button
-          *ngFor="let type of types"
-          class="filter-panel__chip"
-          [class.filter-panel__chip--active]="isTypeSelected(type)"
-          (click)="toggleType(type)"
-          type="button"
-        >
-          <app-badge
-            variant="primary"
-            size="medium"
-          >
-            {{ type }}
-          </app-badge>
-        </button>
+      <label for="set-select" class="filter-panel__label">Expansion Set</label>
+      <div class="filter-panel__input-wrapper">
+        <select 
+          id="set-select"
+          class="filter-panel__input filter-panel__input--dropdown" 
+          (change)="onSetChange($event)"
+          [value]="selectedSets[0] || ''">
+          <option value="">All Sets</option>
+          <option *ngFor="let set of availableSets" [value]="set" [selected]="selectedSets.includes(set)">
+            {{ set }}
+          </option>
+        </select>
       </div>
-    </div>
-    
-    <!-- Cost Range Section -->
-    <div class="filter-panel__section">
-      <h4 class="filter-panel__section-title">Cost Range</h4>
-      <div class="filter-panel__range">
-        <app-input
-          type="number"
-          placeholder="Min"
-          [value]="costMin?.toString() || ''"
-          (valueChange)="costMin = $event ? +$event : undefined; onCostChange()"
-        ></app-input>
-        <span class="filter-panel__range-separator">-</span>
-        <app-input
-          type="number"
-          placeholder="Max"
-          [value]="costMax?.toString() || ''"
-          (valueChange)="costMax = $event ? +$event : undefined; onCostChange()"
-        ></app-input>
-      </div>
-    </div>
-    
-    <!-- Level Range Section -->
-    <div class="filter-panel__section">
-      <h4 class="filter-panel__section-title">Level (Digimon)</h4>
-      <div class="filter-panel__range">
-        <app-input
-          type="number"
-          placeholder="Min"
-          [value]="levelMin?.toString() || ''"
-          (valueChange)="levelMin = $event ? +$event : undefined; onLevelChange()"
-        ></app-input>
-        <span class="filter-panel__range-separator">-</span>
-        <app-input
-          type="number"
-          placeholder="Max"
-          [value]="levelMax?.toString() || ''"
-          (valueChange)="levelMax = $event ? +$event : undefined; onLevelChange()"
-        ></app-input>
-      </div>
+      <p class="filter-panel__hint" *ngIf="selectedSets.length > 0">
+        {{ selectedSets.length }} set(s) selected
+      </p>
     </div>
     
     <!-- Rarity Section -->
     <div class="filter-panel__section">
-      <h4 class="filter-panel__section-title">Rarity</h4>
-      <div class="filter-panel__options filter-panel__options--vertical">
-        <button
-          *ngFor="let rarity of rarities"
-          class="filter-panel__chip"
-          [class.filter-panel__chip--active]="isRaritySelected(rarity)"
-          (click)="toggleRarity(rarity)"
-          type="button"
-        >
-          <app-badge
-            variant="secondary"
-            size="small"
-          >
+      <label for="rarity-select" class="filter-panel__label">Rarity</label>
+      <div class="filter-panel__input-wrapper">
+        <select 
+          id="rarity-select"
+          class="filter-panel__input filter-panel__input--dropdown" 
+          (change)="onRarityChange($event)"
+          [value]="selectedRarities[0] || ''">
+          <option value="">All Rarities</option>
+          <option *ngFor="let rarity of rarities" [value]="rarity" [selected]="selectedRarities.includes(rarity)">
             {{ rarity }}
-          </app-badge>
-        </button>
+          </option>
+        </select>
       </div>
+      <p class="filter-panel__hint" *ngIf="selectedRarities.length > 0">
+        {{ selectedRarities.length }} rarity(ies) selected
+      </p>
+    </div>
+    
+    <!-- Type Section -->
+    <div class="filter-panel__section">
+      <label for="type-select" class="filter-panel__label">Card Type</label>
+      <div class="filter-panel__input-wrapper">
+        <select 
+          id="type-select"
+          class="filter-panel__input filter-panel__input--dropdown" 
+          (change)="onTypeChange($event)"
+          [value]="selectedTypes[0] || ''">
+          <option value="">All Types</option>
+          <option *ngFor="let type of types" [value]="type">
+            {{ type }}
+          </option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Cost Section -->
+    <div class="filter-panel__section">
+      <label for="cost-select" class="filter-panel__label">Play Cost</label>
+      <div class="filter-panel__input-wrapper">
+        <select 
+          id="cost-select"
+          class="filter-panel__input filter-panel__input--dropdown" 
+          (change)="onCostChange($event)"
+          [value]="selectedCost !== undefined ? selectedCost : ''">
+          <option value="">Any Cost</option>
+          <option *ngFor="let cost of costs" [value]="cost">
+            {{ cost }}
+          </option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Level Section -->
+    <div class="filter-panel__section">
+      <label for="level-select" class="filter-panel__label">Level</label>
+      <div class="filter-panel__input-wrapper">
+        <select 
+          id="level-select"
+          class="filter-panel__input filter-panel__input--dropdown" 
+          (change)="onLevelChange($event)"
+          [value]="selectedLevel !== undefined ? selectedLevel : ''">
+          <option value="">Any Level</option>
+          <option *ngFor="let level of levels" [value]="level">
+            Level {{ level }}
+          </option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Apply Filters Button -->
+    <div class="filter-panel__section filter-panel__section--actions">
+      <app-button
+        variant="primary"
+        size="medium"
+        (clicked)="applyFilters()"
+        class="filter-panel__apply-button"
+      >
+        Apply Filters
+      </app-button>
     </div>
   </div>
 </div>

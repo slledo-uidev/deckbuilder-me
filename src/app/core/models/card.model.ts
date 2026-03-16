@@ -34,6 +34,12 @@ export interface CardVariant {
   imageUrl: string;           // URL to variant image
 }
 
+export interface VariantInfo {
+  variantNumber: number;      // Which variant this is (0 = original, 1+ = alternates)
+  variantName?: string;       // Name of the variant
+  totalVariants: number;      // Total number of variants including original
+}
+
 export interface Card {
   // Core identification
   id: string;                 // Unique card ID (e.g., "BT1-085")
@@ -59,6 +65,7 @@ export interface Card {
   // Images
   imageUrl: string;           // Primary card image URL
   variants?: CardVariant[];   // Alternate art variants
+  variantInfo?: VariantInfo;  // Info about which variant this card represents
   
   // Effects and text
   effect: string;             // Main effect text
