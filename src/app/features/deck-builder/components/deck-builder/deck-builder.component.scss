@@ -1,0 +1,83 @@
+@import 'variables';
+@import 'mixins';
+
+.deck-builder {
+  min-height: 60vh;
+  padding: $spacing-4;
+  
+  &__container {
+    @include container;
+  }
+  
+  &__title {
+    @include heading-2;
+    margin-bottom: $spacing-2;
+    text-align: center;
+  }
+  
+  &__subtitle {
+    @include small-text;
+    margin-bottom: $spacing-6;
+    text-align: center;
+  }
+  
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+  }
+  
+  &__section-title {
+    @include heading-3;
+    margin-bottom: $spacing-3;
+  }
+  
+  &__subsection-title {
+    font-size: $font-size-base;
+    font-weight: $font-weight-bold;
+    margin: $spacing-3 0 $spacing-2;
+    color: $color-text-secondary;
+  }
+  
+  &__showcase {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-2;
+    align-items: flex-start;
+    
+    &--vertical {
+      flex-direction: column;
+      max-width: 400px;
+    }
+  }
+  
+  &__status {
+    margin-top: $spacing-4;
+    
+    &-content {
+      display: flex;
+      align-items: center;
+      gap: $spacing-3;
+      
+      h3 {
+        margin: 0 0 $spacing-1 0;
+        font-size: $font-size-xl;
+        font-weight: $font-weight-bold;
+        color: $color-success;
+      }
+      
+      p {
+        margin: 0;
+        color: $color-text-secondary;
+      }
+    }
+  }
+  
+  @media (min-width: $breakpoint-md) {
+    &__showcase {
+      &--vertical {
+        max-width: 600px;
+      }
+    }
+  }
+}

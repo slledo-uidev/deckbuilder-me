@@ -1,0 +1,21 @@
+<div [class]="wrapperClasses">
+  <label *ngIf="label" class="input-wrapper__label" [attr.for]="label">
+    {{ label }}
+  </label>
+  
+  <input
+    [id]="label"
+    [type]="type"
+    [class]="inputClasses"
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    [value]="value"
+    (input)="onInputChange($event)"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+  />
+  
+  <span *ngIf="error" class="input-wrapper__error">
+    {{ error }}
+  </span>
+</div>

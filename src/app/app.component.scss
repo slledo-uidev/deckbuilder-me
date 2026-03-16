@@ -1,0 +1,68 @@
+@import 'variables';
+@import 'mixins';
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  
+  &__header {
+    background: linear-gradient(135deg, $color-primary 0%, darken($color-primary, 10%) 100%);
+    color: $color-white;
+    padding: $spacing-4 0;
+    box-shadow: $shadow-md;
+  }
+  
+  &__container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 $spacing-4;
+    
+    @media (min-width: $breakpoint-md) {
+      padding: 0 $spacing-6;
+    }
+  }
+  
+  &__title {
+    margin: 0;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    
+    @media (min-width: $breakpoint-md) {
+      font-size: 2.5rem;
+    }
+  }
+  
+  &__subtitle {
+    margin: $spacing-1 0 0;
+    font-size: $font-size-base;
+    opacity: 0.9;
+  }
+  
+  &__main {
+    flex: 1;
+    padding: $spacing-4 0;
+  }
+  
+  &__footer {
+    background-color: $color-surface;
+    border-top: 1px solid $color-border;
+    padding: $spacing-3 0;
+    
+    &-text {
+      margin: 0;
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+      text-align: center;
+      
+      a {
+        color: $color-primary;
+        text-decoration: none;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,92 @@
+/* Typography styles */
+@import 'variables';
+
+body {
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  line-height: $line-height-normal;
+  color: $color-text-primary;
+}
+
+h1, .h1 {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  margin-bottom: $spacing-3;
+}
+
+h2, .h2 {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  margin-bottom: $spacing-3;
+}
+
+h3, .h3 {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-normal;
+  margin-bottom: $spacing-2;
+}
+
+h4, .h4 {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-normal;
+  margin-bottom: $spacing-2;
+}
+
+h5, .h5 {
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-normal;
+  margin-bottom: $spacing-2;
+}
+
+h6, .h6 {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-normal;
+  margin-bottom: $spacing-1;
+}
+
+p {
+  margin-bottom: $spacing-2;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.text-small {
+  font-size: $font-size-sm;
+}
+
+.text-xs {
+  font-size: $font-size-xs;
+}
+
+.text-lg {
+  font-size: $font-size-lg;
+}
+
+.text-bold {
+  font-weight: $font-weight-bold;
+}
+
+.text-medium {
+  font-weight: $font-weight-medium;
+}
+
+.text-primary {
+  color: $color-text-primary;
+}
+
+.text-secondary {
+  color: $color-text-secondary;
+}
+
+.text-inverse {
+  color: $color-text-inverse;
+}

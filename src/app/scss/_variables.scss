@@ -1,0 +1,154 @@
+/* Design System Variables - Theme Tokens */
+/* DO NOT use hardcoded values - ALWAYS use these tokens */
+
+/* ========================================
+   TCG COLORS (7 Official Digimon Colors)
+   ======================================== */
+$color-tcg-red: #E74C3C;
+$color-tcg-blue: #3498DB;
+$color-tcg-yellow: #F1C40F;
+$color-tcg-green: #27AE60;
+$color-tcg-black: #2C3E50;
+$color-tcg-purple: #9B59B6;
+$color-tcg-white: #ECF0F1;
+
+/* ========================================
+   UI COLORS
+   ======================================== */
+/* Primary & Secondary */
+$color-primary: #0099CC;
+$color-primary-dark: #007AA3;
+$color-primary-light: #33B3D9;
+$color-secondary: #FF6600;
+$color-secondary-dark: #CC5200;
+$color-secondary-light: #FF8533;
+
+/* Neutrals */
+$color-white: #FFFFFF;
+$color-background: #FAFAFA;
+$color-surface: #FFFFFF;
+$color-surface-alt: #F5F5F5;
+$color-border: #E0E0E0;
+$color-border-dark: #BDBDBD;
+
+/* Text */
+$color-text-primary: #212121;
+$color-text-secondary: #757575;
+$color-text-disabled: #BDBDBD;
+$color-text-inverse: #FFFFFF;
+
+/* Semantic colors */
+$color-success: #4CAF50;
+$color-success-light: #81C784;
+$color-error: #F44336;
+$color-error-light: #E57373;
+$color-warning: #FF9800;
+$color-warning-light: #FFB74D;
+$color-info: #2196F3;
+$color-info-light: #64B5F6;
+
+/* ========================================
+   SPACING SYSTEM (8px base)
+   ======================================== */
+$spacing-0: 0;
+$spacing-1: 8px;
+$spacing-2: 16px;
+$spacing-3: 24px;
+$spacing-4: 32px;
+$spacing-5: 40px;
+$spacing-6: 48px;
+$spacing-8: 64px;
+$spacing-10: 80px;
+$spacing-12: 96px;
+
+/* ========================================
+   TYPOGRAPHY
+   ======================================== */
+/* Font families */
+$font-family-primary: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+$font-family-mono: 'Roboto Mono', 'Courier New', monospace;
+
+/* Font sizes */
+$font-size-xs: 12px;
+$font-size-sm: 14px;
+$font-size-base: 16px;
+$font-size-lg: 18px;
+$font-size-xl: 24px;
+$font-size-2xl: 32px;
+$font-size-3xl: 40px;
+
+/* Font weights */
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+
+/* Line heights */
+$line-height-tight: 1.25;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+
+/* ========================================
+   BREAKPOINTS (Mobile-first)
+   ======================================== */
+$breakpoint-xs: 320px;   // Mobile small
+$breakpoint-sm: 480px;   // Mobile
+$breakpoint-md: 768px;   // Tablet
+$breakpoint-lg: 1024px;  // Desktop
+$breakpoint-xl: 1440px;  // Desktop wide
+$breakpoint-2xl: 1920px; // Desktop ultra-wide
+
+/* ========================================
+   BORDER RADIUS
+   ======================================== */
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-radius-xl: 16px;
+$border-radius-circle: 50%;
+$border-radius-pill: 9999px;
+
+/* ========================================
+   SHADOWS
+   ======================================== */
+$shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+$shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2);
+$shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+
+/* ========================================
+   TRANSITIONS
+   ======================================== */
+$transition-fast: 150ms ease-in-out;
+$transition-base: 250ms ease-in-out;
+$transition-slow: 350ms ease-in-out;
+$transition-slower: 500ms ease-in-out;
+
+/* ========================================
+   Z-INDEX LAYERS
+   ======================================== */
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
+
+/* ========================================
+   COMPONENT-SPECIFIC TOKENS
+   ======================================== */
+/* Deck zone colors */
+$color-eggs-bg: lighten($color-tcg-yellow, 35%);
+$color-eggs-border: $color-tcg-yellow;
+$color-main-bg: lighten($color-tcg-blue, 38%);
+$color-main-border: $color-tcg-blue;
+$color-side-bg: lighten($color-tcg-purple, 35%);
+$color-side-border: $color-tcg-purple;
+
+/* Card type colors */
+$color-digimon: $color-tcg-red;
+$color-tamer: $color-tcg-green;
+$color-option: $color-tcg-purple;
+$color-digi-egg: $color-tcg-yellow;

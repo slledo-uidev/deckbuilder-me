@@ -1,0 +1,131 @@
+<div class="deck-builder">
+  <div class="deck-builder__container">
+    <h2 class="deck-builder__title">Digimon TCG Deck Builder</h2>
+    <p class="deck-builder__subtitle">Atomic Design Components Showcase</p>
+    
+    <div class="deck-builder__content">
+      <!-- Buttons Section -->
+      <app-card variant="default" padding="large">
+        <h3 class="deck-builder__section-title">Buttons</h3>
+        <div class="deck-builder__showcase">
+          <app-button variant="primary" (clicked)="handleButtonClick('Primary')">
+            Primary Button
+          </app-button>
+          <app-button variant="secondary" (clicked)="handleButtonClick('Secondary')">
+            Secondary Button
+          </app-button>
+          <app-button variant="outline" (clicked)="handleButtonClick('Outline')">
+            Outline Button
+          </app-button>
+          <app-button variant="ghost" (clicked)="handleButtonClick('Ghost')">
+            Ghost Button
+          </app-button>
+        </div>
+        
+        <h4 class="deck-builder__subsection-title">Sizes</h4>
+        <div class="deck-builder__showcase">
+          <app-button variant="primary" size="small">Small</app-button>
+          <app-button variant="primary" size="medium">Medium</app-button>
+          <app-button variant="primary" size="large">Large</app-button>
+        </div>
+        
+        <h4 class="deck-builder__subsection-title">States</h4>
+        <div class="deck-builder__showcase">
+          <app-button variant="primary" [disabled]="true">Disabled</app-button>
+          <app-button variant="primary" [fullWidth]="true">Full Width</app-button>
+        </div>
+      </app-card>
+      
+      <!-- Inputs Section -->
+      <app-card variant="default" padding="large">
+        <h3 class="deck-builder__section-title">Inputs</h3>
+        <div class="deck-builder__showcase deck-builder__showcase--vertical">
+          <app-input 
+            label="Card Name" 
+            placeholder="Search for a card..."
+            type="text"
+          ></app-input>
+          
+          <app-input 
+            label="Cost Range" 
+            placeholder="Enter cost"
+            type="number"
+          ></app-input>
+          
+          <app-input 
+            label="With Error" 
+            placeholder="This field has an error"
+            error="This field is required"
+          ></app-input>
+          
+          <app-input 
+            label="Disabled Input" 
+            placeholder="Disabled"
+            [disabled]="true"
+          ></app-input>
+        </div>
+      </app-card>
+      
+      <!-- Badges Section -->
+      <app-card variant="default" padding="large">
+        <h3 class="deck-builder__section-title">Badges</h3>
+        <div class="deck-builder__showcase">
+          <app-badge variant="default">Default</app-badge>
+          <app-badge variant="primary">Primary</app-badge>
+          <app-badge variant="secondary">Secondary</app-badge>
+          <app-badge variant="success">Success</app-badge>
+          <app-badge variant="error">Error</app-badge>
+          <app-badge variant="warning">Warning</app-badge>
+          <app-badge variant="info">Info</app-badge>
+        </div>
+        
+        <h4 class="deck-builder__subsection-title">TCG Colors</h4>
+        <div class="deck-builder__showcase">
+          <app-badge variant="error" [rounded]="true">Red</app-badge>
+          <app-badge variant="info" [rounded]="true">Blue</app-badge>
+          <app-badge variant="warning" [rounded]="true">Yellow</app-badge>
+          <app-badge variant="success" [rounded]="true">Green</app-badge>
+          <app-badge variant="default" [rounded]="true">Black</app-badge>
+          <app-badge variant="primary" [rounded]="true">Purple</app-badge>
+          <app-badge variant="default" [rounded]="true">White</app-badge>
+        </div>
+        
+        <h4 class="deck-builder__subsection-title">Sizes</h4>
+        <div class="deck-builder__showcase">
+          <app-badge variant="primary" size="small">Small</app-badge>
+          <app-badge variant="primary" size="medium">Medium</app-badge>
+          <app-badge variant="primary" size="large">Large</app-badge>
+        </div>
+      </app-card>
+      
+      <!-- Card Variants Section -->
+      <app-card variant="default" padding="large">
+        <h3 class="deck-builder__section-title">Card Components</h3>
+        <div class="deck-builder__showcase deck-builder__showcase--vertical">
+          <app-card variant="default" padding="medium">
+            <p>Default Card with Shadow</p>
+          </app-card>
+          
+          <app-card variant="hover" padding="medium" [clickable]="true">
+            <p>Hover Card (hover me!)</p>
+          </app-card>
+          
+          <app-card variant="flat" padding="medium">
+            <p>Flat Card with Border</p>
+          </app-card>
+        </div>
+      </app-card>
+      
+      <!-- Status Message -->
+      <app-card variant="hover" padding="large" class="deck-builder__status">
+        <div class="deck-builder__status-content">
+          <app-badge variant="success" size="large" [rounded]="true">✓</app-badge>
+          <div>
+            <h3>Phase 0 Complete!</h3>
+            <p>All atomic components are ready. Next: Build Phase 1 features (Card Search & Deck Builder)</p>
+          </div>
+        </div>
+      </app-card>
+    </div>
+  </div>
+</div>

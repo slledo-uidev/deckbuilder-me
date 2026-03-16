@@ -1,0 +1,74 @@
+@import 'variables';
+@import 'mixins';
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+  
+  &__label {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+  }
+  
+  &__error {
+    font-size: $font-size-xs;
+    color: $color-error;
+    margin-top: $spacing-1;
+  }
+  
+  &--full-width {
+    width: 100%;
+    
+    .input {
+      width: 100%;
+    }
+  }
+}
+
+.input {
+  padding: $spacing-2 $spacing-3;
+  border: 2px solid $color-border;
+  border-radius: $border-radius-md;
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+  color: $color-text-primary;
+  background-color: $color-surface;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+  
+  &::placeholder {
+    color: $color-text-secondary;
+  }
+  
+  &:hover:not(:disabled) {
+    border-color: $color-border-dark;
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+  }
+  
+  &:disabled {
+    background-color: $color-surface-alt;
+    color: $color-text-disabled;
+    cursor: not-allowed;
+  }
+  
+  // State: Focused
+  &--focused {
+    border-color: $color-primary;
+  }
+  
+  // State: Error
+  &--error {
+    border-color: $color-error;
+    
+    &:focus {
+      border-color: $color-error;
+      box-shadow: 0 0 0 3px rgba($color-error, 0.1);
+    }
+  }
+}

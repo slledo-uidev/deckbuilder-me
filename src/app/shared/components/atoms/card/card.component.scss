@@ -1,0 +1,61 @@
+@import 'variables';
+@import 'mixins';
+
+.card {
+  background-color: $color-surface;
+  border-radius: $border-radius-lg;
+  transition: box-shadow $transition-fast, transform $transition-fast;
+  
+  // Variant: Default
+  &--default {
+    box-shadow: $shadow-sm;
+  }
+  
+  // Variant: Hover (adds hover effect)
+  &--hover {
+    box-shadow: $shadow-sm;
+    
+    &:hover {
+      box-shadow: $shadow-md;
+      transform: translateY(-2px);
+    }
+  }
+  
+  // Variant: Flat (no shadow)
+  &--flat {
+    box-shadow: none;
+    border: 1px solid $color-border;
+  }
+  
+  // Modifier: Clickable
+  &--clickable {
+    cursor: pointer;
+    
+    &:hover {
+      box-shadow: $shadow-md;
+      transform: translateY(-2px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: $shadow-sm;
+    }
+  }
+  
+  // Padding variants
+  &--padding-none {
+    padding: 0;
+  }
+  
+  &--padding-small {
+    padding: $spacing-2;
+  }
+  
+  &--padding-medium {
+    padding: $spacing-4;
+  }
+  
+  &--padding-large {
+    padding: $spacing-6;
+  }
+}

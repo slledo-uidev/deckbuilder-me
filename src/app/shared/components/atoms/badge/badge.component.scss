@@ -1,0 +1,78 @@
+@import 'variables';
+@import 'mixins';
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-family-primary;
+  font-weight: $font-weight-medium;
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: $border-radius-sm;
+  
+  // Variant: Default
+  &--default {
+    background-color: $color-surface-alt;
+    color: $color-text-primary;
+  }
+  
+  // Variant: Primary
+  &--primary {
+    background-color: $color-primary-light;
+    color: $color-primary-dark;
+  }
+  
+  // Variant: Secondary
+  &--secondary {
+    background-color: $color-secondary-light;
+    color: $color-secondary-dark;
+  }
+  
+  // Variant: Success
+  &--success {
+    background-color: $color-success-light;
+    color: darken($color-success, 20%);
+  }
+  
+  // Variant: Error
+  &--error {
+    background-color: $color-error-light;
+    color: darken($color-error, 20%);
+  }
+  
+  // Variant: Warning
+  &--warning {
+    background-color: $color-warning-light;
+    color: darken($color-warning, 20%);
+  }
+  
+  // Variant: Info
+  &--info {
+    background-color: $color-info-light;
+    color: darken($color-info, 20%);
+  }
+  
+  // Size: Small
+  &--small {
+    padding: 2px $spacing-1;
+    font-size: $font-size-xs;
+  }
+  
+  // Size: Medium
+  &--medium {
+    padding: 4px $spacing-2;
+    font-size: $font-size-sm;
+  }
+  
+  // Size: Large
+  &--large {
+    padding: $spacing-1 $spacing-3;
+    font-size: $font-size-base;
+  }
+  
+  // Modifier: Rounded
+  &--rounded {
+    border-radius: $border-radius-pill;
+  }
+}
