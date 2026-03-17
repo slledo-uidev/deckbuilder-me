@@ -1,9 +1,9 @@
 <div class="deck-stats-panel">
   <!-- Panel Header -->
-  <div class="deck-stats-panel__header">
-    <h3 class="deck-stats-panel__title">📊 Deck Statistics</h3>
-    <p class="deck-stats-panel__subtitle">Visual analysis of your deck composition</p>
-  </div>
+  <app-section-header
+    title="Deck Statistics"
+    subtitle="Visual analysis of your deck composition"
+    icon="📊" />
 
   <!-- Empty State -->
   <div *ngIf="!hasData" class="deck-stats-panel__empty">
@@ -16,42 +16,32 @@
   <div *ngIf="hasData" class="deck-stats-panel__content">
     <!-- Quick Stats -->
     <div class="deck-stats-panel__quick-stats">
-      <div class="deck-stats-panel__stat-card">
-        <span class="deck-stats-panel__stat-label">Average Cost</span>
-        <span class="deck-stats-panel__stat-value">{{ averageCost }}</span>
-      </div>
-      <div class="deck-stats-panel__stat-card">
-        <span class="deck-stats-panel__stat-label">Average Level</span>
-        <span class="deck-stats-panel__stat-value">{{ averageLevel }}</span>
-      </div>
-      <div class="deck-stats-panel__stat-card">
-        <span class="deck-stats-panel__stat-label">Total Cards</span>
-        <span class="deck-stats-panel__stat-value">{{ totalCards }}</span>
-      </div>
-      <div class="deck-stats-panel__stat-card" *ngIf="costGaps.length > 0">
-        <span class="deck-stats-panel__stat-label">Cost Gaps</span>
-        <span class="deck-stats-panel__stat-value deck-stats-panel__stat-value--warning">
-          {{ costGaps.length }}
-        </span>
-      </div>
+      <app-stat-item label="Average Cost" [value]="averageCost" layout="vertical" size="large" />
+      <app-stat-item label="Average Level" [value]="averageLevel" layout="vertical" size="large" />
+      <app-stat-item label="Total Cards" [value]="totalCards" layout="vertical" size="large" />
+      <app-stat-item
+        *ngIf="costGaps.length > 0"
+        label="Cost Gaps"
+        [value]="costGaps.length"
+        status="warning"
+        layout="vertical"
+        size="large" />
     </div>
 
     <!-- Cost Gaps Warning -->
-    <div *ngIf="costGaps.length > 0" class="deck-stats-panel__warning">
-      <span class="deck-stats-panel__warning-icon">⚠️</span>
-      <div class="deck-stats-panel__warning-content">
-        <p class="deck-stats-panel__warning-title">Cost Curve Gaps Detected</p>
-        <p class="deck-stats-panel__warning-text">
-          Missing cards at costs: {{ costGaps.join(', ') }}
-        </p>
-      </div>
-    </div>
+    <app-alert
+      *ngIf="costGaps.length > 0"
+      title="Cost Curve Gaps Detected"
+      [message]="'Missing cards at costs: ' + costGaps.join(', ')"
+      icon="⚠️"
+      variant="warning"
+      size="medium" />
 
     <!-- Charts Grid -->
     <div class="deck-stats-panel__charts">
       <!-- Cost Curve Chart -->
       <div class="deck-stats-panel__chart-container">
-        <h4 class="deck-stats-panel__chart-title">Cost Curve</h4>
+        <app-section-title title="Cost Curve" level="h4" />
         <div class="deck-stats-panel__chart">
           <canvas baseChart
             [data]="costCurveChartData"
@@ -63,7 +53,7 @@
 
       <!-- Color Distribution Chart -->
       <div class="deck-stats-panel__chart-container">
-        <h4 class="deck-stats-panel__chart-title">Color Distribution</h4>
+        <app-section-title title="Color Distribution" level="h4" />
         <div class="deck-stats-panel__chart">
           <canvas baseChart
             [data]="colorDistributionChartData"
@@ -75,7 +65,7 @@
 
       <!-- Type Distribution Chart -->
       <div class="deck-stats-panel__chart-container">
-        <h4 class="deck-stats-panel__chart-title">Type Distribution</h4>
+        <app-section-title title="Type Distribution" level="h4" />
         <div class="deck-stats-panel__chart">
           <canvas baseChart
             [data]="typeDistributionChartData"

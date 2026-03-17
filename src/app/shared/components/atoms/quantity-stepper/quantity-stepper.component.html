@@ -1,0 +1,19 @@
+<div class="quantity-stepper quantity-stepper--{{ size }}">
+  <button 
+    class="quantity-stepper__button quantity-stepper__button--decrease"
+    [disabled]="isDecreaseDisabled"
+    (click)="onDecrease()"
+    type="button"
+    aria-label="Decrease quantity">
+    −
+  </button>
+  <span class="quantity-stepper__value">{{ value }}</span>
+  <button 
+    class="quantity-stepper__button quantity-stepper__button--increase"
+    [disabled]="isIncreaseDisabled"
+    (click)="onIncrease()"
+    type="button"
+    aria-label="Increase quantity">
+    +
+  </button>
+</div>

@@ -1,0 +1,19 @@
+<div 
+  class="collapsible-header collapsible-header--{{ status }}"
+  (click)="onToggle()">
+  
+  <div class="collapsible-header__status">
+    <span class="collapsible-header__icon">{{ statusIcon }}</span>
+    <div class="collapsible-header__text">
+      <h3 class="collapsible-header__title">{{ title }}</h3>
+      <p *ngIf="subtitle" class="collapsible-header__subtitle">{{ subtitle }}</p>
+    </div>
+  </div>
+
+  <button 
+    class="collapsible-header__toggle"
+    [attr.aria-label]="isExpanded ? 'Collapse panel' : 'Expand panel'"
+    type="button">
+    {{ isExpanded ? '−' : '+' }}
+  </button>
+</div>

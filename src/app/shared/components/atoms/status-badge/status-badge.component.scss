@@ -1,0 +1,51 @@
+@import 'variables';
+@import 'mixins';
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-1 $spacing-2;
+  border-radius: $border-radius-md;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+  transition: all $transition-fast;
+
+  &__text {
+    font-size: inherit;
+  }
+
+  &--small {
+    padding: 4px $spacing-1;
+    font-size: $font-size-xs;
+  }
+
+  &--medium {
+    padding: $spacing-1 $spacing-2;
+    font-size: $font-size-sm;
+  }
+
+  &--default {
+    background-color: $color-background;
+    color: $color-text-secondary;
+    border: 1px solid $color-border;
+  }
+
+  &--valid {
+    background-color: rgba($color-success, 0.1);
+    color: darken($color-success, 10%);
+    border: 1px solid rgba($color-success, 0.3);
+  }
+
+  &--warning {
+    background-color: rgba($color-warning, 0.1);
+    color: darken($color-warning, 20%);
+    border: 1px solid rgba($color-warning, 0.3);
+  }
+
+  &--error {
+    background-color: rgba($color-error, 0.1);
+    color: darken($color-error, 10%);
+    border: 1px solid rgba($color-error, 0.3);
+  }
+}

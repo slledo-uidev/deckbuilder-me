@@ -1,0 +1,106 @@
+@import 'variables';
+@import 'mixins';
+
+.collapsible-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-4;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+  border-radius: $border-radius-md;
+  gap: $spacing-3;
+
+  &:hover {
+    background-color: rgba($color-primary, 0.05);
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    flex: 1;
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: $font-size-base;
+    font-weight: $font-weight-bold;
+    flex-shrink: 0;
+  }
+
+  &__text {
+    flex: 1;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+  }
+
+  &__subtitle {
+    margin: $spacing-1 0 0;
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    line-height: 1.4;
+  }
+
+  &__toggle {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid $color-border;
+    background-color: $color-white;
+    color: $color-text-primary;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    cursor: pointer;
+    transition: all $transition-fast;
+    flex-shrink: 0;
+
+    &:hover {
+      background-color: $color-primary;
+      border-color: $color-primary;
+      color: $color-white;
+    }
+  }
+
+  // Status variants
+  &--valid {
+    .collapsible-header__icon {
+      background-color: rgba($color-success, 0.1);
+      color: $color-success;
+    }
+  }
+
+  &--error {
+    .collapsible-header__icon {
+      background-color: rgba($color-error, 0.1);
+      color: $color-error;
+    }
+  }
+
+  &--warning {
+    .collapsible-header__icon {
+      background-color: rgba($color-warning, 0.1);
+      color: $color-warning;
+    }
+  }
+
+  &--unknown {
+    .collapsible-header__icon {
+      background-color: rgba($color-text-secondary, 0.1);
+      color: $color-text-secondary;
+    }
+  }
+}

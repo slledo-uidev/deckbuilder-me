@@ -152,42 +152,32 @@
     </div>
 
     <!-- Validation Modal -->
-    <div
-      *ngIf="showValidationModal"
-      class="deck-builder__modal-backdrop"
-      (click)="closeValidationModal()">
-      <div class="deck-builder__modal-dialog deck-builder__modal-dialog--large" (click)="$event.stopPropagation()">
-        <div class="deck-builder__modal-header">
-          <h3 class="deck-builder__modal-title">Deck Validation</h3>
-          <button class="deck-builder__modal-close" (click)="closeValidationModal()" aria-label="Close">&#x2715;</button>
-        </div>
-        <div class="deck-builder__modal-body">
-          <app-validation-panel
-            [digiEggs]="digiEggs"
-            [mainDeck]="mainDeck"
-            [deckName]="'Current Deck'">
-          </app-validation-panel>
-        </div>
+    <app-modal
+      [isVisible]="showValidationModal"
+      title="Deck Validation"
+      size="large"
+      (closed)="closeValidationModal()">
+      <div modal-body>
+        <app-validation-panel
+          [digiEggs]="digiEggs"
+          [mainDeck]="mainDeck"
+          [deckName]="'Current Deck'">
+        </app-validation-panel>
       </div>
-    </div>
+    </app-modal>
 
     <!-- Stats Modal -->
-    <div
-      *ngIf="showStatsModal"
-      class="deck-builder__modal-backdrop"
-      (click)="closeStatsModal()">
-      <div class="deck-builder__modal-dialog deck-builder__modal-dialog--large" (click)="$event.stopPropagation()">
-        <div class="deck-builder__modal-header">
-          <h3 class="deck-builder__modal-title">Deck Statistics</h3>
-          <button class="deck-builder__modal-close" (click)="closeStatsModal()" aria-label="Close">&#x2715;</button>
-        </div>
-        <div class="deck-builder__modal-body">
-          <app-deck-stats-panel
-            [digiEggs]="digiEggs"
-            [mainDeck]="mainDeck">
-          </app-deck-stats-panel>
-        </div>
+    <app-modal
+      [isVisible]="showStatsModal"
+      title="Deck Statistics"
+      size="large"
+      (closed)="closeStatsModal()">
+      <div modal-body>
+        <app-deck-stats-panel
+          [digiEggs]="digiEggs"
+          [mainDeck]="mainDeck">
+        </app-deck-stats-panel>
       </div>
-    </div>
+    </app-modal>
   </div>
 </div>

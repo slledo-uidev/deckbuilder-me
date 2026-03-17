@@ -1,0 +1,7 @@
+<div class="alert alert--{{ variant }} alert--{{ size }}">
+  <span *ngIf="icon" class="alert__icon">{{ icon }}</span>
+  <div class="alert__content">
+    <p *ngIf="title" class="alert__title">{{ title }}</p>
+    <p class="alert__message">{{ message }}</p>
+  </div>
+</div>

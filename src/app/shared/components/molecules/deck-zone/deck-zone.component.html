@@ -5,23 +5,19 @@
   <!-- Zone Header -->
   <div class="deck-zone__header">
     <h3 class="deck-zone__title">{{ title }}</h3>
-    <div class="deck-zone__counter" [class.deck-zone__counter--valid]="statusClass === 'valid'"
-         [class.deck-zone__counter--warning]="statusClass === 'warning'"
-         [class.deck-zone__counter--error]="statusClass === 'error'">
-      <span class="deck-zone__counter-text">
-        {{ totalCards }}{{ maxCards > 0 ? '/' + maxCards : '' }}
-      </span>
-    </div>
+    <app-status-badge
+      [current]="totalCards"
+      [max]="maxCards > 0 ? maxCards : undefined"
+      [status]="statusClass"
+      size="medium" />
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="isEmpty || deckCards.length === 0" class="deck-zone__empty">
-    <p class="deck-zone__empty-text">
-      {{ zoneType === 'digi-eggs' ? 'Añade 5 Digi-Eggs' : 
-         zoneType === 'main' ? 'Añade cartas al mazo principal' : 
-         'Añade cartas al Side Deck' }}
-    </p>
-  </div>
+  <app-empty-state
+    *ngIf="isEmpty || deckCards.length === 0"
+    [message]="emptyMessage"
+    icon="📦"
+    size="medium" />
 
   <!-- Cards List -->
   <div *ngIf="!isEmpty && deckCards.length > 0" class="deck-zone__cards">
@@ -43,31 +39,24 @@
 
       <div class="deck-zone__card-info">
         <span class="deck-zone__card-name">{{ deckCard.card.name }}</span>
-        <div class="deck-zone__card-meta">
-          <app-badge [variant]="'default'" [size]="'small'">{{ deckCard.card.type }}</app-badge>
-          <span class="deck-zone__card-code">{{ deckCard.card.id }}</span>
-        </div>
+        <app-card-meta
+          [type]="deckCard.card.type"
+          [code]="deckCard.card.id"
+          size="small" />
       </div>
 
       <div class="deck-zone__card-controls">
-        <div class="deck-zone__quantity-controls">
-          <button class="deck-zone__btn deck-zone__btn--decrease" 
-                  (click)="onDecreaseQuantity(deckCard.card)"
-                  [disabled]="deckCard.quantity <= 1"
-                  aria-label="Disminuir cantidad">
-            -
-          </button>
-          <span class="deck-zone__quantity">{{ deckCard.quantity }}</span>
-          <button class="deck-zone__btn deck-zone__btn--increase" 
-                  (click)="onIncreaseQuantity(deckCard.card)"
-                  [disabled]="isIncreaseDisabled(deckCard)"
-                  aria-label="Aumentar cantidad">
-            +
-          </button>
-        </div>
-        <button class="deck-zone__btn deck-zone__btn--remove" 
-                (click)="onRemoveCard(deckCard.card)"
-                aria-label="Eliminar carta">
+        <app-quantity-stepper
+          [value]="deckCard.quantity"
+          [min]="1"
+          [increaseDisabled]="isIncreaseDisabled(deckCard)"
+          (decrease)="onDecreaseQuantity(deckCard.card)"
+          (increase)="onIncreaseQuantity(deckCard.card)"
+          size="medium" />
+        <button 
+          class="deck-zone__btn-remove" 
+          (click)="onRemoveCard(deckCard.card)"
+          aria-label="Remove card">
           Remove
         </button>
       </div>

@@ -1,0 +1,72 @@
+@import 'variables';
+@import 'mixins';
+
+.icon-button {
+  background: none;
+  border: none;
+  font-size: $font-size-xl;
+  color: $color-text-secondary;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: $border-radius-sm;
+  transition: color $transition-fast, background-color $transition-fast;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+
+  &:hover:not(:disabled) {
+    color: $color-text-primary;
+    background-color: rgba($color-text-primary, 0.05);
+  }
+
+  &:focus {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &--small {
+    font-size: $font-size-base;
+    min-width: 32px;
+    min-height: 32px;
+  }
+
+  &--medium {
+    font-size: $font-size-xl;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  &--large {
+    font-size: $font-size-2xl;
+    min-width: 56px;
+    min-height: 56px;
+  }
+
+  &--primary {
+    color: $color-primary;
+
+    &:hover:not(:disabled) {
+      color: darken($color-primary, 10%);
+      background-color: rgba($color-primary, 0.1);
+    }
+  }
+
+  &--danger {
+    color: $color-error;
+
+    &:hover:not(:disabled) {
+      color: darken($color-error, 10%);
+      background-color: rgba($color-error, 0.1);
+    }
+  }
+}

@@ -1,0 +1,148 @@
+@import 'variables';
+@import 'mixins';
+
+.inline-confirm {
+  display: inline-flex;
+  align-items: center;
+
+  &__trigger {
+    padding: $spacing-1 $spacing-2;
+    border: 1px solid;
+    background-color: $color-white;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &--danger {
+      color: $color-error;
+      border-color: rgba($color-error, 0.3);
+
+      &:hover {
+        background-color: $color-error;
+        border-color: $color-error;
+        color: $color-white;
+      }
+    }
+
+    &--warning {
+      color: $color-warning;
+      border-color: rgba($color-warning, 0.3);
+
+      &:hover {
+        background-color: $color-warning;
+        border-color: $color-warning;
+        color: $color-white;
+      }
+    }
+
+    &--default {
+      color: $color-text-secondary;
+      border-color: $color-border;
+
+      &:hover {
+        background-color: $color-text-secondary;
+        border-color: $color-text-secondary;
+        color: $color-white;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-1;
+    animation: slideIn 0.2s ease-out;
+  }
+
+  &__message {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $color-text-secondary;
+    white-space: nowrap;
+  }
+
+  &__button {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+    cursor: pointer;
+    transition: all $transition-fast;
+    background-color: $color-white;
+
+    &--confirm {
+      color: $color-success;
+      border-color: rgba($color-success, 0.3);
+
+      &:hover {
+        background-color: $color-success;
+        border-color: $color-success;
+        color: $color-white;
+      }
+    }
+
+    &--cancel {
+      color: $color-text-secondary;
+      border-color: $color-border;
+
+      &:hover {
+        background-color: $color-text-secondary;
+        border-color: $color-text-secondary;
+        color: $color-white;
+      }
+    }
+  }
+
+  // Size variants
+  &--small {
+    .inline-confirm__trigger {
+      padding: $spacing-1 $spacing-2;
+      font-size: $font-size-xs;
+    }
+
+    .inline-confirm__message {
+      font-size: $font-size-xs;
+    }
+
+    .inline-confirm__button {
+      width: 20px;
+      height: 20px;
+      font-size: $font-size-xs;
+    }
+  }
+
+  &--medium {
+    .inline-confirm__trigger {
+      padding: $spacing-2 $spacing-3;
+      font-size: $font-size-sm;
+    }
+
+    .inline-confirm__message {
+      font-size: $font-size-sm;
+    }
+
+    .inline-confirm__button {
+      width: 28px;
+      height: 28px;
+      font-size: $font-size-base;
+    }
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

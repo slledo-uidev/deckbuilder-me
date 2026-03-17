@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ValidationService } from '../../../../core/services/validation.service';
 import { Deck, DeckValidation, ValidationError, ValidationWarning } from '../../../../core/models/deck.model';
+import { getTotalCardCount } from '../../../utils/deck.utils';
 
 export interface DeckCard {
   card: any;
@@ -59,7 +60,7 @@ export class ValidationPanelComponent implements OnChanges {
     this.isExpanded = !this.isExpanded;
   }
 
-  get statusClass(): string {
+  get statusClass(): 'valid' | 'warning' | 'error' | 'unknown' {
     if (!this.validation) return 'unknown';
     if (this.validation.isValid) return 'valid';
     if (this.validation.errors.length > 0) return 'error';
@@ -80,21 +81,20 @@ export class ValidationPanelComponent implements OnChanges {
   }
 
   get totalCards(): number {
-    const digiEggCount = this.digiEggs.reduce((sum, dc) => sum + dc.quantity, 0);
-    const mainCount = this.mainDeck.reduce((sum, dc) => sum + dc.quantity, 0);
-    const sideCount = this.sideDeck.reduce((sum, dc) => sum + dc.quantity, 0);
-    return digiEggCount + mainCount + sideCount;
+    return getTotalCardCount(this.digiEggs) + 
+           getTotalCardCount(this.mainDeck) + 
+           getTotalCardCount(this.sideDeck);
   }
 
   get digiEggsCount(): number {
-    return this.digiEggs.reduce((sum, dc) => sum + dc.quantity, 0);
+    return getTotalCardCount(this.digiEggs);
   }
 
   get mainDeckCount(): number {
-    return this.mainDeck.reduce((sum, dc) => sum + dc.quantity, 0);
+    return getTotalCardCount(this.mainDeck);
   }
 
   get sideDeckCount(): number {
-    return this.sideDeck.reduce((sum, dc) => sum + dc.quantity, 0);
+    return getTotalCardCount(this.sideDeck);
   }
 }

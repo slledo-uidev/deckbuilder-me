@@ -1,0 +1,91 @@
+@import 'variables';
+@import 'mixins';
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+
+  &__label {
+    font-weight: $font-weight-medium;
+    color: $color-text-secondary;
+    flex-shrink: 0;
+  }
+
+  &__value {
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+  }
+
+  // Layout variants
+  &--horizontal {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &--vertical {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-1;
+  }
+
+  // Size variants
+  &--small {
+    font-size: $font-size-xs;
+
+    .stat-item__label {
+      font-size: $font-size-xs;
+    }
+
+    .stat-item__value {
+      font-size: $font-size-sm;
+    }
+  }
+
+  &--medium {
+    font-size: $font-size-sm;
+
+    .stat-item__label {
+      font-size: $font-size-sm;
+    }
+
+    .stat-item__value {
+      font-size: $font-size-base;
+    }
+  }
+
+  &--large {
+    font-size: $font-size-base;
+
+    .stat-item__label {
+      font-size: $font-size-base;
+    }
+
+    .stat-item__value {
+      font-size: $font-size-lg;
+    }
+  }
+
+  // Status variants
+  &--valid {
+    .stat-item__value {
+      color: $color-success;
+    }
+  }
+
+  &--warning {
+    .stat-item__value {
+      color: $color-warning;
+    }
+  }
+
+  &--error {
+    .stat-item__value {
+      color: $color-error;
+    }
+  }
+
+  &--default {
+    // Default colors already set
+  }
+}

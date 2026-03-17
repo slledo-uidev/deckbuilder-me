@@ -1,0 +1,6 @@
+<div class="card-meta card-meta--{{ layout }} card-meta--{{ size }}">
+  <app-badge [variant]="'default'" [size]="size">{{ type }}</app-badge>
+  <span class="card-meta__code">{{ code }}</span>
+  <span *ngIf="cost !== undefined" class="card-meta__cost">Cost: {{ cost }}</span>
+  <span *ngIf="level !== undefined" class="card-meta__level">Lv.{{ level }}</span>
+</div>

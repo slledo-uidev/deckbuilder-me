@@ -1,0 +1,25 @@
+<div class="inline-confirm inline-confirm--{{ size }}">
+  <button
+    *ngIf="!isConfirming"
+    class="inline-confirm__trigger inline-confirm__trigger--{{ variant }}"
+    (click)="onInitiate()"
+    type="button">
+    {{ label }}
+  </button>
+
+  <div *ngIf="isConfirming" class="inline-confirm__actions">
+    <span class="inline-confirm__message">{{ confirmLabel }}</span>
+    <button
+      class="inline-confirm__button inline-confirm__button--confirm"
+      (click)="onConfirm()"
+      type="button">
+      ✓
+    </button>
+    <button
+      class="inline-confirm__button inline-confirm__button--cancel"
+      (click)="onCancel()"
+      type="button">
+      ✕
+    </button>
+  </div>
+</div>

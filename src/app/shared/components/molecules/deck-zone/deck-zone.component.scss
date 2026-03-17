@@ -36,36 +36,6 @@
     color: $color-text-primary;
   }
   
-  &__counter {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: $spacing-1 $spacing-2;
-    border-radius: $border-radius-md;
-    background-color: $color-border;
-    min-width: 60px;
-    
-    &--valid {
-      background-color: $color-success;
-      color: $color-white;
-    }
-    
-    &--warning {
-      background-color: $color-warning;
-      color: $color-text-primary;
-    }
-    
-    &--error {
-      background-color: $color-error;
-      color: $color-white;
-    }
-  }
-  
-  &__counter-text {
-    font-size: $font-size-base;
-    font-weight: $font-weight-bold;
-  }
-  
   &__empty {
     display: flex;
     align-items: center;
@@ -196,87 +166,32 @@
     white-space: nowrap;
   }
   
-  &__card-meta {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-1;
-  }
-  
-  &__card-code {
-    font-size: $font-size-sm;
-    color: $color-text-secondary;
-    font-family: monospace;
-  }
-  
   &__card-controls {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: $spacing-1;
   }
-  &__quantity-controls {
-    display: flex;
-    align-items: center;
-    gap: $spacing-1;
-  }
-  
-  &__quantity {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 32px;
-    font-size: $font-size-base;
-    font-weight: $font-weight-bold;
-    color: $color-text-primary;
-  }
-  
-  &__btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border: 1px solid $color-border;
-    border-radius: $border-radius-md;
+
+  &__btn-remove {
+    padding: $spacing-1 $spacing-2;
+    border: 1px solid rgba($color-error, 0.3);
     background-color: $color-white;
-    color: $color-text-primary;
-    font-size: $font-size-lg;
-    font-weight: $font-weight-bold;
+    color: $color-error;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
     cursor: pointer;
-    transition: all 0.2s ease;
-    
-    &:hover:not(:disabled) {
-      background-color: $color-background;
-      border-color: $color-text-secondary;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $color-error;
+      border-color: $color-error;
+      color: $color-white;
     }
-    
-    &:active:not(:disabled) {
+
+    &:active {
       transform: scale(0.95);
-    }
-    
-    &:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    
-    &--decrease,
-    &--increase {
-      &:hover:not(:disabled) {
-        background-color: $color-info;
-        color: $color-white;
-        border-color: $color-info;
-      }
-    }
-    
-    &--remove {
-      width: 100%;
-      font-size: 16px;
-      
-      &:hover:not(:disabled) {
-        background-color: $color-error;
-        color: $color-white;
-        border-color: $color-error;
-      }
     }
   }
   

@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Card } from '../../../../core/models/card.model';
+import { getTotalCardCount, getCardColorClass } from '../../../utils/deck.utils';
 
 export interface DeckCard {
   card: Card;
@@ -24,7 +25,7 @@ export class DeckZoneComponent {
   @Output() increaseQuantity = new EventEmitter<Card>();
 
   get totalCards(): number {
-    return this.deckCards.reduce((sum, dc) => sum + dc.quantity, 0);
+    return getTotalCardCount(this.deckCards);
   }
 
   get isValid(): boolean {
@@ -37,8 +38,8 @@ export class DeckZoneComponent {
     return true; // Side deck has no fixed limit
   }
 
-  get statusClass(): string {
-    if (this.isEmpty) return 'empty';
+  get statusClass(): 'valid' | 'warning' | 'error' | 'default' {
+    if (this.isEmpty) return 'default';
     if (this.zoneType === 'side') return 'valid';
     
     if (this.zoneType === 'digi-eggs') {
@@ -53,7 +54,7 @@ export class DeckZoneComponent {
       return 'error';
     }
     
-    return 'empty';
+    return 'default';
   }
 
   onRemoveCard(card: Card): void {
@@ -69,8 +70,20 @@ export class DeckZoneComponent {
   }
 
   getCardColorClass(colors: string[]): string {
-    if (!colors || colors.length === 0) return 'default';
-    return colors[0].toLowerCase();
+    return getCardColorClass(colors);
+  }
+
+  get emptyMessage(): string {
+    switch (this.zoneType) {
+      case 'digi-eggs':
+        return 'Añade 5 Digi-Eggs';
+      case 'main':
+        return 'Añade cartas al mazo principal';
+      case 'side':
+        return 'Añade cartas al Side Deck';
+      default:
+        return 'No cards added';
+    }
   }
 
   isIncreaseDisabled(deckCard: DeckCard): boolean {
