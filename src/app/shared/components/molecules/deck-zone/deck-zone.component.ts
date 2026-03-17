@@ -17,6 +17,7 @@ export class DeckZoneComponent {
   @Input() maxCards: number = 50;
   @Input() zoneType: 'digi-eggs' | 'main' | 'side' = 'main';
   @Input() isEmpty: boolean = true;
+  @Input() isCardAtMaxCopies?: (cardId: string) => boolean;
   
   @Output() removeCard = new EventEmitter<Card>();
   @Output() decreaseQuantity = new EventEmitter<Card>();
@@ -70,5 +71,14 @@ export class DeckZoneComponent {
   getCardColorClass(colors: string[]): string {
     if (!colors || colors.length === 0) return 'default';
     return colors[0].toLowerCase();
+  }
+
+  isIncreaseDisabled(deckCard: DeckCard): boolean {
+    // Check if card has reached maximum copies across all zones
+    if (this.isCardAtMaxCopies) {
+      return this.isCardAtMaxCopies(deckCard.card.id);
+    }
+    // Fallback: just check local quantity (shouldn't happen in practice)
+    return deckCard.quantity >= 4;
   }
 }

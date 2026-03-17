@@ -41,6 +41,10 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   showDeckList = false;
   saveSuccessMessage = '';
   
+  // Modal states
+  showValidationModal = false;
+  showStatsModal = false;
+  
   private destroy$ = new Subject<void>();
   
   constructor(
@@ -132,10 +136,10 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     // Level 2 cards go to Digi-Eggs, all others to Main Deck
     const targetZone = card.level === 2 ? 'digi-eggs' : 'main';
     
-    // Check maximum 5 copies across all zones
+    // Check maximum 4 copies across all zones
     const totalCopies = this.getTotalCopiesOfCard(card.id);
-    if (totalCopies >= 5) {
-      console.warn('Maximum 5 copies per card name reached');
+    if (totalCopies >= 4) {
+      console.warn('Maximum 4 copies per card name reached');
       return;
     }
     
@@ -149,7 +153,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     const existingCard = targetZone.find(dc => dc.card.id === card.id);
     
     if (existingCard) {
-      if (existingCard.quantity < 5 && this.getTotalCopiesOfCard(card.id) < 5) {
+      if (existingCard.quantity < 4 && this.getTotalCopiesOfCard(card.id) < 4) {
         existingCard.quantity++;
       }
     } else {
@@ -170,7 +174,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     const targetZone = zone === 'digi-eggs' ? this.digiEggs : this.mainDeck;
     
     const deckCard = targetZone.find(dc => dc.card.id === card.id);
-    if (deckCard && deckCard.quantity < 5 && this.getTotalCopiesOfCard(card.id) < 5) {
+    if (deckCard && deckCard.quantity < 4 && this.getTotalCopiesOfCard(card.id) < 4) {
       deckCard.quantity++;
     }
   }
@@ -193,6 +197,10 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     const inMain = this.mainDeck.find(dc => dc.card.id === cardId)?.quantity || 0;
     return inDigiEggs + inMain;
   }
+
+  isCardAtMaxCopies = (cardId: string): boolean => {
+    return this.getTotalCopiesOfCard(cardId) >= 4;
+  };
   
   // ─── Persistence ────────────────────────────────────────────────────────────
 
@@ -202,6 +210,24 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
 
   onSaveCancel(): void {
     this.showSaveModal = false;
+  }
+
+  // ─── Modal Controls ─────────────────────────────────────────────────────────
+
+  openValidationModal(): void {
+    this.showValidationModal = true;
+  }
+
+  closeValidationModal(): void {
+    this.showValidationModal = false;
+  }
+
+  openStatsModal(): void {
+    this.showStatsModal = true;
+  }
+
+  closeStatsModal(): void {
+    this.showStatsModal = false;
   }
 
   onSaveConfirm(name: string): void {

@@ -35,6 +35,12 @@
          [class.deck-zone__card--purple]="getCardColorClass(deckCard.card.color) === 'purple'"
          [class.deck-zone__card--white]="getCardColorClass(deckCard.card.color) === 'white'">
       
+      <div class="deck-zone__card-image">
+        <img [src]="deckCard.card.imageUrl" 
+             [alt]="deckCard.card.name"
+             class="deck-zone__card-img">
+      </div>
+
       <div class="deck-zone__card-info">
         <span class="deck-zone__card-name">{{ deckCard.card.name }}</span>
         <div class="deck-zone__card-meta">
@@ -44,23 +50,25 @@
       </div>
 
       <div class="deck-zone__card-controls">
-        <button class="deck-zone__btn deck-zone__btn--decrease" 
-                (click)="onDecreaseQuantity(deckCard.card)"
-                [disabled]="deckCard.quantity <= 1"
-                aria-label="Disminuir cantidad">
-          -
-        </button>
-        <span class="deck-zone__quantity">{{ deckCard.quantity }}</span>
-        <button class="deck-zone__btn deck-zone__btn--increase" 
-                (click)="onIncreaseQuantity(deckCard.card)"
-                [disabled]="deckCard.quantity >= 5"
-                aria-label="Aumentar cantidad">
-          +
-        </button>
+        <div class="deck-zone__quantity-controls">
+          <button class="deck-zone__btn deck-zone__btn--decrease" 
+                  (click)="onDecreaseQuantity(deckCard.card)"
+                  [disabled]="deckCard.quantity <= 1"
+                  aria-label="Disminuir cantidad">
+            -
+          </button>
+          <span class="deck-zone__quantity">{{ deckCard.quantity }}</span>
+          <button class="deck-zone__btn deck-zone__btn--increase" 
+                  (click)="onIncreaseQuantity(deckCard.card)"
+                  [disabled]="isIncreaseDisabled(deckCard)"
+                  aria-label="Aumentar cantidad">
+            +
+          </button>
+        </div>
         <button class="deck-zone__btn deck-zone__btn--remove" 
                 (click)="onRemoveCard(deckCard.card)"
                 aria-label="Eliminar carta">
-          ×
+          Remove
         </button>
       </div>
     </div>

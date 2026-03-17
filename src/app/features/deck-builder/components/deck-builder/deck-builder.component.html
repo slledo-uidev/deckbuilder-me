@@ -115,6 +115,10 @@
         <section class="deck-builder__deck-construction">
           <div class="deck-builder__deck-header">
             <h2 class="deck-builder__section-title">Your Deck</h2>
+            <div class="deck-builder__deck-actions">
+              <app-button variant="outline" size="small" (clicked)="openValidationModal()">Validation</app-button>
+              <app-button variant="outline" size="small" (clicked)="openStatsModal()">Stats</app-button>
+            </div>
           </div>
 
           <!-- Deck Zones Grid -->
@@ -125,6 +129,7 @@
               [maxCards]="5"
               [zoneType]="'digi-eggs'"
               [isEmpty]="digiEggs.length === 0"
+              [isCardAtMaxCopies]="isCardAtMaxCopies"
               (removeCard)="removeCardFromZone($event, 'digi-eggs')"
               (increaseQuantity)="increaseCardQuantity($event, 'digi-eggs')"
               (decreaseQuantity)="decreaseCardQuantity($event, 'digi-eggs')">
@@ -136,27 +141,53 @@
               [maxCards]="50"
               [zoneType]="'main'"
               [isEmpty]="mainDeck.length === 0"
+              [isCardAtMaxCopies]="isCardAtMaxCopies"
               (removeCard)="removeCardFromZone($event, 'main')"
               (increaseQuantity)="increaseCardQuantity($event, 'main')"
               (decreaseQuantity)="decreaseCardQuantity($event, 'main')">
             </app-deck-zone>
           </div>
-
-          <!-- Validation & Stats Tabs -->
-          <div class="deck-builder__deck-info">
-            <app-validation-panel
-              [digiEggs]="digiEggs"
-              [mainDeck]="mainDeck"
-              [deckName]="'Current Deck'">
-            </app-validation-panel>
-
-            <app-deck-stats-panel
-              [digiEggs]="digiEggs"
-              [mainDeck]="mainDeck">
-            </app-deck-stats-panel>
-          </div>
         </section>
       </aside>
+    </div>
+
+    <!-- Validation Modal -->
+    <div
+      *ngIf="showValidationModal"
+      class="deck-builder__modal-backdrop"
+      (click)="closeValidationModal()">
+      <div class="deck-builder__modal-dialog deck-builder__modal-dialog--large" (click)="$event.stopPropagation()">
+        <div class="deck-builder__modal-header">
+          <h3 class="deck-builder__modal-title">Deck Validation</h3>
+          <button class="deck-builder__modal-close" (click)="closeValidationModal()" aria-label="Close">&#x2715;</button>
+        </div>
+        <div class="deck-builder__modal-body">
+          <app-validation-panel
+            [digiEggs]="digiEggs"
+            [mainDeck]="mainDeck"
+            [deckName]="'Current Deck'">
+          </app-validation-panel>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Modal -->
+    <div
+      *ngIf="showStatsModal"
+      class="deck-builder__modal-backdrop"
+      (click)="closeStatsModal()">
+      <div class="deck-builder__modal-dialog deck-builder__modal-dialog--large" (click)="$event.stopPropagation()">
+        <div class="deck-builder__modal-header">
+          <h3 class="deck-builder__modal-title">Deck Statistics</h3>
+          <button class="deck-builder__modal-close" (click)="closeStatsModal()" aria-label="Close">&#x2715;</button>
+        </div>
+        <div class="deck-builder__modal-body">
+          <app-deck-stats-panel
+            [digiEggs]="digiEggs"
+            [mainDeck]="mainDeck">
+          </app-deck-stats-panel>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -51,7 +51,7 @@ export interface DeckValidationRules {
   digiEggsMax: number;         // Maximum Digi-Eggs (5)
   mainDeckMin: number;         // Minimum Main Deck (50)
   mainDeckMax: number;         // Maximum Main Deck (50)
-  maxCopiesPerCard: number;    // Max copies of same card (5)
+  maxCopiesPerCard: number;    // Max copies of same card (4)
   sideDeckMax?: number;        // Max Side Deck (no official limit)
 }
 
@@ -84,6 +84,6 @@ export const DEFAULT_VALIDATION_RULES: DeckValidationRules = {
   digiEggsMax: 5,
   mainDeckMin: 50,
   mainDeckMax: 50,
-  maxCopiesPerCard: 5,
+  maxCopiesPerCard: 4,
   sideDeckMax: undefined  // No official limit
 };

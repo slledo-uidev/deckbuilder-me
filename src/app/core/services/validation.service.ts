@@ -145,7 +145,7 @@ export class ValidationService {
   }
   
   /**
-   * Validate card copy limits (max 5 per card name)
+   * Validate card copy limits (max 4 per card name)
    */
   private validateCopyLimits(deck: Deck, errors: ValidationError[]): void {
     const cardCounts = new Map<string, number>();
