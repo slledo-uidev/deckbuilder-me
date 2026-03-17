@@ -28,9 +28,6 @@
           </option>
         </select>
       </div>
-      <p class="filter-panel__hint" *ngIf="selectedColors.length > 0">
-        {{ selectedColors.length }} color(s) selected
-      </p>
     </div>
     
     <!-- Set Section -->
@@ -48,9 +45,6 @@
           </option>
         </select>
       </div>
-      <p class="filter-panel__hint" *ngIf="selectedSets.length > 0">
-        {{ selectedSets.length }} set(s) selected
-      </p>
     </div>
     
     <!-- Rarity Section -->
@@ -68,9 +62,6 @@
           </option>
         </select>
       </div>
-      <p class="filter-panel__hint" *ngIf="selectedRarities.length > 0">
-        {{ selectedRarities.length }} rarity(ies) selected
-      </p>
     </div>
     
     <!-- Type Section -->
@@ -124,16 +115,16 @@
       </div>
     </div>
     
-    <!-- Apply Filters Button -->
-    <div class="filter-panel__section filter-panel__section--actions">
-      <app-button
-        variant="primary"
-        size="medium"
-        (clicked)="applyFilters()"
-        class="filter-panel__apply-button"
-      >
-        Apply Filters
-      </app-button>
-    </div>
+  </div>
+  <!-- Apply Filters Button -->
+  <div class="filter-panel__section filter-panel__section--actions">
+    <app-button
+      variant="primary"
+      size="medium"
+      (clicked)="applyFilters()"
+      class="filter-panel__apply-button"
+    >
+      Apply Filters
+    </app-button>
   </div>
 </div>
