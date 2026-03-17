@@ -32,12 +32,12 @@
     
     @media (min-width: $breakpoint-md) {
       grid-template-columns: repeat(2, 1fr);
-      gap: $spacing-5;
+      gap: $spacing-2;
     }
     
     @media (min-width: $breakpoint-lg) {
       grid-template-columns: repeat(3, 1fr);
-      gap: $spacing-6;
+      gap: $spacing-3;
     }
   }
   
@@ -274,7 +274,7 @@
   }
   
   @media (min-width: $breakpoint-md) {
-    padding: $spacing-5;
+    padding: $spacing-2;
     
     &__content {
       gap: $spacing-5;
