@@ -11,7 +11,7 @@
   
   &__input {
     width: 100%;
-    padding: $spacing-3 $spacing-6 $spacing-3 $spacing-3;
+    padding: $spacing-2 $spacing-6 $spacing-2 $spacing-3;
     font-size: $font-size-base;
     font-family: inherit;
     border: 2px solid $color-border;
@@ -19,6 +19,7 @@
     background-color: $color-white;
     color: $color-text-primary;
     transition: border-color $transition-base;
+    height: 55px;
     
     &:focus {
       outline: none;
@@ -31,7 +32,8 @@
     
     @media (min-width: $breakpoint-md) {
       font-size: $font-size-lg;
-      padding: $spacing-3 $spacing-6 $spacing-3 $spacing-4;
+      padding: $spacing-2 $spacing-6 $spacing-2 $spacing-4;
+      height: 55px;
     }
   }
   

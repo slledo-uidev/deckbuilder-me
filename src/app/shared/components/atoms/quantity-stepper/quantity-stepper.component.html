@@ -5,7 +5,7 @@
     (click)="onDecrease()"
     type="button"
     aria-label="Decrease quantity">
-    −
+    <lucide-angular name="minus" [size]="14" class="lucide-icon"></lucide-angular>
   </button>
   <span class="quantity-stepper__value">{{ value }}</span>
   <button 
@@ -14,6 +14,6 @@
     (click)="onIncrease()"
     type="button"
     aria-label="Increase quantity">
-    +
+    <lucide-angular name="plus" [size]="14" class="lucide-icon"></lucide-angular>
   </button>
 </div>

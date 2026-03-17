@@ -29,6 +29,14 @@ body {
   outline-offset: 2px;
 }
 
+/* Lucide icons global styles */
+.lucide-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;

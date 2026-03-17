@@ -36,6 +36,7 @@
   color: $color-text-primary;
   background-color: $color-surface;
   transition: border-color $transition-fast, box-shadow $transition-fast;
+  height: 55px;
   
   &::placeholder {
     color: $color-text-secondary;

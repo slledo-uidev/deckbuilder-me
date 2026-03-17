@@ -15,21 +15,21 @@
   &__container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: $spacing-2;
+    gap: $spacing-1;
     
     @media (min-width: $breakpoint-sm) {
       grid-template-columns: repeat(3, 1fr);
-      gap: $spacing-3;
+      gap: $spacing-1;
     }
     
     @media (min-width: $breakpoint-md) {
-      grid-template-columns: repeat(4, 1fr);
-      gap: $spacing-3;
+      grid-template-columns: repeat(5, 1fr);
+      gap: $spacing-2;
     }
     
     @media (min-width: $breakpoint-lg) {
-      grid-template-columns: repeat(4, 1fr);
-      gap: $spacing-4;
+      grid-template-columns: repeat(5, 1fr);
+      gap: $spacing-2;
     }
   }
   

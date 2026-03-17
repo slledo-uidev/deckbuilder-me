@@ -122,8 +122,8 @@
   
   &__filters-reset {
     padding: $spacing-2;
-    min-width: 44px;
-    min-height: 44px;
+    width: 55px;
+    height: 55px;
     background-color: $color-white;
     border: 1px solid $color-border;
     border-radius: $border-radius-md;
@@ -133,6 +133,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     
     &:hover:not(:disabled) {
       background-color: $color-background;
@@ -162,7 +163,7 @@
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     white-space: nowrap;
-    min-height: 44px;
+    height: 55px;
     width: 190px;
     display: flex;
     justify-content: center;
@@ -429,18 +430,9 @@
   }
 
   &__zones {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: $spacing-3;
-    grid-template-columns: 1fr;
-    
-    @media (min-width: $breakpoint-sm) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    
-    @media (min-width: $breakpoint-lg) {
-      grid-template-columns: 1fr;
-      gap: $spacing-3;
-    }
   }
 
   // Validation & Stats

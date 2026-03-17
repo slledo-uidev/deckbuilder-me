@@ -6,29 +6,37 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: $spacing-2;
   padding: $spacing-4;
-  text-align: center;
+  text-align: left;
   color: $color-text-secondary;
+  border: 2px solid $color-border;
+  border-radius: $border-radius-md;
+  background-color: $color-background;
+  transition: all $transition-fast;
+
+  &:hover {
+    border-color: lighten($color-primary, 20%);
+    background-color: rgba($color-primary, 0.02);
+  }
 
   &__icon {
-    font-size: $font-size-3xl;
-    margin-bottom: $spacing-2;
-    opacity: 0.5;
+    flex-shrink: 0;
+    opacity: 0.3;
+    color: $color-text-secondary;
+    transition: all $transition-fast;
   }
 
   &__message {
     font-size: $font-size-base;
     margin: 0;
     line-height: 1.5;
+    font-weight: $font-weight-medium;
   }
 
   &--small {
     padding: $spacing-2;
-
-    .empty-state__icon {
-      font-size: $font-size-xl;
-      margin-bottom: $spacing-1;
-    }
+    gap: $spacing-2;
 
     .empty-state__message {
       font-size: $font-size-sm;
@@ -37,11 +45,7 @@
 
   &--medium {
     padding: $spacing-4;
-
-    .empty-state__icon {
-      font-size: $font-size-3xl;
-      margin-bottom: $spacing-2;
-    }
+    gap: $spacing-2;
 
     .empty-state__message {
       font-size: $font-size-base;
@@ -49,12 +53,8 @@
   }
 
   &--large {
-    padding: $spacing-6;
-
-    .empty-state__icon {
-      font-size: 4rem;
-      margin-bottom: $spacing-3;
-    }
+    padding: $spacing-5;
+    gap: $spacing-4;
 
     .empty-state__message {
       font-size: $font-size-lg;

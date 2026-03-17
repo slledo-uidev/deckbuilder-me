@@ -2,7 +2,7 @@
   <div class="section-header__content">
     <div class="section-header__text">
       <h3 class="section-header__title">
-        <span *ngIf="icon" class="section-header__icon">{{ icon }}</span>
+        <lucide-angular *ngIf="icon" [name]="icon" [size]="24" class="section-header__icon lucide-icon"></lucide-angular>
         {{ title }}
       </h3>
       <p *ngIf="subtitle" class="section-header__subtitle">{{ subtitle }}</p>

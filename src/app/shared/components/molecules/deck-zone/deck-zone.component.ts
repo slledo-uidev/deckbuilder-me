@@ -86,6 +86,10 @@ export class DeckZoneComponent {
     }
   }
 
+  get emptyIcon(): string {
+    return 'layers';
+  }
+
   isIncreaseDisabled(deckCard: DeckCard): boolean {
     // Check if card has reached maximum copies across all zones
     if (this.isCardAtMaxCopies) {

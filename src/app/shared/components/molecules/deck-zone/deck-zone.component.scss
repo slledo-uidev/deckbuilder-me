@@ -8,16 +8,13 @@
   border-radius: $border-radius-md;
   background-color: $color-white;
   padding: $spacing-2;
-  min-height: 250px;
   
   @media (min-width: $breakpoint-sm) {
     padding: $spacing-3;
-    min-height: 280px;
   }
   
   @media (min-width: $breakpoint-md) {
     padding: $spacing-2 $spacing-3 $spacing-3;
-    min-height: 300px;
   }
   
   &__header {
@@ -42,7 +39,7 @@
     justify-content: center;
     flex: 1;
     padding: $spacing-6;
-    border: 2px dashed $color-border;
+    border: 2px solid $color-border;
     border-radius: $border-radius-md;
     background-color: $color-background;
   }
@@ -92,7 +89,7 @@
     transition: all 0.2s ease;
     gap: $spacing-2;
     
-    @media (max-width: $breakpoint-sm - 1px) {
+    @media (max-width: #{$breakpoint-sm - 1px}) {
       flex-wrap: wrap;
       padding: $spacing-1 $spacing-2;
     }

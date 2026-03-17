@@ -23,6 +23,7 @@
     "@angular/router": "^16.2.0",
     "chart.js": "^4.5.1",
     "dexie": "^3.2.4",
+    "lucide-angular": "^0.447.0",
     "ng2-charts": "^5.0.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

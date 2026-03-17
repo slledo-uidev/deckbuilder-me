@@ -14,6 +14,10 @@
     class="collapsible-header__toggle"
     [attr.aria-label]="isExpanded ? 'Collapse panel' : 'Expand panel'"
     type="button">
-    {{ isExpanded ? '−' : '+' }}
+    <lucide-angular 
+      [name]="isExpanded ? 'chevron-up' : 'chevron-down'" 
+      [size]="20"
+      class="lucide-icon">
+    </lucide-angular>
   </button>
 </div>

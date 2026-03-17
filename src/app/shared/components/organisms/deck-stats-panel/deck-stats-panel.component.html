@@ -3,7 +3,7 @@
   <app-section-header
     title="Deck Statistics"
     subtitle="Visual analysis of your deck composition"
-    icon="📊" />
+    icon="bar-chart-3" />
 
   <!-- Empty State -->
   <div *ngIf="!hasData" class="deck-stats-panel__empty">
@@ -33,7 +33,7 @@
       *ngIf="costGaps.length > 0"
       title="Cost Curve Gaps Detected"
       [message]="'Missing cards at costs: ' + costGaps.join(', ')"
-      icon="⚠️"
+      icon="alert-circle"
       variant="warning"
       size="medium" />
 

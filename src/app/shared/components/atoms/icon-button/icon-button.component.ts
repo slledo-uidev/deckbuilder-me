@@ -6,7 +6,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./icon-button.component.scss']
 })
 export class IconButtonComponent {
-  @Input() icon: string = '✕';
+  @Input() icon: string = 'x';
   @Input() ariaLabel: string = 'Close';
   @Input() size: 'small' | 'medium' | 'large' = 'medium';
   @Input() variant: 'default' | 'primary' | 'danger' = 'default';
