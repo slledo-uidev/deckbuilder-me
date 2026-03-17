@@ -14,7 +14,7 @@
     font-size: $font-size-base;
     font-weight: $font-weight-bold;
     margin: 0;
-    color: $color-text-secondary;
+    color: var(--theme-color-text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -50,7 +50,7 @@
       grid-column: 1 / -1; // Span all columns
       margin-top: $spacing-3;
       padding-top: $spacing-3;
-      border-top: 1px solid rgba($color-text-primary, 0.1);
+      border-top: 1px solid var(--theme-color-border-base);
       display: flex;
       justify-content: center;
       align-items: flex-end;
@@ -60,7 +60,7 @@
   &__label {
     font-size: $font-size-sm;
     font-weight: $font-weight-medium;
-    color: $color-text-secondary;
+    color: var(--theme-color-text-secondary);
     display: block;
   }
   
@@ -72,22 +72,22 @@
   &__input {
     width: 100%;
     padding: $spacing-2 $spacing-3;
-    border: 2px solid $color-border;
+    border: 2px solid var(--theme-color-border-base);
     border-radius: $border-radius-md;
     font-family: $font-family-primary;
     font-size: $font-size-base;
-    color: $color-text-primary;
-    background-color: $color-surface;
+    color: var(--theme-color-text-primary);
+    background-color: var(--theme-color-bg-elevated);
     transition: border-color $transition-fast, box-shadow $transition-fast;
     
     &:hover:not(:disabled) {
-      border-color: $color-border-dark;
+      border-color: var(--theme-color-border-elevated);
     }
     
     &:focus {
       outline: none;
-      border-color: $color-primary;
-      box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+      border-color: var(--theme-color-primary);
+      box-shadow: 0 0 0 3px rgba(var(--theme-color-primary-rgb), 0.1);
     }
     
     &--select[multiple] {
@@ -101,12 +101,12 @@
         transition: background-color $transition-fast;
         
         &:hover {
-          background-color: rgba($color-primary, 0.1);
+          background-color: rgba(var(--theme-color-primary-rgb), 0.1);
         }
         
         &:checked {
-          background: linear-gradient(90deg, $color-primary 0%, darken($color-primary, 10%) 100%);
-          color: $color-white;
+          background: var(--theme-color-primary);
+          color: var(--theme-color-bg-elevated);
           font-weight: $font-weight-medium;
         }
       }
@@ -129,18 +129,18 @@
   &__select {
     width: 100%;
     padding: $spacing-2;
-    border: 1px solid $color-border;
+    border: 1px solid var(--theme-color-border-base);
     border-radius: $border-radius-md;
     font-size: $font-size-sm;
     font-family: inherit;
-    background-color: $color-white;
-    color: $color-text-primary;
+    background-color: var(--theme-color-bg-elevated);
+    color: var(--theme-color-text-primary);
     transition: border-color $transition-fast, box-shadow $transition-fast;
     
     &:focus {
       outline: none;
-      border-color: $color-primary;
-      box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+      border-color: var(--theme-color-primary);
+      box-shadow: 0 0 0 3px rgba(var(--theme-color-primary-rgb), 0.1);
     }
     
     &[multiple] {
@@ -152,12 +152,12 @@
         margin-bottom: 2px;
         
         &:hover {
-          background-color: rgba($color-primary, 0.1);
+          background-color: rgba(var(--theme-color-primary-rgb), 0.1);
         }
         
         &:checked {
-          background-color: $color-primary;
-          color: $color-white;
+          background-color: var(--theme-color-primary);
+          color: var(--theme-color-bg-elevated);
         }
       }
     }
@@ -174,7 +174,7 @@
   
   &__hint {
     font-size: $font-size-xs;
-    color: $color-text-secondary;
+    color: var(--theme-color-text-secondary);
     margin: 0;
     font-style: italic;
   }

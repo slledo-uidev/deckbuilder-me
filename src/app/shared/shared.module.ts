@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgChartsModule } from 'ng2-charts';
-import { LucideAngularModule, X, ChevronDown, ChevronUp, Plus, Minus, Trash2, Check, AlertCircle, Info, Save, Download, Upload, Filter, Search, BarChart3, PieChart, Layout, Layers, Package, Inbox, RotateCcw } from 'lucide-angular';
+import { LucideAngularModule, X, ChevronDown, ChevronUp, Plus, Minus, Trash2, Check, AlertCircle, Info, Save, Download, Upload, Filter, Search, BarChart3, PieChart, Layout, Layers, Package, Inbox, RotateCcw, Sun, Moon } from 'lucide-angular';
 
 // Atoms
 import { ButtonComponent } from './components/atoms/button/button.component';
@@ -16,6 +16,7 @@ import { QuantityStepperComponent } from './components/atoms/quantity-stepper/qu
 import { StatItemComponent } from './components/atoms/stat-item/stat-item.component';
 import { AlertComponent } from './components/atoms/alert/alert.component';
 import { SectionTitleComponent } from './components/atoms/section-title/section-title.component';
+import { ThemeToggleComponent } from './components/atoms/theme-toggle/theme-toggle.component';
 
 // Molecules
 import { SearchBarComponent } from './components/molecules/search-bar/search-bar.component';
@@ -46,6 +47,7 @@ const COMPONENTS = [
   QuantityStepperComponent,
   StatItemComponent,
   AlertComponent,
+  ThemeToggleComponent,
   SectionTitleComponent,
   // Molecules
   SearchBarComponent,
@@ -91,7 +93,9 @@ const COMPONENTS = [
       Layers,
       Package,
       Inbox,
-      RotateCcw
+      RotateCcw,
+      Sun,
+      Moon
     })
   ],
   exports: [...COMPONENTS, LucideAngularModule]

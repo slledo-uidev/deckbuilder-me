@@ -1,0 +1,43 @@
+@import 'variables';
+@import 'd-prob-theme-tokens';
+
+.theme-toggle {
+  background-color: var(--theme-color-bg-elevated);
+  color: var(--theme-color-text-primary);
+  border: 1px solid var(--theme-color-border-base);
+  border-radius: $theme-radius-full;
+  padding: $theme-spacing-2;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: $theme-transition-fast;
+  flex-shrink: 0;
+  
+  &:hover {
+    background-color: var(--theme-color-bg-elevated-hover);
+    border-color: var(--theme-color-primary);
+    box-shadow: var(--theme-shadow-sm);
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  &:focus {
+    outline: 2px solid var(--theme-color-primary);
+    outline-offset: 2px;
+  }
+
+  &__icon {
+    color: var(--theme-color-text-secondary);
+    transition: color $theme-transition-fast;
+  }
+
+  &:hover &__icon {
+    color: var(--theme-color-primary);
+  }
+}

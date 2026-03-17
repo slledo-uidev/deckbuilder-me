@@ -8,7 +8,7 @@
   &__empty {
     text-align: center;
     padding: $spacing-8 $spacing-4;
-    color: $color-text-secondary;
+    color: var(--theme-color-text-secondary);
     font-size: $font-size-lg;
   }
   
@@ -34,8 +34,8 @@
   }
   
   &__item {
-    background-color: $color-white;
-    border: 2px solid $color-border;
+    background-color: var(--theme-color-bg-elevated);
+    border: 2px solid var(--theme-color-border-base);
     border-radius: $border-radius-md;
     overflow: hidden;
     cursor: pointer;
@@ -50,8 +50,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba($color-primary, 0.95);
-      color: $color-white;
+      background: var(--theme-color-primary);
+      color: var(--theme-color-bg-elevated);
       padding: $spacing-2 $spacing-3;
       font-size: $font-size-sm;
       font-weight: $font-weight-bold;
@@ -61,13 +61,13 @@
       transition: opacity 0.2s ease-in-out;
       pointer-events: none;
       white-space: nowrap;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--theme-shadow-md);
     }
     
     &:hover {
       transform: translateY(-4px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-      border-color: $color-primary;
+      box-shadow: var(--theme-shadow-lg);
+      border-color: var(--theme-color-primary);
       
       &::after {
         opacity: 1;
@@ -79,7 +79,7 @@
     }
     
     &:focus {
-      outline: 2px solid $color-primary;
+      outline: 2px solid var(--theme-color-primary);
       outline-offset: 2px;
     }
     
@@ -145,7 +145,7 @@
     width: 100%;
     aspect-ratio: 7 / 10;
     overflow: hidden;
-    background-color: $color-background;
+    background-color: var(--theme-color-bg-base);
     position: relative;
     flex-shrink: 0;
   }
@@ -173,7 +173,7 @@
     font-size: $font-size-xs;
     font-weight: $font-weight-bold;
     margin: 0 0 2px 0;
-    color: $color-text-primary;
+    color: var(--theme-color-text-primary);
     line-height: 1.2;
     @include truncate;
     
@@ -185,7 +185,7 @@
   
   &__set {
     font-size: 10px;
-    color: $color-text-secondary;
+    color: var(--theme-color-text-secondary);
     margin: 0 0 2px 0;
     @include truncate;
     
@@ -196,7 +196,7 @@
   
   &__id {
     font-size: 10px;
-    color: $color-text-secondary;
+    color: var(--theme-color-text-secondary);
     margin: 0 0 4px 0;
     font-family: monospace;
     font-weight: $font-weight-medium;

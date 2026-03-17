@@ -14,20 +14,20 @@
     padding: $spacing-2 $spacing-6 $spacing-2 $spacing-3;
     font-size: $font-size-base;
     font-family: inherit;
-    border: 2px solid $color-border;
+    border: 2px solid var(--theme-color-border-base);
     border-radius: $border-radius-md;
-    background-color: $color-white;
-    color: $color-text-primary;
+    background-color: var(--theme-color-bg-elevated);
+    color: var(--theme-color-text-primary);
     transition: border-color $transition-base;
     height: 55px;
     
     &:focus {
       outline: none;
-      border-color: $color-primary;
+      border-color: var(--theme-color-primary);
     }
     
     &::placeholder {
-      color: $color-text-secondary;
+      color: var(--theme-color-text-secondary);
     }
     
     @media (min-width: $breakpoint-md) {
@@ -45,7 +45,7 @@
     background: none;
     border: none;
     font-size: $font-size-xl;
-    color: $color-text-secondary;
+    color: var(--theme-color-text-secondary);
     cursor: pointer;
     padding: $spacing-1;
     border-radius: $border-radius-sm;
@@ -58,12 +58,12 @@
     justify-content: center;
     
     &:hover {
-      background-color: $color-background;
-      color: $color-text-primary;
+      background-color: var(--theme-color-bg-base);
+      color: var(--theme-color-text-primary);
     }
     
     &:focus {
-      outline: 2px solid $color-primary;
+      outline: 2px solid var(--theme-color-primary);
       outline-offset: 2px;
     }
   }

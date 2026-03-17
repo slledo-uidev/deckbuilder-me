@@ -3,17 +3,23 @@
 @import 'variables';
 @import 'typography';
 
+/* Import theme system */
+@import './app/scss/d-prob-theme-tokens';
+@import './app/scss/d-prob-theme-variables';
+
 /* Global body styles */
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', sans-serif;
-  font-size: $font-size-base;
-  line-height: 1.5;
-  color: $color-text-primary;
-  background-color: $color-background;
+  font-family: $theme-font-family-base;
+  font-size: $theme-font-size-base;
+  line-height: $theme-line-height-relaxed;
+  color: var(--theme-color-text-primary);
+  background-color: var(--theme-color-bg-base);
+  transition: background-color 0.3s ease, color 0.3s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
 }
 
 /* Global box-sizing */
@@ -25,7 +31,7 @@ body {
 
 /* Focus visible styles for accessibility */
 :focus-visible {
-  outline: 2px solid $color-primary;
+  outline: 2px solid var(--theme-color-primary);
   outline-offset: 2px;
 }
 

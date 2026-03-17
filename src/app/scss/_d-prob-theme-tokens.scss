@@ -1,0 +1,96 @@
+/* ==============================================
+   TOKENS SEMÁNTICOS DEL TEMA
+   ============================================== */
+
+@import './d-prob-colors';
+
+/* ===== COLORES SEMÁNTICOS ===== */
+$theme-color-primary: $color-turquoise-500;
+$theme-color-primary-hover: $color-turquoise-600;
+$theme-color-primary-light: $color-turquoise-400;
+
+/* Colores de estado */
+$theme-color-success: $color-green-400;
+$theme-color-warning: $color-orange-400;
+$theme-color-danger: $color-red-400;
+$theme-color-info: $color-blue-400;
+
+/* Textos (light mode base) */
+$theme-color-text-primary: $color-gray-900;
+$theme-color-text-secondary: $color-gray-600;
+$theme-color-text-tertiary: $color-gray-500;
+$theme-color-text-muted: $color-gray-400;
+
+/* Fondos (light mode base) */
+$theme-color-bg-base: $color-gray-100;
+$theme-color-bg-light: $color-gray-50;
+$theme-color-bg-card: $color-white;
+
+/* Bordes (light mode base) */
+$theme-color-border-base: $color-gray-150;
+$theme-color-border-dark: $color-gray-300;
+$theme-color-border-input: $color-gray-200;
+
+/* ===== ESPACIADO (escala base: 8px) ===== */
+$theme-spacing-0: 0;
+$theme-spacing-1: 0.5rem;   // 8px
+$theme-spacing-2: 1rem;     // 16px
+$theme-spacing-3: 1.5rem;   // 24px
+$theme-spacing-4: 2rem;     // 32px
+$theme-spacing-6: 3rem;     // 48px
+$theme-spacing-8: 4rem;     // 64px
+$theme-spacing-10: 5rem;    // 80px
+$theme-spacing-12: 6rem;    // 96px
+
+/* ===== BORDER RADIUS ===== */
+$theme-radius-sm: 4px;
+$theme-radius-base: 6px;
+$theme-radius-md: 8px;
+$theme-radius-lg: 12px;
+$theme-radius-xl: 16px;
+$theme-radius-full: 50%;
+
+/* ===== SOMBRAS ===== */
+$theme-shadow-sm: 0 2px 4px rgba($color-black, 0.1);
+$theme-shadow-md: 0 4px 8px rgba($color-black, 0.12);
+$theme-shadow-lg: 0 4px 15px rgba($color-black, 0.15);
+$theme-shadow-xl: 0 8px 16px rgba($color-black, 0.15);
+
+/* ===== TRANSICIONES ===== */
+$theme-transition-fast: all 0.15s ease;
+$theme-transition-base: all 0.3s ease;
+$theme-transition-slow: all 0.5s ease;
+
+/* ===== TIPOGRAFÍA ===== */
+$theme-font-family-base: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+$theme-font-size-xs: 0.75rem;   // 12px
+$theme-font-size-sm: 0.875rem;  // 14px
+$theme-font-size-base: 1rem;    // 16px
+$theme-font-size-md: 1.125rem;  // 18px
+$theme-font-size-lg: 1.25rem;   // 20px
+$theme-font-size-xl: 1.5rem;    // 24px
+$theme-font-size-2xl: 2rem;     // 32px
+$theme-font-size-3xl: 2.5rem;   // 40px
+
+$theme-font-weight-normal: 400;
+$theme-font-weight-medium: 500;
+$theme-font-weight-semibold: 600;
+$theme-font-weight-bold: 700;
+
+$theme-line-height-tight: 1.25;
+$theme-line-height-normal: 1.5;
+$theme-line-height-relaxed: 1.75;
+
+/* ===== BREAKPOINTS ===== */
+$theme-breakpoint-xs: 320px;
+$theme-breakpoint-sm: 480px;
+$theme-breakpoint-md: 768px;
+$theme-breakpoint-lg: 1024px;
+$theme-breakpoint-xl: 1440px;
+
+/* ===== Z-INDEX ===== */
+$theme-z-index-dropdown: 100;
+$theme-z-index-sticky: 200;
+$theme-z-index-modal: 500;
+$theme-z-index-tooltip: 700;

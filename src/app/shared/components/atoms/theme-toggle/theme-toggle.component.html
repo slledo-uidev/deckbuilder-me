@@ -1,0 +1,11 @@
+<button 
+  class="theme-toggle"
+  (click)="toggleTheme()"
+  [attr.aria-label]="isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+  type="button">
+  <lucide-angular 
+    [name]="isDarkMode ? 'sun' : 'moon'" 
+    [size]="20" 
+    class="theme-toggle__icon lucide-icon">
+  </lucide-angular>
+</button>
