@@ -357,7 +357,6 @@
     border-radius: $border-radius-lg;
     padding: $spacing-2 $spacing-3 $spacing-3;
     overflow-y: auto;
-    max-width: 500px;
     
     @media (min-width: $breakpoint-md) {
       padding: $spacing-2 $spacing-3 $spacing-3;
