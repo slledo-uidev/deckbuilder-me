@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'mixins';
+@import 'd-prob-theme-tokens';
 
 .decks-library {
   width: 100%;
@@ -48,7 +49,7 @@
   }
 
   &__btn-create {
-    padding: $theme-spacing-3 $theme-spacing-5;
+    padding: $theme-spacing-3 $theme-spacing-4;
     background-color: var(--color-primary);
     color: $color-white;
     border: none;
@@ -84,7 +85,7 @@
 
   &__btn-empty-action {
     margin-top: $theme-spacing-4;
-    padding: $theme-spacing-3 $theme-spacing-5;
+    padding: $theme-spacing-3 $theme-spacing-4;
     background-color: var(--color-primary);
     color: $color-white;
     border: none;
