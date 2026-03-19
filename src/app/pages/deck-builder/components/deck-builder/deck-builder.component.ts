@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { StorageService, ValidationService, CardService } from '@core/services';
+import { StorageService, ValidationService, CardService, AuthService } from '@core/services';
 import { Deck, Card, CardFilter, Color } from '@core/models';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -55,6 +55,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     private storageService: StorageService,
     private validationService: ValidationService,
     private cardService: CardService,
+    private authService: AuthService,
     private route: ActivatedRoute
   ) { }
   
@@ -334,6 +335,8 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     }
 
     const colors = this.inferDeckColors();
+    const currentUser = this.authService.getCurrentUser();
+    
     const deck: Deck = {
       id: this.currentDeckId || this.generateDeckId(),
       name: data.name,
@@ -342,6 +345,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       sideDeck: [], // Empty - Digimon TCG doesn't use side deck
       colors,
       placeholderCardId: data.placeholderCardId,
+      author: currentUser?.username,
       createdAt: new Date(),
       updatedAt: new Date()
     };

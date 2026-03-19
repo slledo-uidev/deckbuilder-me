@@ -1,18 +1,21 @@
 /**
  * Storage Service - Manages localStorage operations
  * Handles deck persistence and localStorage operations
+ * Now supports multi-user storage with isolated decks per user
  */
 
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Deck } from '@models/deck.model';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StorageService {
-  // localStorage keys
-  private readonly DECKS_KEY = 'deckbuilder.decks';
+  // localStorage keys (base keys, actual keys will include username)
+  private readonly DECKS_KEY_BASE = 'deckbuilder.decks';
+  private readonly LEGACY_DECKS_KEY = 'deckbuilder.decks'; // Old key for migration
   private readonly COLLECTION_KEY = 'deckbuilder.collection';
   private readonly SETTINGS_KEY = 'deckbuilder.settings';
   
@@ -20,16 +23,74 @@ export class StorageService {
   private decksCache$ = new BehaviorSubject<Deck[]>([]);
   public readonly decks$ = this.decksCache$.asObservable();
   
-  constructor() {
-    this.loadDecksFromStorage();
+  constructor(private authService: AuthService) {
+    // Subscribe to auth changes to reload decks when user changes
+    this.authService.currentUser$.subscribe(user => {
+      if (user) {
+        this.loadDecksFromStorage();
+      } else {
+        // User logged out, clear cache
+        this.decksCache$.next([]);
+      }
+    });
   }
   
   /**
-   * Load all decks from localStorage
+   * Get the localStorage key for the current user's decks
+   */
+  private getUserDecksKey(): string {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      throw new Error('No authenticated user. Cannot access storage.');
+    }
+    return `${this.DECKS_KEY_BASE}.${currentUser.username}`;
+  }
+  
+  /**
+   * Migrate legacy decks to current user's storage (if they exist)
+   * This ensures existing decks are not lost on first login
+   */
+  private migrateLegacyDecks(): void {
+    try {
+      const legacyDecksJson = localStorage.getItem(this.LEGACY_DECKS_KEY);
+      if (legacyDecksJson) {
+        const currentUser = this.authService.getCurrentUser();
+        if (!currentUser) return;
+        
+        const userKey = this.getUserDecksKey();
+        const existingUserDecks = localStorage.getItem(userKey);
+        
+        // Only migrate if user has no decks yet
+        if (!existingUserDecks) {
+          console.log(`Migrating legacy decks to user: ${currentUser.username}`);
+          localStorage.setItem(userKey, legacyDecksJson);
+        }
+        
+        // Remove legacy key after first migration attempt
+        localStorage.removeItem(this.LEGACY_DECKS_KEY);
+      }
+    } catch (error) {
+      console.error('Failed to migrate legacy decks', error);
+    }
+  }
+  
+  /**
+   * Load all decks from localStorage for current user
    */
   private loadDecksFromStorage(): void {
     try {
-      const decksJson = localStorage.getItem(this.DECKS_KEY);
+      const currentUser = this.authService.getCurrentUser();
+      if (!currentUser) {
+        this.decksCache$.next([]);
+        return;
+      }
+      
+      // Migrate legacy decks on first load
+      this.migrateLegacyDecks();
+      
+      const userDecksKey = this.getUserDecksKey();
+      const decksJson = localStorage.getItem(userDecksKey);
+      
       if (decksJson) {
         const decks = JSON.parse(decksJson) as Deck[];
         // Convert date strings back to Date objects
@@ -38,6 +99,8 @@ export class StorageService {
           deck.updatedAt = new Date(deck.updatedAt);
         });
         this.decksCache$.next(decks);
+      } else {
+        this.decksCache$.next([]);
       }
     } catch (error) {
       console.error('Failed to load decks from localStorage', error);
@@ -46,12 +109,19 @@ export class StorageService {
   }
   
   /**
-   * Save all decks to localStorage
+   * Save all decks to localStorage for current user
    */
   private saveDecksToStorage(decks: Deck[]): boolean {
     try {
+      const currentUser = this.authService.getCurrentUser();
+      if (!currentUser) {
+        console.error('Cannot save decks: no authenticated user');
+        return false;
+      }
+      
+      const userDecksKey = this.getUserDecksKey();
       const decksJson = JSON.stringify(decks);
-      localStorage.setItem(this.DECKS_KEY, decksJson);
+      localStorage.setItem(userDecksKey, decksJson);
       return true;
     } catch (error) {
       console.error('Failed to save decks to localStorage', error);

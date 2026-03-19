@@ -1,5 +1,5 @@
 <div class="app">
-  <header class="app__header">
+  <header class="app__header" *ngIf="!isLoginPage">
     <div class="app__container">
       <div class="app__header-content">
         <div class="app__header-title">
@@ -10,11 +10,11 @@
     </div>
   </header>
   
-  <main class="app__main">
+  <main class="app__main" [class.app__main--full]="isLoginPage">
     <router-outlet></router-outlet>
   </main>
   
-  <footer class="app__footer">
+  <footer class="app__footer" *ngIf="!isLoginPage">
     <div class="app__container">
       <p class="app__footer-text">
         Built for the Digimon TCG community | Data from 

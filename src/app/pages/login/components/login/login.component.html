@@ -1,0 +1,51 @@
+<div class="login">
+  <div class="login__container">
+    <app-card class="login__card">
+      <div class="login__header">
+        <h1 class="login__title">Digimon TCG Deckbuilder</h1>
+        <p class="login__subtitle">Inicia sesión para gestionar tus decks</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login__form">
+        <div class="login__field">
+          <label for="username" class="login__label">Usuario</label>
+          <app-input
+            id="username"
+            type="text"
+            placeholder="Introduce tu usuario"
+            formControlName="username"
+            [fullWidth]="true"
+            [error]="username?.invalid && username?.touched ? 'El usuario es requerido' : ''"
+          ></app-input>
+        </div>
+
+        <div class="login__field">
+          <label for="password" class="login__label">Contraseña</label>
+          <app-input
+            id="password"
+            type="password"
+            placeholder="Introduce tu contraseña"
+            formControlName="password"
+            [fullWidth]="true"
+            [error]="password?.invalid && password?.touched ? 'La contraseña es requerida' : ''"
+          ></app-input>
+        </div>
+
+        <app-alert *ngIf="errorMessage" type="error" class="login__error">
+          {{ errorMessage }}
+        </app-alert>
+
+        <app-button
+          type="submit"
+          [fullWidth]="true"
+          [disabled]="loginForm.invalid || isSubmitting"
+          variant="primary"
+          size="large"
+        >
+          {{ isSubmitting ? 'Iniciando sesión...' : 'Iniciar sesión' }}
+        </app-button>
+      </form>
+
+    </app-card>
+  </div>
+</div>

@@ -6,3 +6,4 @@
 export * from './card.model';
 export * from './deck.model';
 export * from './filter.model';
+export * from './user.model';

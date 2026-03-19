@@ -4,6 +4,15 @@
 
 .nav-bar {
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $theme-spacing-4;
+
+  @media (max-width: $theme-breakpoint-md) {
+    flex-direction: column;
+    gap: $theme-spacing-3;
+  }
 
   &__list {
     display: flex;
@@ -117,5 +126,37 @@
     @media (max-width: $breakpoint-md) {
       display: inline;
     }
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: $theme-spacing-4;
+    padding: $theme-spacing-2 $theme-spacing-4;
+    background-color: rgba($color-white, 0.1);
+    border: 1px solid rgba($color-white, 0.2);
+    border-radius: $border-radius-md;
+    backdrop-filter: blur(10px);
+
+    @media (max-width: $theme-breakpoint-md) {
+      width: 100%;
+      justify-content: space-between;
+      padding: $theme-spacing-2 $theme-spacing-3;
+    }
+  }
+
+  &__username {
+    font-size: $theme-font-size-sm;
+    font-weight: $theme-font-weight-medium;
+    color: rgba($color-white, 0.95);
+    white-space: nowrap;
+
+    @media (max-width: $theme-breakpoint-md) {
+      font-size: $theme-font-size-xs;
+    }
+  }
+
+  &__logout {
+    white-space: nowrap;
   }
 }

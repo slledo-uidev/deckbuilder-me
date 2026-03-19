@@ -11,4 +11,15 @@
       </a>
     </li>
   </ul>
+
+  <div class="nav-bar__user" *ngIf="currentUser">
+    <span class="nav-bar__username">{{ currentUser.displayName }}</span>
+    <app-button 
+      variant="outline" 
+      size="small"
+      (clicked)="onLogout()"
+      class="nav-bar__logout">
+      Cerrar sesión
+    </app-button>
+  </div>
 </nav>
