@@ -144,16 +144,8 @@ export class FilterPanelComponent implements OnInit {
     this.selectedCost = undefined;
     this.selectedLevel = undefined;
     
-    // Reset all select elements to their default values
-    setTimeout(() => {
-      const selects = document.querySelectorAll('.filter-panel select');
-      selects.forEach((select: any) => {
-        select.value = '';
-      });
-    }, 0);
-    
     this.filterClear.emit();
-    this.emitFilter(); // Apply immediately when clearing
+    // Don't call emitFilter() here - let the parent handle it
   }
   
   applyFilters(): void {

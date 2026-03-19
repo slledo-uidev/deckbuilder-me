@@ -8,13 +8,10 @@
       </div>
       <div class="deck-builder__header-actions">
         <app-button variant="outline" size="small" (clicked)="newDeck()">New Deck</app-button>
-        <app-button variant="outline" size="small" (clicked)="toggleDeckList()">
-          My Decks ({{ savedDecks.length }})
-        </app-button>
         <app-button variant="outline" size="small" (clicked)="openImportModal()">Import</app-button>
         <app-button variant="secondary" size="small" (clicked)="exportCurrentDeck()">Export</app-button>
         <app-button variant="primary" size="small" (clicked)="openSaveModal()">Save Deck</app-button>
-        <app-theme-toggle></app-theme-toggle>
+        <!-- <app-theme-toggle></app-theme-toggle> -->
       </div>
     </header>
 

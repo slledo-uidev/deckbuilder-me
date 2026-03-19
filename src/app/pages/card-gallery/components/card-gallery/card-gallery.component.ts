@@ -74,13 +74,22 @@ export class CardGalleryComponent implements OnInit, OnDestroy {
   }
   
   onFilterClear(): void {
+    // Reset filter state
     this.currentFilter = {
       searchText: this.searchText || undefined
     };
+    
     // Clear filters in the filter panel component
     if (this.filterPanel) {
-      this.filterPanel.clearFilters();
+      // Reset the filter panel's internal state without triggering events
+      this.filterPanel.selectedColors = [];
+      this.filterPanel.selectedTypes = [];
+      this.filterPanel.selectedRarities = [];
+      this.filterPanel.selectedSets = [];
+      this.filterPanel.selectedCost = undefined;
+      this.filterPanel.selectedLevel = undefined;
     }
+    
     this.applyFilters();
   }
   

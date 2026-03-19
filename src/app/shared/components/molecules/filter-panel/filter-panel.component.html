@@ -21,9 +21,9 @@
           id="color-select"
           class="filter-panel__input filter-panel__input--dropdown" 
           (change)="onColorChange($event)"
-          [value]="selectedColors[0] || ''">
+          [ngModel]="selectedColors[0] || ''">
           <option value="">All Colors</option>
-          <option *ngFor="let color of colors" [value]="color" [selected]="selectedColors.includes(color)">
+          <option *ngFor="let color of colors" [value]="color">
             {{ color }}
           </option>
         </select>
@@ -38,9 +38,9 @@
           id="set-select"
           class="filter-panel__input filter-panel__input--dropdown" 
           (change)="onSetChange($event)"
-          [value]="selectedSets[0] || ''">
+          [ngModel]="selectedSets[0] || ''">
           <option value="">All Sets</option>
-          <option *ngFor="let set of availableSets" [value]="set" [selected]="selectedSets.includes(set)">
+          <option *ngFor="let set of availableSets" [value]="set">
             {{ set }}
           </option>
         </select>
@@ -55,9 +55,9 @@
           id="rarity-select"
           class="filter-panel__input filter-panel__input--dropdown" 
           (change)="onRarityChange($event)"
-          [value]="selectedRarities[0] || ''">
+          [ngModel]="selectedRarities[0] || ''">
           <option value="">All Rarities</option>
-          <option *ngFor="let rarity of rarities" [value]="rarity" [selected]="selectedRarities.includes(rarity)">
+          <option *ngFor="let rarity of rarities" [value]="rarity">
             {{ rarity }}
           </option>
         </select>
@@ -72,7 +72,7 @@
           id="type-select"
           class="filter-panel__input filter-panel__input--dropdown" 
           (change)="onTypeChange($event)"
-          [value]="selectedTypes[0] || ''">
+          [ngModel]="selectedTypes[0] || ''">
           <option value="">All Types</option>
           <option *ngFor="let type of types" [value]="type">
             {{ type }}
@@ -89,7 +89,7 @@
           id="cost-select"
           class="filter-panel__input filter-panel__input--dropdown" 
           (change)="onCostChange($event)"
-          [value]="selectedCost !== undefined ? selectedCost : ''">
+          [ngModel]="selectedCost !== undefined ? selectedCost : ''">
           <option value="">Any Cost</option>
           <option *ngFor="let cost of costs" [value]="cost">
             {{ cost }}
@@ -106,7 +106,7 @@
           id="level-select"
           class="filter-panel__input filter-panel__input--dropdown" 
           (change)="onLevelChange($event)"
-          [value]="selectedLevel !== undefined ? selectedLevel : ''">
+          [ngModel]="selectedLevel !== undefined ? selectedLevel : ''">
           <option value="">Any Level</option>
           <option *ngFor="let level of levels" [value]="level">
             Level {{ level }}
