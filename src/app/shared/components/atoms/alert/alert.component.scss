@@ -45,6 +45,17 @@
     }
   }
 
+  // Variant styles
+  &--error-login {
+    background-color: rgba($color-error-light, 0.05);
+    border-color: rgba($color-error, 0.2);
+    color: darken($color-error, 15%);
+
+    .alert__icon {
+      color: $color-error;
+    }
+  }
+
   &--warning {
     background-color: rgba($color-warning, 0.05);
     border-color: rgba($color-warning, 0.3);

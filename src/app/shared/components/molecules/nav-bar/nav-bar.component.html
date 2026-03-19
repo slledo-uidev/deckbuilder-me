@@ -13,13 +13,24 @@
   </ul>
 
   <div class="nav-bar__user" *ngIf="currentUser">
-    <span class="nav-bar__username">{{ currentUser.displayName }}</span>
-    <app-button 
-      variant="outline" 
-      size="small"
-      (clicked)="onLogout()"
-      class="nav-bar__logout">
-      Cerrar sesión
-    </app-button>
+    <button 
+      class="nav-bar__user-button"
+      (click)="toggleUserMenu()"
+      [class.nav-bar__user-button--active]="isUserMenuOpen">
+      <lucide-angular name="user" [size]="20" class="nav-bar__user-icon"></lucide-angular>
+      <span class="nav-bar__username">{{ currentUser.displayName }}</span>
+      <lucide-angular name="chevron-down" [size]="16" class="nav-bar__chevron" [class.nav-bar__chevron--open]="isUserMenuOpen"></lucide-angular>
+    </button>
+
+    <div class="nav-bar__dropdown" *ngIf="isUserMenuOpen">
+      <div class="nav-bar__dropdown-header">
+        <span class="nav-bar__dropdown-name">{{ currentUser.displayName }}</span>
+        <span class="nav-bar__dropdown-username">@{{ currentUser.username }}</span>
+      </div>
+      <button class="nav-bar__dropdown-item" (click)="onLogout()">
+        <lucide-angular name="log-out" [size]="18" class="nav-bar__dropdown-icon"></lucide-angular>
+        <span>Cerrar sesión</span>
+      </button>
+    </div>
   </div>
 </nav>

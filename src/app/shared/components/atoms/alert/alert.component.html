@@ -2,6 +2,9 @@
   <lucide-angular *ngIf="icon" [name]="icon" [size]="20" class="alert__icon lucide-icon"></lucide-angular>
   <div class="alert__content">
     <p *ngIf="title" class="alert__title">{{ title }}</p>
-    <p class="alert__message">{{ message }}</p>
+    <p *ngIf="message" class="alert__message">{{ message }}</p>
+    <div class="alert__message">
+      <ng-content></ng-content>
+    </div>
   </div>
 </div>

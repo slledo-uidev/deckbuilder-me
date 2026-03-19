@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -18,6 +18,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   ];
 
   currentUser: User | null = null;
+  isUserMenuOpen: boolean = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -38,7 +39,21 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    const clickedInside = target.closest('.nav-bar__user');
+    if (!clickedInside && this.isUserMenuOpen) {
+      this.isUserMenuOpen = false;
+    }
+  }
+
+  toggleUserMenu(): void {
+    this.isUserMenuOpen = !this.isUserMenuOpen;
+  }
+
   onLogout(): void {
+    this.isUserMenuOpen = false;
     this.authService.logout();
     this.router.navigate(['/login']);
   }
