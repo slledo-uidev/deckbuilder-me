@@ -11,6 +11,7 @@
         <app-button variant="outline" size="small" (clicked)="toggleDeckList()">
           My Decks ({{ savedDecks.length }})
         </app-button>
+        <app-button variant="outline" size="small" (clicked)="openImportModal()">Import</app-button>
         <app-button variant="secondary" size="small" (clicked)="exportCurrentDeck()">Export</app-button>
         <app-button variant="primary" size="small" (clicked)="openSaveModal()">Save Deck</app-button>
         <app-theme-toggle></app-theme-toggle>
@@ -26,9 +27,18 @@
     <app-save-deck-modal
       [isVisible]="showSaveModal"
       [currentName]="deckName"
+      [deckCards]="getUniqueCards()"
+      [currentPlaceholderId]="currentPlaceholderId"
       (save)="onSaveConfirm($event)"
       (cancel)="onSaveCancel()">
     </app-save-deck-modal>
+
+    <!-- Import deck modal -->
+    <app-import-deck-modal
+      [isVisible]="showImportModal"
+      (import)="onImportDeck($event)"
+      (cancel)="onImportCancel()">
+    </app-import-deck-modal>
 
     <!-- Deck list panel -->
     <div *ngIf="showDeckList" class="deck-builder__deck-list-section">

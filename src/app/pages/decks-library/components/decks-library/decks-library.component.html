@@ -26,15 +26,65 @@
     </app-empty-state>
   </div>
 
-  <!-- Decks List -->
-  <div *ngIf="decks.length > 0" class="decks-library__content">
-
-    <app-deck-list-panel
-      [decks]="decks"
-      [activeDeckId]="null"
-      (loadDeck)="onLoadDeck($event)"
-      (deleteDeck)="onDeleteDeck($event)"
-      (duplicateDeck)="onDuplicateDeck($event)"
-      (exportDeck)="onExportDeck($event)" />
+  <!-- Decks Grid -->
+  <div *ngIf="decks.length > 0" class="decks-library__grid">
+    <div
+      *ngFor="let deck of decks"
+      class="deck-card">
+      
+      <!-- Card Image -->
+      <div class="deck-card__image">
+        <img [src]="getPlaceholderImage(deck)" [alt]="deck.name" />
+      </div>
+      
+      <!-- Card Content -->
+      <div class="deck-card__content">
+        <h3 class="deck-card__title">{{ deck.name }}</h3>
+        
+        <div class="deck-card__meta">
+          <span class="deck-card__stats">
+            {{ getDigiEggCount(deck) }}/5 Eggs &bull; {{ getMainCount(deck) }}/50 Main
+          </span>
+          <span class="deck-card__date">{{ formatDate(deck.updatedAt) }}</span>
+        </div>
+        
+        <div *ngIf="deck.colors?.length" class="deck-card__colors">
+          <span
+            *ngFor="let color of getColorDots(deck)"
+            class="deck-card__color-dot"
+            [class]="'deck-card__color-dot ' + colorToClass(color)"
+            [title]="color">
+          </span>
+        </div>
+        
+        <!-- Actions -->
+        <div class="deck-card__actions">
+          <app-button
+            variant="primary"
+            size="small"
+            (clicked)="onLoadDeck(deck)">
+            Load
+          </app-button>
+          <app-button
+            variant="outline"
+            size="small"
+            (clicked)="onDuplicateDeck(deck.id)">
+            Copy
+          </app-button>
+          <app-button
+            variant="outline"
+            size="small"
+            (clicked)="onExportDeck(deck.id)">
+            Export
+          </app-button>
+          <app-button
+            variant="secondary"
+            size="small"
+            (clicked)="onDeleteDeck(deck.id)">
+            Delete
+          </app-button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

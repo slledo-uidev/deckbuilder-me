@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DeckCard as StorageDeckCard } from '@core/models/deck.model';
 import { FilterPanelComponent } from '@shared/components/molecules/filter-panel/filter-panel.component';
+import { SaveDeckData } from '@shared/components/molecules/save-deck-modal/save-deck-modal.component';
 
 export interface DeckCard {
   card: Card;
@@ -37,8 +38,10 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   // Deck persistence state
   currentDeckId: string | null = null;
   deckName = 'My Deck';
+  currentPlaceholderId?: string;
   savedDecks: Deck[] = [];
   showSaveModal = false;
+  showImportModal = false;
   showDeckList = false;
   saveSuccessMessage = '';
   
@@ -224,6 +227,85 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     this.showSaveModal = false;
   }
 
+  openImportModal(): void {
+    this.showImportModal = true;
+  }
+
+  onImportCancel(): void {
+    this.showImportModal = false;
+  }
+
+  onImportDeck(decklistText: string): void {
+    this.showImportModal = false;
+    
+    try {
+      const importedDeck = this.parseDecklistText(decklistText);
+      
+      // Clear current deck
+      this.digiEggs = [];
+      this.mainDeck = [];
+      this.currentDeckId = null;
+      this.deckName = 'Imported Deck';
+      
+      // Add cards to deck
+      importedDeck.forEach(item => {
+        const card = this.cards.find(c => 
+          c.id === item.cardId || 
+          c.id === item.cardId.replace(/_P\d+$/, '') // Handle parallel versions
+        );
+        
+        if (card) {
+          const deckCard: DeckCard = { card, quantity: item.quantity };
+          
+          // Add to appropriate zone based on card level
+          if (card.level === 2) {
+            this.digiEggs.push(deckCard);
+          } else {
+            this.mainDeck.push(deckCard);
+          }
+        } else {
+          console.warn(`Card not found: ${item.cardId} (${item.name})`);
+        }
+      });
+      
+      this.saveSuccessMessage = 'Deck imported successfully!';
+      setTimeout(() => this.saveSuccessMessage = '', 3000);
+      
+    } catch (error) {
+      console.error('Error parsing decklist:', error);
+      this.saveSuccessMessage = 'Error importing deck. Please check the format.';
+      setTimeout(() => this.saveSuccessMessage = '', 3000);
+    }
+  }
+
+  private parseDecklistText(text: string): { quantity: number; name: string; cardId: string }[] {
+    const lines = text.split('\n');
+    const cards: { quantity: number; name: string; cardId: string }[] = [];
+    
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+      
+      // Skip empty lines and comments
+      if (!trimmedLine || trimmedLine.startsWith('//') || trimmedLine.startsWith('#')) {
+        continue;
+      }
+      
+      // Expected format: "4 Wanyamon BT24-004" or "2 Gomamon BT24-020_P1"
+      // Regex: quantity (number) + name (any text) + cardId (alphanumeric with - and _)
+      const match = trimmedLine.match(/^(\d+)\s+(.+?)\s+([A-Z0-9]+[-_][A-Z0-9_]+)$/i);
+      
+      if (match) {
+        const quantity = parseInt(match[1], 10);
+        const name = match[2].trim();
+        const cardId = match[3].trim();
+        
+        cards.push({ quantity, name, cardId });
+      }
+    }
+    
+    return cards;
+  }
+
   // ─── Modal Controls ─────────────────────────────────────────────────────────
 
   openValidationModal(): void {
@@ -242,9 +324,9 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     this.showStatsModal = false;
   }
 
-  onSaveConfirm(name: string): void {
+  onSaveConfirm(data: SaveDeckData): void {
     this.showSaveModal = false;
-    this.deckName = name;
+    this.deckName = data.name;
 
     const totalCards = this.getTotalCardCount();
     if (totalCards === 0) {
@@ -254,11 +336,12 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     const colors = this.inferDeckColors();
     const deck: Deck = {
       id: this.currentDeckId || this.generateDeckId(),
-      name,
+      name: data.name,
       digiEggs: this.digiEggs.map(dc => ({ cardId: dc.card.id, quantity: dc.quantity })),
       mainDeck: this.mainDeck.map(dc => ({ cardId: dc.card.id, quantity: dc.quantity })),
       sideDeck: [], // Empty - Digimon TCG doesn't use side deck
       colors,
+      placeholderCardId: data.placeholderCardId,
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -266,6 +349,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     const success = this.storageService.saveDeck(deck);
     if (success) {
       this.currentDeckId = deck.id;
+      this.currentPlaceholderId = data.placeholderCardId;
       this.showSuccessMessage('Deck saved successfully!');
     }
   }
@@ -273,6 +357,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   onLoadDeck(deck: Deck): void {
     this.currentDeckId = deck.id;
     this.deckName = deck.name;
+    this.currentPlaceholderId = deck.placeholderCardId;
 
     this.digiEggs = this.hydrateDeckCards(deck.digiEggs);
     this.mainDeck = this.hydrateDeckCards(deck.mainDeck);
@@ -335,6 +420,18 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   getTotalCardCount(): number {
     const count = (arr: DeckCard[]) => arr.reduce((s, dc) => s + dc.quantity, 0);
     return count(this.digiEggs) + count(this.mainDeck);
+  }
+
+  getUniqueCards(): Card[] {
+    const uniqueCardMap = new Map<string, Card>();
+    
+    [...this.digiEggs, ...this.mainDeck].forEach(dc => {
+      if (!uniqueCardMap.has(dc.card.id)) {
+        uniqueCardMap.set(dc.card.id, dc.card);
+      }
+    });
+    
+    return Array.from(uniqueCardMap.values());
   }
 
   // ─── Private helpers ─────────────────────────────────────────────────────────
@@ -411,6 +508,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     console.log('Loading deck:', deck.name);
     this.currentDeckId = deck.id;
     this.deckName = deck.name;
+    this.currentPlaceholderId = deck.placeholderCardId;
 
     // Clear current deck
     this.digiEggs = [];

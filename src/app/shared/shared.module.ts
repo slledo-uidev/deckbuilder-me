@@ -31,6 +31,7 @@ import { SectionHeaderComponent } from './components/molecules/section-header/se
 import { CollapsibleHeaderComponent } from './components/molecules/collapsible-header/collapsible-header.component';
 import { InlineConfirmComponent } from './components/molecules/inline-confirm/inline-confirm.component';
 import { NavBarComponent } from './components/molecules/nav-bar/nav-bar.component';
+import { ImportDeckModalComponent } from './components/molecules/import-deck-modal/import-deck-modal.component';
 
 // Organisms
 import { CardGridComponent } from './components/organisms/card-grid/card-grid.component';
@@ -63,6 +64,7 @@ const COMPONENTS = [
   CollapsibleHeaderComponent,
   InlineConfirmComponent,
   NavBarComponent,
+  ImportDeckModalComponent,
   // Organisms
   CardGridComponent,
   DeckStatsPanelComponent,

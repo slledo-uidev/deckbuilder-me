@@ -1,50 +1,133 @@
 @import 'variables';
 @import 'mixins';
+@import 'd-prob-theme-tokens';
 
 .save-deck-modal {
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-1;
+    margin-bottom: $theme-spacing-2;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
   &__label {
-    font-size: $font-size-sm;
-    font-weight: $font-weight-medium;
-    color: var(--theme-color-text-primary);
-    margin-bottom: $spacing-1;
+    display: block;
+    font-size: $theme-font-size-sm;
+    font-weight: $theme-font-weight-semibold;
+    color: var(--color-text-primary);
+  }
+
+  &__hint {
+    font-size: $theme-font-size-xs;
+    color: var(--color-text-secondary);
+    margin: 0 0 $theme-spacing-3 0;
   }
 
   &__input {
     width: 100%;
-    padding: $spacing-2 $spacing-2;
+    padding: $spacing-2 $spacing-6 $spacing-2 $spacing-3;
     font-size: $font-size-base;
-    border: 1px solid var(--theme-color-border-base);
+    font-family: inherit;
+    border: 2px solid var(--theme-color-border-base);
     border-radius: $border-radius-md;
-    color: var(--theme-color-text-primary);
     background-color: var(--theme-color-bg-elevated);
-    transition: border-color $transition-fast;
-    box-sizing: border-box;
-    min-height: 44px;
+    color: var(--theme-color-text-primary);
+    transition: border-color $transition-base;
+    height: 55px;
 
     &:focus {
       outline: none;
-      border-color: var(--theme-color-primary);
+      border-color: var(--color-primary);
     }
 
     &--error {
-      border-color: var(--theme-color-error);
-
-      &:focus {
-        border-color: var(--theme-color-error);
-      }
+      border-color: var(--color-error);
     }
   }
 
   &__error {
-    font-size: $font-size-xs;
-    color: var(--theme-color-error);
-    margin-top: $spacing-1;
+    display: block;
+    font-size: $theme-font-size-xs;
+    color: var(--color-error);
   }
 
   &__char-count {
-    font-size: $font-size-xs;
-    color: var(--theme-color-text-secondary);
+    display: block;
+    font-size: $theme-font-size-xs;
+    color: var(--color-text-secondary);
     text-align: right;
-    margin-top: $spacing-1;
+  }
+
+  &__card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: $theme-spacing-1;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: $theme-spacing-2;
+    border: 1px solid var(--theme-color-border-base);
+    border-radius: $theme-radius-md;
+    background-color: var(--color-background);
+
+    @media (max-width: $theme-breakpoint-md) {
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: $theme-spacing-2;
+    }
+  }
+
+  &__card-item {
+    cursor: pointer;
+    border: 3px solid transparent;
+    border-radius: $theme-radius-md;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    background-color: var(--color-surface);
+    position: relative;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      border-color: rgba(120, 195, 180, 0.3);
+    }
+
+    &--selected {
+      border-color: #0099CC;
+      box-shadow: 0 0 0 4px rgba(0, 153, 204, 0.3);
+      transform: scale(1.02);
+    }
+  }
+
+  &__card-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 5/7;
+    object-fit: cover;
+    pointer-events: none; // Don't block clicks, let parent handle it
+  }
+
+  &__card-name {
+    padding: $theme-spacing-1 $theme-spacing-2;
+    font-size: $theme-font-size-xs;
+    color: var(--color-text-primary);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: var(--color-surface);
+    pointer-events: none; // Don't block clicks, let parent handle it
+  }
+}
+
+
+.row{
+  display: flex;
+  flex-direction: row;
+  &--gap{
+    gap: $spacing-2;
   }
 }

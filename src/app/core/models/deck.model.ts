@@ -28,6 +28,7 @@ export interface Deck {
   
   // Metadata
   colors: Color[];             // Primary colors (auto-calculated)
+  placeholderCardId?: string;  // Card to display as deck thumbnail
   format?: GameFormat;         // Game format
   archetype?: string;          // Archetype name (e.g., "Medusamon")
   tags?: string[];             // Custom tags

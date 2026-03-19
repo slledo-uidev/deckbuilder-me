@@ -1,0 +1,45 @@
+<app-modal
+  [isVisible]="isVisible"
+  [title]="'Import Deck'"
+  [size]="'large'"
+  [showHeader]="true"
+  [showFooter]="true"
+  [showCloseButton]="true"
+  (close)="onCancelClick()">
+  
+  <div modal-body class="import-deck-modal__body">
+    <p class="import-deck-modal__instructions">
+      Paste your decklist below. Format: <code>Quantity Name CardID</code>
+    </p>
+    <p class="import-deck-modal__example">
+      Example: <code>4 Wanyamon BT24-004</code>
+    </p>
+
+    <textarea
+      class="import-deck-modal__textarea"
+      [(ngModel)]="decklistText"
+      (ngModelChange)="onTextChange()"
+      placeholder="4 Wanyamon BT24-004&#10;2 Gomamon BT24-020_P1&#10;3 Patamon P-197&#10;..."
+      rows="15">
+    </textarea>
+
+    <div *ngIf="errorMessage" class="import-deck-modal__error">
+      <app-alert type="error" [message]="errorMessage"></app-alert>
+    </div>
+  </div>
+
+  <div modal-footer class="import-deck-modal__footer">
+    <app-button
+      variant="outline"
+      size="medium"
+      (clicked)="onCancelClick()">
+      Cancel
+    </app-button>
+    <app-button
+      variant="primary"
+      size="medium"
+      (clicked)="onImportClick()">
+      Import Deck
+    </app-button>
+  </div>
+</app-modal>

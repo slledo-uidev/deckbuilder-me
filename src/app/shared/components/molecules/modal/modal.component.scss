@@ -45,7 +45,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: $spacing-4 $spacing-5;
+    padding: $spacing-2;
     border-bottom: 1px solid $color-border;
     flex-shrink: 0;
   }
@@ -58,7 +58,7 @@
   }
 
   &__body {
-    padding: $spacing-5;
+    padding: $spacing-2;
     overflow-y: auto;
     flex: 1;
   }

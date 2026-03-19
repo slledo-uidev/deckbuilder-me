@@ -1,29 +1,51 @@
 <app-modal
   [isVisible]="isVisible"
   title="Save Deck"
-  size="medium"
+  size="large"
   [showFooter]="true"
   (closed)="onCancel()">
 
   <div modal-body>
-    <label class="save-deck-modal__label" for="deck-name-input">Deck Name</label>
-    <input
-      id="deck-name-input"
-      class="save-deck-modal__input"
-      [class.save-deck-modal__input--error]="nameError"
-      type="text"
-      [(ngModel)]="deckName"
-      placeholder="e.g. Greymon Aggro 2026"
-      maxlength="60"
-      autofocus
-      (keydown)="onKeydown($event)"
-    />
-    <span *ngIf="nameError" class="save-deck-modal__error">{{ nameError }}</span>
-    <span class="save-deck-modal__char-count">{{ deckName.length }}/60</span>
+    <div class="save-deck-modal__section">
+      <label class="save-deck-modal__label" for="deck-name-input">Deck Name</label>
+      <input
+        id="deck-name-input"
+        class="save-deck-modal__input"
+        [class.save-deck-modal__input--error]="nameError"
+        type="text"
+        [(ngModel)]="deckName"
+        placeholder="e.g. Greymon Aggro 2026"
+        maxlength="60"
+        autofocus
+        (keydown)="onKeydown($event)"
+      />
+      <span *ngIf="nameError" class="save-deck-modal__error">{{ nameError }}</span>
+      <span class="save-deck-modal__char-count">{{ deckName.length }}/60</span>
+    </div>
+
+    <div class="save-deck-modal__section">
+        <label class="save-deck-modal__label">Selecciona una carta como Placeholder</label>
+
+      
+      <div class="save-deck-modal__card-grid">
+        <div
+          *ngFor="let card of deckCards"
+          class="save-deck-modal__card-item"
+          [class.save-deck-modal__card-item--selected]="selectedCardId === card.id"
+          (click)="selectCard(card.id)">
+          <img 
+            [src]="getCardImageUrl(card)" 
+            [alt]="card.name"
+            class="save-deck-modal__card-image" />
+        </div>
+      </div>
+    </div>
   </div>
 
   <div modal-footer>
-    <app-button variant="outline" (clicked)="onCancel()">Cancel</app-button>
-    <app-button variant="primary" (clicked)="onConfirm()">Save Deck</app-button>
+    <div class="row row--gap">
+      <app-button variant="outline" (clicked)="onCancel()">Cancel</app-button>
+      <app-button variant="primary" (clicked)="onConfirm()">Save Deck</app-button>
+    </div>
   </div>
 </app-modal>
