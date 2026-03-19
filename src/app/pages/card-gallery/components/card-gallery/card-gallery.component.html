@@ -12,48 +12,57 @@
   <!-- Main Content -->
   <div *ngIf="!loading && !error" class="card-gallery__content">
     
-    <!-- Search and Filters Section -->
-    <section class="card-gallery__search-section">
-      <div class="card-gallery__search-bar">
-        <app-search-bar
-          placeholder="Search cards by name..."
-          (searchChange)="onSearchChange($event)" />
+    <!-- Filters Section (Top, Full Width, Collapsible) -->
+    <div class="card-gallery__filters-section">
+      <div class="card-gallery__filters-header">
+        <div class="card-gallery__search-bar">
+          <app-search-bar
+            placeholder="Search cards by name..."
+            (searchChange)="onSearchChange($event)">
+          </app-search-bar>
+        </div>
+        <div class="card-gallery__filters-controls">
+          <button
+            class="card-gallery__filters-toggle"
+            (click)="toggleFilters()"
+            [attr.aria-expanded]="filtersExpanded"
+            aria-label="Toggle advanced filters">
+            {{ filtersExpanded ? 'Hide Filters' : 'Show Filters' }} 
+            <span *ngIf="getActiveFilterCount() > 0" class="card-gallery__filters-badge">
+              {{ getActiveFilterCount() }}
+            </span>
+            {{ filtersExpanded ? '▲' : '▼' }}
+          </button>
+          <button
+            class="card-gallery__filters-reset"
+            (click)="onFilterClear()"
+            [disabled]="getActiveFilterCount() === 0"
+            title="Reset all filters"
+            aria-label="Reset filters">
+            <lucide-angular name="rotate-ccw" [size]="16" class="lucide-icon"></lucide-angular>
+          </button>
+        </div>
       </div>
-
-      <div class="card-gallery__filter-actions">
-        <button 
-          class="card-gallery__btn-filter"
-          [class.card-gallery__btn-filter--active]="filtersExpanded"
-          (click)="toggleFilters()">
-          Filters
-          <span *ngIf="getActiveFilterCount() > 0" class="card-gallery__filter-badge">
-            {{ getActiveFilterCount() }}
-          </span>
-        </button>
-        
-        <button 
-          *ngIf="getActiveFilterCount() > 0"
-          class="card-gallery__btn-clear"
-          (click)="onFilterClear()">
-          Clear Filters
-        </button>
+      
+      <div 
+        class="card-gallery__filters-content" 
+        [class.card-gallery__filters-content--expanded]="filtersExpanded">
+        <div class="card-gallery__filters-inner">
+          <app-filter-panel
+            (filterChange)="onFilterChange($event)"
+            (filterClear)="onFilterClear()">
+          </app-filter-panel>
+        </div>
       </div>
-    </section>
-
-    <!-- Filters Panel (Collapsible) -->
-    <section 
-      *ngIf="filtersExpanded" 
-      class="card-gallery__filters">
-      <app-filter-panel
-        (filterChange)="onFilterChange($event)" />
-    </section>
+    </div>
 
     <!-- Results Section -->
     <section class="card-gallery__results">
       <div class="card-gallery__results-header">
-        <p class="card-gallery__results-count">
-          {{ filteredCards.length }} cards found
-        </p>
+        <h2 class="card-gallery__section-title">Card Results</h2>
+        <app-badge variant="info" size="medium">
+          {{ filteredCards.length }} cards
+        </app-badge>
       </div>
 
       <!-- Card Grid -->

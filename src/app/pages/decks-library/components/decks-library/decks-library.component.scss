@@ -6,10 +6,10 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: $theme-spacing-6;
+  padding: $theme-spacing-3;
 
   @media (max-width: $theme-breakpoint-md) {
-    padding: $theme-spacing-4;
+    padding: $theme-spacing-2;
   }
 
   &__header {
@@ -17,7 +17,9 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: $theme-spacing-4;
-    margin-bottom: $theme-spacing-6;
+    margin-bottom: $theme-spacing-3;
+    padding-bottom: $theme-spacing-2;
+    border-bottom: 1px solid var(--theme-color-border-base);
 
     @media (max-width: $theme-breakpoint-md) {
       flex-direction: column;

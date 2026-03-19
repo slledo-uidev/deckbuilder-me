@@ -2,7 +2,7 @@
   <div class="decks-library__header">
     <div class="decks-library__header-content">
       <h1 class="decks-library__title">Decks Library</h1>
-      <p class="decks-library__subtitle">Manage your saved decks</p>
+      <p *ngIf="decks.length > 0" class="decks-library__subtitle">{{ decks.length }} {{ decks.length === 1 ? 'deck' : 'decks' }} saved</p>
     </div>
     
     <button 
@@ -28,11 +28,6 @@
 
   <!-- Decks List -->
   <div *ngIf="decks.length > 0" class="decks-library__content">
-    <div class="decks-library__stats">
-      <p class="decks-library__stats-text">
-        {{ decks.length }} {{ decks.length === 1 ? 'deck' : 'decks' }} saved
-      </p>
-    </div>
 
     <app-deck-list-panel
       [decks]="decks"
