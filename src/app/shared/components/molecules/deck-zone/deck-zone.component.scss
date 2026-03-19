@@ -99,27 +99,27 @@
     }
     
     &--red {
-      border-left-color: var(--theme-color-error);
+      border-left-color: var(--color-digimon-red);
     }
     
     &--blue {
-      border-left-color: var(--theme-color-info);
+      border-left-color: var(--color-digimon-blue);
     }
     
     &--yellow {
-      border-left-color: var(--theme-color-warning);
+      border-left-color: var(--color-digimon-yellow);
     }
     
     &--green {
-      border-left-color: var(--theme-color-success);
+      border-left-color: var(--color-digimon-green);
     }
     
     &--black {
-      border-left-color: var(--theme-color-text-primary);
+      border-left-color: var(--color-digimon-black);
     }
     
     &--purple {
-      border-left-color: var(--theme-color-secondary);
+      border-left-color: var(--color-digimon-purple);
     }
     
     &--white {

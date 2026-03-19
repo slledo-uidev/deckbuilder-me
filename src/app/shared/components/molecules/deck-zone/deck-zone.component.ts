@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Card } from '../../../../core/models/card.model';
-import { getTotalCardCount, getCardColorClass } from '../../../utils/deck.utils';
+import { getTotalCardCount, getCardColorClass, sortDeckCards } from '../../../utils/deck.utils';
 
 export interface DeckCard {
   card: Card;
@@ -26,6 +26,15 @@ export class DeckZoneComponent {
 
   get totalCards(): number {
     return getTotalCardCount(this.deckCards);
+  }
+
+  /**
+   * Get deck cards sorted by type and level
+   * Order: Digimon (by level), Tamers, Options
+   * Within each type: sorted by set number (BT1-074, BT1-075, BT2-024)
+   */
+  get sortedDeckCards(): DeckCard[] {
+    return sortDeckCards(this.deckCards);
   }
 
   get isValid(): boolean {

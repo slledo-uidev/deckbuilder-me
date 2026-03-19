@@ -1,0 +1,45 @@
+<div class="decks-library">
+  <div class="decks-library__header">
+    <div class="decks-library__header-content">
+      <h1 class="decks-library__title">Decks Library</h1>
+      <p class="decks-library__subtitle">Manage your saved decks</p>
+    </div>
+    
+    <button 
+      class="decks-library__btn-create"
+      (click)="onCreateNewDeck()">
+      + Create New Deck
+    </button>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="decks.length === 0" class="decks-library__empty">
+    <app-empty-state
+      message="No decks saved yet"
+      icon="folder"
+      size="large">
+      <button 
+        class="decks-library__btn-empty-action"
+        (click)="onCreateNewDeck()">
+        Create Your First Deck
+      </button>
+    </app-empty-state>
+  </div>
+
+  <!-- Decks List -->
+  <div *ngIf="decks.length > 0" class="decks-library__content">
+    <div class="decks-library__stats">
+      <p class="decks-library__stats-text">
+        {{ decks.length }} {{ decks.length === 1 ? 'deck' : 'decks' }} saved
+      </p>
+    </div>
+
+    <app-deck-list-panel
+      [decks]="decks"
+      [activeDeckId]="null"
+      (loadDeck)="onLoadDeck($event)"
+      (deleteDeck)="onDeleteDeck($event)"
+      (duplicateDeck)="onDuplicateDeck($event)"
+      (exportDeck)="onExportDeck($event)" />
+  </div>
+</div>

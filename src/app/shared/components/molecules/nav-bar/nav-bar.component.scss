@@ -1,0 +1,65 @@
+@import '../../../../scss/variables';
+@import '../../../../scss/mixins';
+
+.nav-bar {
+  width: 100%;
+
+  &__list {
+    display: flex;
+    gap: $theme-spacing-2;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    @media (max-width: $theme-breakpoint-md) {
+      gap: $theme-spacing-1;
+    }
+  }
+
+  &__item {
+    display: flex;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    gap: $theme-spacing-2;
+    padding: $theme-spacing-3 $theme-spacing-4;
+    text-decoration: none;
+    color: var(--color-text-secondary);
+    font-size: $theme-font-size-base;
+    font-weight: $theme-font-weight-medium;
+    border-radius: $theme-radius-md;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+
+    @media (max-width: $theme-breakpoint-md) {
+      padding: $theme-spacing-2 $theme-spacing-3;
+      font-size: $theme-font-size-sm;
+    }
+
+    &:hover {
+      background-color: var(--color-surface-hover);
+      color: var(--color-text-primary);
+    }
+
+    &--active {
+      background-color: var(--color-primary);
+      color: $color-white;
+      font-weight: $theme-font-weight-semibold;
+
+      &:hover {
+        background-color: var(--color-primary-dark);
+        color: $color-white;
+      }
+    }
+  }
+
+  &__label {
+    display: inline;
+
+    @media (max-width: $theme-breakpoint-md) {
+      display: inline;
+    }
+  }
+}

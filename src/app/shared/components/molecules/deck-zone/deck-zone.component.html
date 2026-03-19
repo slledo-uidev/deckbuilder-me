@@ -21,7 +21,7 @@
 
   <!-- Cards List -->
   <div *ngIf="!isEmpty && deckCards.length > 0" class="deck-zone__cards">
-    <div *ngFor="let deckCard of deckCards" 
+    <div *ngFor="let deckCard of sortedDeckCards" 
          class="deck-zone__card"
          [class.deck-zone__card--red]="getCardColorClass(deckCard.card.color) === 'red'"
          [class.deck-zone__card--blue]="getCardColorClass(deckCard.card.color) === 'blue'"

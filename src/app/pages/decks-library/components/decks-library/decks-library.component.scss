@@ -1,0 +1,119 @@
+@import '../../../../scss/variables';
+@import '../../../../scss/mixins';
+
+.decks-library {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: $theme-spacing-6;
+
+  @media (max-width: $theme-breakpoint-md) {
+    padding: $theme-spacing-4;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: $theme-spacing-4;
+    margin-bottom: $theme-spacing-6;
+
+    @media (max-width: $theme-breakpoint-md) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  &__header-content {
+    display: flex;
+    flex-direction: column;
+    gap: $theme-spacing-2;
+  }
+
+  &__title {
+    font-size: $theme-font-size-2xl;
+    font-weight: $theme-font-weight-bold;
+    color: var(--color-text-primary);
+    margin: 0;
+
+    @media (max-width: $theme-breakpoint-md) {
+      font-size: $theme-font-size-xl;
+    }
+  }
+
+  &__subtitle {
+    font-size: $theme-font-size-base;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  &__btn-create {
+    padding: $theme-spacing-3 $theme-spacing-5;
+    background-color: var(--color-primary);
+    color: $color-white;
+    border: none;
+    border-radius: $theme-radius-md;
+    font-size: $theme-font-size-base;
+    font-weight: $theme-font-weight-semibold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+
+    @media (max-width: $theme-breakpoint-md) {
+      width: 100%;
+      padding: $theme-spacing-4;
+    }
+
+    &:hover {
+      background-color: var(--color-primary-dark);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &__empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    padding: $theme-spacing-8;
+  }
+
+  &__btn-empty-action {
+    margin-top: $theme-spacing-4;
+    padding: $theme-spacing-3 $theme-spacing-5;
+    background-color: var(--color-primary);
+    color: $color-white;
+    border: none;
+    border-radius: $theme-radius-md;
+    font-size: $theme-font-size-base;
+    font-weight: $theme-font-weight-semibold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: var(--color-primary-dark);
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: $theme-spacing-4;
+  }
+
+  &__stats {
+    padding: $theme-spacing-3 0;
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  &__stats-text {
+    font-size: $theme-font-size-base;
+    font-weight: $theme-font-weight-medium;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+}

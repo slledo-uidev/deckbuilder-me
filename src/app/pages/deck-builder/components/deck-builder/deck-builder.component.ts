@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { StorageService, ValidationService, CardService } from '@core/services';
 import { Deck, Card, CardFilter, Color } from '@core/models';
 import { Subject } from 'rxjs';
@@ -50,7 +51,8 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   constructor(
     private storageService: StorageService,
     private validationService: ValidationService,
-    private cardService: CardService
+    private cardService: CardService,
+    private route: ActivatedRoute
   ) { }
   
   ngOnInit(): void {
@@ -79,6 +81,16 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     this.storageService.decks$
       .pipe(takeUntil(this.destroy$))
       .subscribe(decks => this.savedDecks = decks);
+
+    // Check for deckId in query params and load deck if present
+    this.route.queryParams
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        const deckId = params['deckId'];
+        if (deckId) {
+          this.loadDeckById(deckId);
+        }
+      });
   }
   
   ngOnDestroy(): void {
@@ -386,7 +398,55 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   private generateDeckId(): string {
     return `deck_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
+  /**
+   * Load a specific deck by ID
+   */
+  private loadDeckById(deckId: string): void {
+    const deck = this.savedDecks.find(d => d.id === deckId);
+    if (!deck) {
+      console.error('Deck not found:', deckId);
+      return;
+    }
 
+    console.log('Loading deck:', deck.name);
+    this.currentDeckId = deck.id;
+    this.deckName = deck.name;
+
+    // Clear current deck
+    this.digiEggs = [];
+    this.mainDeck = [];
+
+    // Load cards from deck
+    const allCardIds = [
+      ...deck.digiEggs.map(dc => dc.cardId),
+      ...deck.mainDeck.map(dc => dc.cardId)
+    ];
+
+    this.cardService.getCardsByIds(allCardIds)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(cards => {
+        // Create a map for quick lookup
+        const cardMap = new Map(cards.map(c => [c.id, c]));
+
+        // Populate digi-eggs
+        deck.digiEggs.forEach(dc => {
+          const card = cardMap.get(dc.cardId);
+          if (card) {
+            this.digiEggs.push({ card, quantity: dc.quantity });
+          }
+        });
+
+        // Populate main deck
+        deck.mainDeck.forEach(dc => {
+          const card = cardMap.get(dc.cardId);
+          if (card) {
+            this.mainDeck.push({ card, quantity: dc.quantity });
+          }
+        });
+
+        console.log(`Deck loaded: ${this.digiEggs.length} digi-eggs, ${this.mainDeck.length} main deck cards`);
+      });
+  }
   // ─── Existing methods ────────────────────────────────────────────────────────
 
   private applyFilters(): void {

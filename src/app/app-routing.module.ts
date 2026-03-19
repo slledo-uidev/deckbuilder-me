@@ -4,16 +4,24 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/deck-builder',
+    redirectTo: '/gallery',
     pathMatch: 'full'
   },
   {
-    path: 'deck-builder',
-    loadChildren: () => import('./features/deck-builder/deck-builder.module').then(m => m.DeckBuilderModule)
+    path: 'gallery',
+    loadChildren: () => import('./pages/card-gallery/card-gallery.module').then(m => m.CardGalleryModule)
+  },
+  {
+    path: 'builder',
+    loadChildren: () => import('./pages/deck-builder/deck-builder.module').then(m => m.DeckBuilderModule)
+  },
+  {
+    path: 'decks',
+    loadChildren: () => import('./pages/decks-library/decks-library.module').then(m => m.DecksLibraryModule)
   },
   {
     path: '**',
-    redirectTo: '/deck-builder'
+    redirectTo: '/gallery'
   }
 ];
 

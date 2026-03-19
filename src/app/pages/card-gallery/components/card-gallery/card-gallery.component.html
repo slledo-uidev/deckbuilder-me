@@ -1,0 +1,67 @@
+<div class="card-gallery">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="card-gallery__loading">
+    <p>Loading cards...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="card-gallery__error">
+    <app-alert type="error" [message]="error"></app-alert>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!loading && !error" class="card-gallery__content">
+    
+    <!-- Search and Filters Section -->
+    <section class="card-gallery__search-section">
+      <div class="card-gallery__search-bar">
+        <app-search-bar
+          placeholder="Search cards by name..."
+          (searchChange)="onSearchChange($event)" />
+      </div>
+
+      <div class="card-gallery__filter-actions">
+        <button 
+          class="card-gallery__btn-filter"
+          [class.card-gallery__btn-filter--active]="filtersExpanded"
+          (click)="toggleFilters()">
+          Filters
+          <span *ngIf="getActiveFilterCount() > 0" class="card-gallery__filter-badge">
+            {{ getActiveFilterCount() }}
+          </span>
+        </button>
+        
+        <button 
+          *ngIf="getActiveFilterCount() > 0"
+          class="card-gallery__btn-clear"
+          (click)="onFilterClear()">
+          Clear Filters
+        </button>
+      </div>
+    </section>
+
+    <!-- Filters Panel (Collapsible) -->
+    <section 
+      *ngIf="filtersExpanded" 
+      class="card-gallery__filters">
+      <app-filter-panel
+        (filterChange)="onFilterChange($event)" />
+    </section>
+
+    <!-- Results Section -->
+    <section class="card-gallery__results">
+      <div class="card-gallery__results-header">
+        <p class="card-gallery__results-count">
+          {{ filteredCards.length }} cards found
+        </p>
+      </div>
+
+      <!-- Card Grid -->
+      <app-card-grid
+        [cards]="filteredCards"
+        [loading]="loading"
+        (cardClick)="onCardClick($event)" />
+    </section>
+
+  </div>
+</div>

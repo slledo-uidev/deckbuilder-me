@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { NgChartsModule } from 'ng2-charts';
 import { LucideAngularModule, X, ChevronDown, ChevronUp, Plus, Minus, Trash2, Check, AlertCircle, Info, Save, Download, Upload, Filter, Search, BarChart3, PieChart, Layout, Layers, Package, Inbox, RotateCcw, Sun, Moon } from 'lucide-angular';
 
@@ -29,6 +30,7 @@ import { CardMetaComponent } from './components/molecules/card-meta/card-meta.co
 import { SectionHeaderComponent } from './components/molecules/section-header/section-header.component';
 import { CollapsibleHeaderComponent } from './components/molecules/collapsible-header/collapsible-header.component';
 import { InlineConfirmComponent } from './components/molecules/inline-confirm/inline-confirm.component';
+import { NavBarComponent } from './components/molecules/nav-bar/nav-bar.component';
 
 // Organisms
 import { CardGridComponent } from './components/organisms/card-grid/card-grid.component';
@@ -60,6 +62,7 @@ const COMPONENTS = [
   SectionHeaderComponent,
   CollapsibleHeaderComponent,
   InlineConfirmComponent,
+  NavBarComponent,
   // Organisms
   CardGridComponent,
   DeckStatsPanelComponent,
@@ -71,6 +74,7 @@ const COMPONENTS = [
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
     NgChartsModule,
     LucideAngularModule.pick({ 
       X, 
