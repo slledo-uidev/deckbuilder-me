@@ -50,7 +50,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: var(--theme-color-primary);
+      background: #0099CC;
       color: var(--theme-color-bg-elevated);
       padding: $spacing-2 $spacing-3;
       font-size: $font-size-sm;
@@ -162,31 +162,27 @@
   }
   
   &__info {
-    padding: $spacing-1 $spacing-2;
-    
-    @media (min-width: $breakpoint-md) {
-      padding: $spacing-2;
-    }
+    padding: $spacing-1;
+  
   }
   
   &__name {
     font-size: $font-size-xs;
     font-weight: $font-weight-bold;
-    margin: 0 0 2px 0;
     color: var(--theme-color-text-primary);
     line-height: 1.2;
+    margin: 0;
     @include truncate;
     
     @media (min-width: $breakpoint-md) {
       font-size: $font-size-sm;
-      margin-bottom: 4px;
     }
   }
   
   &__set {
     font-size: 10px;
     color: var(--theme-color-text-secondary);
-    margin: 0 0 2px 0;
+    margin: 0;
     @include truncate;
     
     @media (min-width: $breakpoint-md) {
@@ -197,20 +193,31 @@
   &__id {
     font-size: 10px;
     color: var(--theme-color-text-secondary);
-    margin: 0 0 4px 0;
     font-family: monospace;
     font-weight: $font-weight-medium;
+    margin: 0;
     
     @media (min-width: $breakpoint-md) {
       font-size: 11px;
-      margin-bottom: 6px;
     }
   }
   
   &__meta {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 4px;
+    margin-top: $spacing-1;
+    
+    .row{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .app-badge {
+      display: flex;
+      height: fit-content;
+    }
   }
   
   // Load More trigger (infinite scroll)

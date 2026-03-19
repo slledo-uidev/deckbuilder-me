@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-export type BadgeVariant = 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
+export type BadgeVariant = 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info' | 'red' | 'blue' | 'yellow' | 'green' | 'black' | 'purple' | 'white' | 'digimon' | 'tamer' | 'option' | 'digi-egg';
 export type BadgeSize = 'small' | 'medium' | 'large';
 
 @Component({

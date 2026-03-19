@@ -37,19 +37,25 @@
           <p class="card-grid__id">{{ card.id }}</p>
           
           <div class="card-grid__meta">
-            <app-badge
-              [variant]="card.type === 'Digimon' ? 'primary' : card.type === 'Tamer' ? 'secondary' : 'warning'"
-              size="small"
-            >
-              {{ card.type }}
-            </app-badge>
-            <app-badge
-              *ngFor="let color of card.color"
-              [variant]="getColorBadgeVariant(color)"
-              size="small"
-            >
-              {{ color }}
-            </app-badge>
+            <div class="row">
+              <app-badge
+                class="app-badge"
+                [variant]="getTypeBadgeVariant(card.type)"
+                size="small"
+              >
+                {{ card.type }}
+              </app-badge>
+            </div>
+            <div class="row">
+              <app-badge
+                *ngFor="let color of card.color"
+                class="app-badge"
+                [variant]="getColorBadgeVariant(color)"
+                size="small"
+              >
+                {{ color }}
+              </app-badge>
+            </div>
           </div>
         </div>
       </div>

@@ -119,15 +119,25 @@ export class CardGridComponent implements OnChanges, AfterViewInit, OnDestroy {
   
   getColorBadgeVariant(color: string): BadgeVariant {
     const colorMap: { [key: string]: BadgeVariant } = {
-      'Red': 'error',
-      'Blue': 'info',
-      'Yellow': 'warning',
-      'Green': 'success',
-      'Black': 'default',
-      'Purple': 'primary',
-      'White': 'secondary'
+      'Red': 'red',
+      'Blue': 'blue',
+      'Yellow': 'yellow',
+      'Green': 'green',
+      'Black': 'black',
+      'Purple': 'purple',
+      'White': 'white'
     };
     return colorMap[color] || 'default';
+  }
+  
+  getTypeBadgeVariant(type: string): BadgeVariant {
+    const typeMap: { [key: string]: BadgeVariant } = {
+      'Digimon': 'digimon',
+      'Tamer': 'tamer',
+      'Option': 'option',
+      'Digi-Egg': 'digi-egg'
+    };
+    return typeMap[type] || 'default';
   }
   
   onImageError(event: Event): void {

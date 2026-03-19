@@ -1,78 +1,127 @@
-@import 'variables';
-@import 'mixins';
+@import 'd-prob-theme-tokens';
+@import 'd-prob-theme-variables';
 
 .badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: $font-family-primary;
-  font-weight: $font-weight-medium;
+  font-family: $theme-font-family-base;
+  font-weight: $theme-font-weight-medium;
   line-height: 1;
   white-space: nowrap;
-  border-radius: $border-radius-sm;
+  border-radius: $theme-radius-sm;
+  transition: $theme-transition-fast;
   
   // Variant: Default
   &--default {
-    background-color: $color-surface-alt;
-    color: $color-text-primary;
+    background-color: var(--theme-color-bg-elevated-hover);
+    color: var(--theme-color-text-primary);
+    border: 1px solid var(--theme-color-border-base);
   }
   
   // Variant: Primary
   &--primary {
-    background-color: $color-primary-light;
-    color: $color-primary-dark;
+    background-color: rgba(#0099CC, 0.15);
+    color: #0099CC;
   }
   
   // Variant: Secondary
   &--secondary {
-    background-color: $color-secondary-light;
-    color: $color-secondary-dark;
+    background-color: var(--theme-color-bg-elevated-hover);
+    color: var(--theme-color-text-secondary);
+    border: 1px solid var(--theme-color-border-elevated);
   }
   
   // Variant: Success
   &--success {
-    background-color: $color-success-light;
-    color: darken($color-success, 20%);
+    background-color: rgba(var(--theme-color-success-rgb), 0.15);
+    color: var(--theme-color-success);
   }
   
   // Variant: Error
   &--error {
-    background-color: $color-error-light;
-    color: darken($color-error, 20%);
+    background-color: rgba(var(--theme-color-error-rgb), 0.15);
+    color: var(--theme-color-error);
   }
   
   // Variant: Warning
   &--warning {
-    background-color: $color-warning-light;
-    color: darken($color-warning, 20%);
+    background-color: rgba(var(--theme-color-warning-rgb), 0.15);
+    color: var(--theme-color-warning);
   }
   
   // Variant: Info
   &--info {
-    background-color: $color-info-light;
-    color: darken($color-info, 20%);
+    background-color: rgba(var(--theme-color-info-rgb), 0.15);
+    color: var(--theme-color-info);
+  }
+  
+  // Digimon TCG Color Variants
+  &--red {
+    background-color: var(--color-digimon-red-bg);
+    color: var(--color-digimon-red);
+  }
+  
+  &--blue {
+    background-color: var(--color-digimon-blue-bg);
+    color: var(--color-digimon-blue);
+  }
+  
+  &--yellow {
+    background-color: var(--color-digimon-yellow-bg);
+    color: var(--color-digimon-yellow);
+  }
+  
+  &--green {
+    background-color: var(--color-digimon-green-bg);
+    color: var(--color-digimon-green);
+  }
+  
+  &--black {
+    background-color: var(--color-digimon-black-bg);
+    color: var(--color-digimon-black);
+  }
+  
+  &--purple {
+    background-color: var(--color-digimon-purple-bg);
+    color: var(--color-digimon-purple);
+  }
+  
+  &--white {
+    background-color: var(--color-digimon-white-bg);
+    color: var(--theme-color-text-primary);
+    border: 1px solid var(--theme-color-border-base);
+  }
+  
+  // Card Type Variants (all with same style)
+  &--digimon,
+  &--tamer,
+  &--option,
+  &--digi-egg {
+    background-color: rgba(#0099CC, 0.15);
+    color: #0099CC;
   }
   
   // Size: Small
   &--small {
-    padding: 2px $spacing-1;
-    font-size: $font-size-xs;
+    padding: 2px $theme-spacing-1;
+    font-size: $theme-font-size-xs;
   }
   
   // Size: Medium
   &--medium {
-    padding: 4px $spacing-2;
-    font-size: $font-size-sm;
+    padding: 4px $theme-spacing-2;
+    font-size: $theme-font-size-sm;
   }
   
   // Size: Large
   &--large {
-    padding: $spacing-1 $spacing-3;
-    font-size: $font-size-base;
+    padding: $theme-spacing-1 $theme-spacing-3;
+    font-size: $theme-font-size-base;
   }
   
   // Modifier: Rounded
   &--rounded {
-    border-radius: $border-radius-pill;
+    border-radius: 999px;
   }
 }
