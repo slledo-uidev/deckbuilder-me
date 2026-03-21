@@ -14,6 +14,7 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   decks: Deck[] = [];
   loading = false;
   allCards: Card[] = [];
+  showAdvanced: boolean = false;
   
   private destroy$ = new Subject<void>();
   
@@ -42,6 +43,9 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
       });
   }
   
+  onToggleAdvanced(): void {
+    this.showAdvanced = !this.showAdvanced;
+  }
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

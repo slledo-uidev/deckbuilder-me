@@ -7,9 +7,9 @@
   min-height: 100vh;
   
   &__header {
-    background: linear-gradient(135deg, $color-primary 0%, darken($color-primary, 10%) 100%);
+    background: linear-gradient(135deg, $color-base 0%, darken($color-base-dark, 10%) 100%);
     color: $color-white;
-    padding: $spacing-3 0;
+    padding: $spacing-2 0;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     position: relative;
     
@@ -33,10 +33,10 @@
   &__container {
     max-width: 1440px;
     margin: 0 auto;
-    padding: 0 $spacing-4;
+    padding: 0 $spacing-3;
     
     @media (min-width: $breakpoint-md) {
-      padding: 0 $spacing-6;
+      padding: 0 $spacing-3;
     }
   }
 
@@ -67,12 +67,12 @@
   
   &__title {
     margin: 0;
-    font-size: $font-size-2xl;
+    font-size: $font-size-xl;
     font-weight: $font-weight-bold;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     
     @media (min-width: $breakpoint-md) {
-      font-size: 2.5rem;
+      font-size: $font-size-3xl;
     }
   }
 

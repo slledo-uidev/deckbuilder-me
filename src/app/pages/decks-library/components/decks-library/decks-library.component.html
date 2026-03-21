@@ -1,90 +1,97 @@
 <div class="decks-library">
   <div class="decks-library__header">
     <div class="decks-library__header-content">
-      <h1 class="decks-library__title">Decks Library</h1>
+      <h2 class="decks-library__title">Decks Library</h2>
+      <!-- Toggle Switch -->
+      <label class="decks-library__toggle">
+        <input type="checkbox" [checked]="showAdvanced" (change)="onToggleAdvanced()" />
+        <span class="decks-library__toggle-slider"></span>
+        <span class="decks-library__toggle-label">Advanced Decklist</span>
+      </label>
       <p *ngIf="decks.length > 0" class="decks-library__subtitle">{{ decks.length }} {{ decks.length === 1 ? 'deck' : 'decks' }} saved</p>
     </div>
-    
-    <button 
-      class="decks-library__btn-create"
-      (click)="onCreateNewDeck()">
-      + Create New Deck
-    </button>
+
+    <app-button variant="primary" size="small" (click)="onCreateNewDeck()">+ Create New Deck</app-button>
+
   </div>
 
-  <!-- Empty State -->
-  <div *ngIf="decks.length === 0" class="decks-library__empty">
-    <app-empty-state
-      message="No decks saved yet"
-      icon="folder"
-      size="large">
-      <button 
-        class="decks-library__btn-empty-action"
-        (click)="onCreateNewDeck()">
-        Create Your First Deck
-      </button>
-    </app-empty-state>
-  </div>
+  <ng-container *ngIf="!showAdvanced">
+    <!-- Empty State -->
+    <div *ngIf="decks.length === 0" class="decks-library__empty">
+      <app-empty-state
+        message="No decks saved yet"
+        icon="folder"
+        size="large">
+        <button 
+          class="decks-library__btn-empty-action"
+          (click)="onCreateNewDeck()">
+          Create Your First Deck
+        </button>
+      </app-empty-state>
+    </div>
 
-  <!-- Decks Grid -->
-  <div *ngIf="decks.length > 0" class="decks-library__grid">
-    <div
-      *ngFor="let deck of decks"
-      class="deck-card">
-      
-      <!-- Card Image -->
-      <div class="deck-card__image">
-        <img [src]="getPlaceholderImage(deck)" [alt]="deck.name" />
-      </div>
-      
-      <!-- Card Content -->
-      <div class="deck-card__content">
-        <h3 class="deck-card__title">{{ deck.name }}</h3>
-        
-        <div class="deck-card__meta">
-          <span class="deck-card__stats">
-            {{ getDigiEggCount(deck) }}/5 Eggs &bull; {{ getMainCount(deck) }}/50 Main
-          </span>
-          <span class="deck-card__date">{{ formatDate(deck.updatedAt) }}</span>
+    <!-- Decks Grid -->
+    <div *ngIf="decks.length > 0" class="decks-library__grid">
+      <div
+        *ngFor="let deck of decks"
+        class="deck-card">
+        <!-- Card Image -->
+        <div class="deck-card__image">
+          <img [src]="getPlaceholderImage(deck)" [alt]="deck.name" />
         </div>
-        
-        <div *ngIf="deck.colors?.length" class="deck-card__colors">
-          <span
-            *ngFor="let color of getColorDots(deck)"
-            class="deck-card__color-dot"
-            [class]="'deck-card__color-dot ' + colorToClass(color)"
-            [title]="color">
-          </span>
-        </div>
-        
-        <!-- Actions -->
-        <div class="deck-card__actions">
-          <app-button
-            variant="primary"
-            size="small"
-            (clicked)="onLoadDeck(deck)">
-            Load
-          </app-button>
-          <app-button
-            variant="outline"
-            size="small"
-            (clicked)="onDuplicateDeck(deck.id)">
-            Copy
-          </app-button>
-          <app-button
-            variant="outline"
-            size="small"
-            (clicked)="onExportDeck(deck.id)">
-            Export
-          </app-button>
-          <app-button
-            variant="secondary"
-            size="small"
-            (clicked)="onDeleteDeck(deck.id)">
-            Delete
-          </app-button>
+        <!-- Card Content -->
+        <div class="deck-card__content">
+          <h3 class="deck-card__title">{{ deck.name }}</h3>
+          <div class="deck-card__meta">
+            <span class="deck-card__stats">
+              {{ getDigiEggCount(deck) }}/5 Eggs &bull; {{ getMainCount(deck) }}/50 Main
+            </span>
+            <span class="deck-card__date">{{ formatDate(deck.updatedAt) }}</span>
+          </div>
+          <div *ngIf="deck.colors?.length" class="deck-card__colors">
+            <span
+              *ngFor="let color of getColorDots(deck)"
+              class="deck-card__color-dot"
+              [class]="'deck-card__color-dot ' + colorToClass(color)"
+              [title]="color">
+            </span>
+          </div>
+          <!-- Actions -->
+          <div class="deck-card__actions">
+            <app-button
+              variant="primary"
+              size="small"
+              (clicked)="onLoadDeck(deck)">
+              Load
+            </app-button>
+            <app-button
+              variant="outline"
+              size="small"
+              (clicked)="onDuplicateDeck(deck.id)">
+              Copy
+            </app-button>
+            <app-button
+              variant="outline"
+              size="small"
+              (clicked)="onExportDeck(deck.id)">
+              Export
+            </app-button>
+            <app-button
+              variant="secondary"
+              size="small"
+              (clicked)="onDeleteDeck(deck.id)">
+              Delete
+            </app-button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </ng-container>
+
+  <ng-container *ngIf="showAdvanced">
+    <div class="decks-library__advanced-empty">
+      <h2>Advanced Decklist</h2>
+      <p>This is a placeholder for the advanced decklist view.</p>
+    </div>
+  </ng-container>
 </div>

@@ -22,25 +22,23 @@
           </app-search-bar>
         </div>
         <div class="card-gallery__filters-controls">
-          <button
-            class="card-gallery__filters-toggle"
-            (click)="toggleFilters()"
-            [attr.aria-expanded]="filtersExpanded"
-            aria-label="Toggle advanced filters">
+        <app-button variant="outline" size="medium" [attr.aria-expanded]="filtersExpanded" (click)="toggleFilters()">
             {{ filtersExpanded ? 'Hide Filters' : 'Show Filters' }} 
-            <span *ngIf="getActiveFilterCount() > 0" class="card-gallery__filters-badge">
+            <span *ngIf="getActiveFilterCount() > 0" class="deck-builder__filters-badge">
               {{ getActiveFilterCount() }}
             </span>
             {{ filtersExpanded ? '▲' : '▼' }}
-          </button>
-          <button
-            class="card-gallery__filters-reset"
-            (click)="onFilterClear()"
-            [disabled]="getActiveFilterCount() === 0"
-            title="Reset all filters"
-            aria-label="Reset filters">
+        </app-button>
+        <app-button
+          variant="outline" 
+          size="square" 
+          (click)="onFilterClear()"
+          [disabled]="getActiveFilterCount() === 0"
+          title="Reset all filters"
+          aria-label="Reset filters"
+         >
             <lucide-angular name="rotate-ccw" [size]="16" class="lucide-icon"></lucide-angular>
-          </button>
+        </app-button>
         </div>
       </div>
       

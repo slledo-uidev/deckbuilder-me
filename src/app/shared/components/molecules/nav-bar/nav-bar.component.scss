@@ -36,9 +36,9 @@
     align-items: center;
     justify-content: center;
     gap: $spacing-2;
-    padding: $spacing-2 $spacing-4;
+    padding: $spacing-1 $spacing-2;
     text-decoration: none;
-    color: rgba($color-white, 0.85);
+    color: $color-white-08;
     font-size: $font-size-base;
     font-weight: $font-weight-medium;
     border-radius: $border-radius-md;
@@ -46,10 +46,10 @@
     white-space: nowrap;
     position: relative;
     overflow: hidden;
-    background-color: rgba($color-white, 0.1);
-    border: 1px solid rgba($color-white, 0.2);
+    background-color: $color-base;
+    border: 1px solid $color-white-02;
     backdrop-filter: blur(10px);
-    min-height: 44px;
+    min-height: 48px;
 
     @media (max-width: $breakpoint-md) {
       padding: $spacing-2 $spacing-3;
@@ -69,16 +69,16 @@
       background: linear-gradient(
         90deg,
         transparent,
-        rgba($color-white, 0.2),
+        $color-white-02,
         transparent
       );
       transition: left 0.5s ease;
     }
 
     &:hover {
-      background-color: rgba($color-white, 0.2);
+      background-color: $color-white-02;
       color: $color-white;
-      border-color: rgba($color-white, 0.4);
+      border-color: $color-white-04;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 
@@ -92,24 +92,17 @@
     }
 
     &--active {
-      background: linear-gradient(135deg, 
-        rgba($color-white, 0.95) 0%, 
-        rgba($color-white, 0.85) 100%);
       color: $color-primary;
       font-weight: $font-weight-bold;
-      border-color: rgba($color-white, 0.5);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25),
-                  0 0 0 2px rgba($color-white, 0.3);
+      border-color: $color-primary;
       transform: translateY(-1px);
-
+      
       &:hover {
-        background: linear-gradient(135deg, 
-          $color-white 0%, 
-          rgba($color-white, 0.95) 100%);
-        color: darken($color-primary, 8%);
+        color: $color-primary;
+        border-color: $color-primary;
         transform: translateY(-3px);
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3),
-                    0 0 0 2px rgba($color-white, 0.4);
+                    0 0 0 2px $color-white-04;
       }
 
       &:active {
@@ -139,18 +132,19 @@
   &__user-button {
     display: flex;
     align-items: center;
-    gap: $theme-spacing-2;
-    padding: $theme-spacing-2 $theme-spacing-3;
-    background-color: rgba($color-white, 0.1);
-    border: 1px solid rgba($color-white, 0.2);
-    border-radius: $border-radius-md;
+    background-color: $color-white-01;
+    border: 1px solid $color-white-02;
+    border-radius: 100%;
     backdrop-filter: blur(10px);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    color: rgba($color-white, 0.95);
-    font-size: $theme-font-size-sm;
-    font-weight: $theme-font-weight-medium;
-    min-height: 44px;
+    color: $color-white-09;
+
+    height: 48px;
+    width: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     @media (max-width: $theme-breakpoint-md) {
       width: 100%;
@@ -160,8 +154,8 @@
     }
 
     &:hover {
-      background-color: rgba($color-white, 0.2);
-      border-color: rgba($color-white, 0.4);
+      background-color: $color-white-02;
+      border-color: $color-white-04;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
@@ -171,8 +165,8 @@
     }
 
     &--active {
-      background-color: rgba($color-white, 0.2);
-      border-color: rgba($color-white, 0.4);
+      background-color: $color-white-02;
+      border-color: $color-white-04;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
   }
@@ -203,8 +197,8 @@
     top: calc(100% + $theme-spacing-2);
     right: 0;
     min-width: 220px;
-    background-color: rgba($color-white, 0.95);
-    border: 1px solid rgba($color-white, 0.3);
+    background-color: $color-white-09;
+    border: 1px solid $color-white-03;
     border-radius: $border-radius-md;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(10px);

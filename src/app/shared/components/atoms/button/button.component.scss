@@ -30,12 +30,13 @@
   
   // Variant: Primary
   &--primary {
-    background-color: $color-primary;
-    border: 2px solid $color-primary;
+    background-color: $color-base;
+    border: 2px solid $color-base;
     color: $color-white;
     
     &:hover:not(:disabled) {
-      background-color: $color-primary-dark;
+      background-color: $color-primary;
+      color: $color-base;
       transform: translateY(-1px);
       box-shadow: $shadow-sm;
     }
@@ -65,16 +66,17 @@
   // Variant: Outline
   &--outline {
     background-color: transparent;
-    color: $color-primary;
-    border: 2px solid $color-primary;
+    color: $color-base;
+    border: 2px solid $color-base;
     
     &:hover:not(:disabled) {
-      background-color: $color-primary;
+      background-color: $color-base;
       color: $color-white;
       transform: translateY(-1px);
       box-shadow: $shadow-sm;
     }
   }
+
   
   // Variant: Ghost
   &--ghost {
@@ -110,6 +112,14 @@
     padding: $spacing-3 $spacing-6;
     font-size: $font-size-lg;
     min-height: 48px;
+  }
+
+    // Variant: Outline-square
+  &--square {
+    min-height: 52px;
+    font-size: $font-size-base;
+    width: 52px;
+    padding: 0;
   }
   
   // Modifier: Full width

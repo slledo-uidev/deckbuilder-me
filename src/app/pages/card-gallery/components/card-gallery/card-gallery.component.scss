@@ -4,7 +4,7 @@
 
 .card-gallery {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: $theme-spacing-3;
 
@@ -45,7 +45,7 @@
 
   &__filters-header {
     display: flex;
-    gap: $spacing-3;
+    gap: $spacing-2;
     align-items: center;
     flex-wrap: wrap;
     

@@ -19,11 +19,11 @@
     background-color: var(--theme-color-bg-elevated);
     color: var(--theme-color-text-primary);
     transition: border-color $transition-base;
-    height: 55px;
+    height: 52px;
     
     &:focus {
       outline: none;
-      border-color: var(--theme-color-primary);
+      border-color: $color-base;
     }
     
     &::placeholder {
@@ -32,8 +32,6 @@
     
     @media (min-width: $breakpoint-md) {
       font-size: $font-size-lg;
-      padding: $spacing-2 $spacing-6 $spacing-2 $spacing-4;
-      height: 55px;
     }
   }
   

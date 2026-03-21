@@ -3,7 +3,7 @@
     <!-- Header -->
     <header class="deck-builder__header">
       <div class="deck-builder__header-info">
-        <h1 class="deck-builder__title">Digimon TCG Deck Builder</h1>
+        <h2 class="deck-builder__title">Digimon TCG Deck Builder</h2>
         <span *ngIf="currentDeckId" class="deck-builder__active-deck">{{ deckName }}</span>
       </div>
       <div class="deck-builder__header-actions">
@@ -59,25 +59,24 @@
           </app-search-bar>
         </div>
         <div class="deck-builder__filters-controls">
-          <button
-            class="deck-builder__filters-toggle"
-            (click)="toggleFilters()"
-            [attr.aria-expanded]="filtersExpanded"
-            aria-label="Toggle advanced filters">
+
+        <app-button variant="outline" size="medium" [attr.aria-expanded]="filtersExpanded" (click)="toggleFilters()">
             {{ filtersExpanded ? 'Hide Filters' : 'Show Filters' }} 
             <span *ngIf="getActiveFilterCount() > 0" class="deck-builder__filters-badge">
               {{ getActiveFilterCount() }}
             </span>
             {{ filtersExpanded ? '▲' : '▼' }}
-          </button>
-          <button
-            class="deck-builder__filters-reset"
-            (click)="onFilterClear()"
-            [disabled]="getActiveFilterCount() === 0"
-            title="Reset all filters"
-            aria-label="Reset filters">
+        </app-button>
+        <app-button
+          variant="outline" 
+          size="square" 
+          (click)="onFilterClear()"
+          [disabled]="getActiveFilterCount() === 0"
+          title="Reset all filters"
+          aria-label="Reset filters"
+         >
             <lucide-angular name="rotate-ccw" [size]="16" class="lucide-icon"></lucide-angular>
-          </button>
+        </app-button>
         </div>
       </div>
       
@@ -101,7 +100,7 @@
         <!-- Card Results Section -->
         <section class="deck-builder__card-results">
           <div class="deck-builder__results-header">
-            <h2 class="deck-builder__section-title">Card Results</h2>
+            <h3 class="deck-builder__section-title">Card Results</h3>
             <app-badge variant="info" size="medium">
               {{ filteredCards.length }} cards
             </app-badge>
@@ -122,7 +121,7 @@
       <aside class="deck-builder__deck-sidebar">
         <section class="deck-builder__deck-construction">
           <div class="deck-builder__deck-header">
-            <h2 class="deck-builder__section-title">Your Deck</h2>
+            <h3 class="deck-builder__section-title">Your Deck</h3>
             <div class="deck-builder__deck-actions">
               <app-button variant="outline" size="small" (clicked)="openValidationModal()">Validation</app-button>
               <app-button variant="outline" size="small" (clicked)="openStatsModal()">Stats</app-button>

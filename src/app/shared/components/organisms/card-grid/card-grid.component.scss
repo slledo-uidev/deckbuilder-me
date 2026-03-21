@@ -47,21 +47,21 @@
     &::after {
       content: '+ Add to Deck';
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #0099CC;
-      color: var(--theme-color-bg-elevated);
-      padding: $spacing-2 $spacing-3;
+      bottom: 0;
+      left: 0;
+      background: $color-base;
+      color: $color-white;
+      padding: 13px $spacing-3;
       font-size: $font-size-sm;
       font-weight: $font-weight-bold;
       text-align: center;
-      border-radius: $border-radius-md;
+      border-radius: $border-radius-sm;
       opacity: 0;
       transition: opacity 0.2s ease-in-out;
       pointer-events: none;
       white-space: nowrap;
       box-shadow: var(--theme-shadow-md);
+      width: 100%;
     }
     
     &:hover {

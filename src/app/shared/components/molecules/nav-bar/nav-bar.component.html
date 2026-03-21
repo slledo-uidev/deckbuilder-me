@@ -17,9 +17,9 @@
       class="nav-bar__user-button"
       (click)="toggleUserMenu()"
       [class.nav-bar__user-button--active]="isUserMenuOpen">
-      <lucide-angular name="user" [size]="20" class="nav-bar__user-icon"></lucide-angular>
-      <span class="nav-bar__username">{{ currentUser.displayName }}</span>
-      <lucide-angular name="chevron-down" [size]="16" class="nav-bar__chevron" [class.nav-bar__chevron--open]="isUserMenuOpen"></lucide-angular>
+      <lucide-angular name="user" [size]="24" class="nav-bar__user-icon"></lucide-angular>
+      <!-- <span class="nav-bar__username">{{ currentUser.displayName }}</span>
+      <lucide-angular name="chevron-down" [size]="16" class="nav-bar__chevron" [class.nav-bar__chevron--open]="isUserMenuOpen"></lucide-angular> -->
     </button>
 
     <div class="nav-bar__dropdown" *ngIf="isUserMenuOpen">
