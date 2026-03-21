@@ -1,0 +1,27 @@
+<div class="advance-deck-list">
+  <div class="advance-deck-list__header">
+    <h1>Advance Deck List</h1>
+    <button class="advance-deck-list__btn-create-family" (click)="onAbrirModal()">
+      + Crear familia etimológica
+    </button>
+    <app-create-family-modal
+      *ngIf="mostrarModal"
+      (crear)="onCrearFamilia($event)"
+      (cerrar)="onCerrarModal()">
+    </app-create-family-modal>
+  </div>
+  <!-- Aquí se mostrarán las familias -->
+  <div class="advance-deck-list__families">
+    <!-- Listado de familias etimológicas -->
+    <ng-container *ngIf="familias.length > 0; else noFamilias">
+      <div *ngFor="let familia of familias" class="advance-deck-list__family-card">
+        <h3>{{ familia.nombre }}</h3>
+        <p *ngIf="familia.descripcion">{{ familia.descripcion }}</p>
+        <span>Versiones: {{ familia.mazos.length }}</span>
+      </div>
+    </ng-container>
+    <ng-template #noFamilias>
+      <p>No hay familias creadas aún.</p>
+    </ng-template>
+  </div>
+</div>

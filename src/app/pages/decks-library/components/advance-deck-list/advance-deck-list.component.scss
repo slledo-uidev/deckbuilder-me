@@ -1,0 +1,25 @@
+@import 'variables';
+@import 'mixins';
+@import 'd-prob-theme-tokens';
+
+.advance-deck-list {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $theme-spacing-6;
+  }
+  &__btn-create-family {
+    // Usa tokens del tema
+    padding: $theme-spacing-2 $theme-spacing-4;
+    background: var(--color-primary);
+    color: $color-white;
+    border: none;
+    border-radius: $theme-radius-md;
+    font-weight: $theme-font-weight-bold;
+    cursor: pointer;
+  }
+  &__families {
+    margin-top: $theme-spacing-4;
+  }
+}

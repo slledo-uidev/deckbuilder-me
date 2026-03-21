@@ -7,7 +7,7 @@
   min-height: 100vh;
   
   &__header {
-    background: linear-gradient(135deg, $color-primary 0%, darken($color-primary, 10%) 100%);
+    background: linear-gradient(135deg, $color-base 0%, darken($color-base-dark, 10%) 100%);
     color: $color-white;
     padding: $spacing-3 0;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);

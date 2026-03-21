@@ -1,0 +1,17 @@
+<div class="create-family-modal__backdrop">
+  <div class="create-family-modal">
+    <h2>Crear familia etimológica</h2>
+    <label>
+      Nombre*
+      <input [(ngModel)]="nombre" maxlength="40" required />
+    </label>
+    <label>
+      Descripción
+      <textarea [(ngModel)]="descripcion" maxlength="120"></textarea>
+    </label>
+    <div class="create-family-modal__actions">
+      <button (click)="onCrear()" [disabled]="!nombre.trim()">Crear</button>
+      <button (click)="onCerrar()">Cancelar</button>
+    </div>
+  </div>
+</div>

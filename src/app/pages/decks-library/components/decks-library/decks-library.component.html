@@ -2,7 +2,7 @@
   <div class="decks-library__header">
     <div class="decks-library__header-content">
       <h1 class="decks-library__title">Decks Library</h1>
-      <p *ngIf="decks.length > 0" class="decks-library__subtitle">{{ decks.length }} {{ decks.length === 1 ? 'deck' : 'decks' }} saved</p>
+      <p *ngIf="decks && decks.length > 0" class="decks-library__subtitle">{{ decks.length }} {{ decks.length === 1 ? 'deck' : 'decks' }} saved</p>
     </div>
     
     <button 
@@ -13,7 +13,7 @@
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="decks.length === 0" class="decks-library__empty">
+  <div *ngIf="decks && decks.length === 0" class="decks-library__empty">
     <app-empty-state
       message="No decks saved yet"
       icon="folder"
@@ -27,7 +27,7 @@
   </div>
 
   <!-- Decks Grid -->
-  <div *ngIf="decks.length > 0" class="decks-library__grid">
+  <div *ngIf="decks && decks.length > 0" class="decks-library__grid">
     <div
       *ngFor="let deck of decks"
       class="deck-card">

@@ -2,7 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '@shared/shared.module';
+
 import { DecksLibraryComponent } from './components/decks-library/decks-library.component';
+import { AdvanceDeckListComponent } from './components/advance-deck-list/advance-deck-list.component';
 
 const routes: Routes = [
   {
@@ -13,7 +15,8 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    DecksLibraryComponent
+    DecksLibraryComponent,
+    AdvanceDeckListComponent
   ],
   imports: [
     CommonModule,

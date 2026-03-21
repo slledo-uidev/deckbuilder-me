@@ -1,3 +1,4 @@
+import { CreateFamilyModalComponent } from './components/molecules/create-family-modal/create-family-modal.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -39,6 +40,7 @@ import { DeckStatsPanelComponent } from './components/organisms/deck-stats-panel
 import { DeckListPanelComponent } from './components/organisms/deck-list-panel/deck-list-panel.component';
 
 const COMPONENTS = [
+  CreateFamilyModalComponent,
   // Atoms
   ButtonComponent,
   InputComponent,
