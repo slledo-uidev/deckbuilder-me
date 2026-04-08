@@ -26,14 +26,14 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    // Initialize form
+    // Initialize form (email field replaces username)
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required]],
+      username: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.loginForm.invalid) {
       return;
     }
@@ -41,15 +41,15 @@ export class LoginComponent implements OnInit {
     this.isSubmitting = true;
     this.errorMessage = '';
 
-    const { username, password } = this.loginForm.value;
-    const success = this.authService.login(username, password);
+    const { username: email, password } = this.loginForm.value;
+    const error = await this.authService.login(email, password);
 
-    if (success) {
+    if (!error) {
       // Login successful, redirect to gallery
       this.router.navigate(['/gallery']);
     } else {
       // Login failed, show error
-      this.errorMessage = 'Usuario o contraseña incorrectos';
+      this.errorMessage = 'Email o contraseña incorrectos';
       this.isSubmitting = false;
     }
   }

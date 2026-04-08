@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '@services/auth.service';
-import { User } from '@models/user.model';
+import { AppUser } from '@models/user.model';
 
 @Component({
   selector: 'app-nav-bar',
@@ -17,7 +17,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
     { path: '/decks', label: 'Decks Library', icon: 'folder' }
   ];
 
-  currentUser: User | null = null;
+  currentUser: AppUser | null = null;
   isUserMenuOpen: boolean = false;
   private destroy$ = new Subject<void>();
 
@@ -54,7 +54,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   onLogout(): void {
     this.isUserMenuOpen = false;
-    this.authService.logout();
-    this.router.navigate(['/login']);
+    this.authService.logout().then(() => {
+      this.router.navigate(['/login']);
+    });
   }
 }

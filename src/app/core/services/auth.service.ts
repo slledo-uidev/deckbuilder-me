@@ -1,112 +1,104 @@
 /**
- * Auth Service - Manages user authentication
- * Handles login, logout, and session management with hardcoded users
+ * Auth Service - Manages user authentication via Supabase
+ * Handles login, logout, and session management
  */
 
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { User } from '@models/user.model';
+import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
+import { environment } from '../../../environments/environment';
+import { BehaviorSubject, Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AppUser } from '@models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  // Hardcoded users
-  private readonly USERS: User[] = [
-    { username: 'me-sergiolll', password: 'K7m#pQ9$xL2w', displayName: 'MrRedV' },
-    { username: 'me-picha', password: 'R5n@vB8!yT4s', displayName: 'Picha' },
-    { username: 'me-lan', password: 'W3j&zC6*hN1q', displayName: 'Agumongallego' },
-    { username: 'me-sergiom', password: 'F9d%mP7^kX5r', displayName: 'S-man' }
-  ];
+  private supabase: SupabaseClient;
 
-  // sessionStorage key for session persistence
-  private readonly SESSION_KEY = 'deckbuilder.session';
+  // Raw Supabase user observable (for internal / Supabase-level use)
+  private userSubject$ = new BehaviorSubject<User | null>(null);
 
-  // Current user observable
-  private currentUserSubject$ = new BehaviorSubject<User | null>(null);
-  public readonly currentUser$ = this.currentUserSubject$.asObservable();
+  // App-level user observable (for UI components)
+  private appUserSubject$ = new BehaviorSubject<AppUser | null>(null);
+  public readonly currentUser$: Observable<AppUser | null> = this.appUserSubject$.asObservable();
 
   constructor() {
-    this.loadSessionFromStorage();
+    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
+
+    // Restore session on app load
+    this.supabase.auth.getSession().then(({ data }) => {
+      const user = data.session?.user ?? null;
+      this.userSubject$.next(user);
+      this.appUserSubject$.next(this.toAppUser(user));
+    });
+
+    // Listen for auth state changes (login / logout / token refresh)
+    this.supabase.auth.onAuthStateChange((_event, session) => {
+      const user = session?.user ?? null;
+      this.userSubject$.next(user);
+      this.appUserSubject$.next(this.toAppUser(user));
+    });
   }
 
-  /**
-   * Load session from sessionStorage (if exists)
-   */
-  private loadSessionFromStorage(): void {
-    try {
-      const sessionJson = sessionStorage.getItem(this.SESSION_KEY);
-      if (sessionJson) {
-        const user = JSON.parse(sessionJson) as User;
-        // Verify user still exists in hardcoded list (prevent session hijacking)
-        const validUser = this.USERS.find(u => u.username === user.username);
-        if (validUser) {
-          this.currentUserSubject$.next(validUser);
-        } else {
-          // Invalid user, clear session
-          this.clearSession();
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load session from sessionStorage', error);
-      this.clearSession();
-    }
-  }
+  // ─── Public API ────────────────────────────────────────────────────────────
 
   /**
-   * Save session to sessionStorage
+   * Login with email and password via Supabase.
+   * Returns an error string on failure, null on success.
    */
-  private saveSessionToStorage(user: User): void {
-    try {
-      const sessionJson = JSON.stringify(user);
-      sessionStorage.setItem(this.SESSION_KEY, sessionJson);
-    } catch (error) {
-      console.error('Failed to save session to sessionStorage', error);
-    }
-  }
-
-  /**
-   * Clear session from sessionStorage
-   */
-  private clearSession(): void {
-    sessionStorage.removeItem(this.SESSION_KEY);
-    this.currentUserSubject$.next(null);
-  }
-
-  /**
-   * Attempt login with username and password
-   * Returns true if successful, false otherwise
-   */
-  public login(username: string, password: string): boolean {
-    const user = this.USERS.find(u => u.username === username && u.password === password);
-    
-    if (user) {
-      this.currentUserSubject$.next(user);
-      this.saveSessionToStorage(user);
-      return true;
-    }
-    
-    return false;
+  public async login(email: string, password: string): Promise<string | null> {
+    const { error } = await this.supabase.auth.signInWithPassword({ email, password });
+    return error ? error.message : null;
   }
 
   /**
    * Logout current user
    */
-  public logout(): void {
-    this.clearSession();
+  public async logout(): Promise<void> {
+    await this.supabase.auth.signOut();
   }
 
   /**
-   * Get current logged-in user (synchronous)
+   * Get current logged-in AppUser (synchronous snapshot)
    */
-  public getCurrentUser(): User | null {
-    return this.currentUserSubject$.value;
+  public getCurrentUser(): AppUser | null {
+    return this.appUserSubject$.value;
   }
 
   /**
-   * Check if user is authenticated
+   * Get current Supabase user ID (UUID)
+   */
+  public get currentUserId(): string | undefined {
+    return this.userSubject$.value?.id;
+  }
+
+  /**
+   * Check if user is authenticated (synchronous)
    */
   public isAuthenticated(): boolean {
-    return this.currentUserSubject$.value !== null;
+    return this.userSubject$.value !== null;
+  }
+
+  /**
+   * Expose the raw Supabase client for services that need direct DB access
+   */
+  public getClient(): SupabaseClient {
+    return this.supabase;
+  }
+
+  // ─── Private helpers ───────────────────────────────────────────────────────
+
+  /**
+   * Map a Supabase User to an AppUser for the UI layer
+   */
+  private toAppUser(user: User | null): AppUser | null {
+    if (!user) return null;
+    return {
+      id: user.id,
+      email: user.email ?? '',
+      displayName: user.user_metadata?.['displayName'] ?? user.email?.split('@')[0] ?? 'User'
+    };
   }
 }
+

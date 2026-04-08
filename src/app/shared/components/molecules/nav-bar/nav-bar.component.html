@@ -25,7 +25,7 @@
     <div class="nav-bar__dropdown" *ngIf="isUserMenuOpen">
       <div class="nav-bar__dropdown-header">
         <span class="nav-bar__dropdown-name">{{ currentUser.displayName }}</span>
-        <span class="nav-bar__dropdown-username">@{{ currentUser.username }}</span>
+        <span class="nav-bar__dropdown-username">{{ currentUser.email }}</span>
       </div>
       <button class="nav-bar__dropdown-item" (click)="onLogout()">
         <lucide-angular name="log-out" [size]="18" class="nav-bar__dropdown-icon"></lucide-angular>

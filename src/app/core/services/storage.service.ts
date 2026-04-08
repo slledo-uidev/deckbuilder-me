@@ -50,7 +50,7 @@ export class StorageService {
     if (!currentUser) {
       throw new Error('No authenticated user. Cannot access storage.');
     }
-    return `${this.DECKS_KEY_BASE}.${currentUser.username}`;
+    return `${this.DECKS_KEY_BASE}.${currentUser.id}`;
   }
   
   /**
@@ -69,7 +69,7 @@ export class StorageService {
         
         // Only migrate if user has no decks yet
         if (!existingUserDecks) {
-          console.log(`Migrating legacy decks to user: ${currentUser.username}`);
+          console.log(`Migrating legacy decks to user: ${currentUser.id}`);
           localStorage.setItem(userKey, legacyDecksJson);
         }
         
@@ -335,7 +335,7 @@ export class StorageService {
   private getUserArchetypesKey(): string {
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) throw new Error('No authenticated user.');
-    return `${this.ARCHETYPES_KEY_BASE}.${currentUser.username}`;
+    return `${this.ARCHETYPES_KEY_BASE}.${currentUser.id}`;
   }
 
   private loadArchetypesFromStorage(): void {

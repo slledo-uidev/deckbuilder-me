@@ -354,7 +354,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       colors,
       placeholderCardId: data.placeholderCardId,
       archetype: data.archetype || undefined,
-      author: currentUser?.username,
+      author: currentUser?.email,
       createdAt: new Date(),
       updatedAt: new Date()
     };
