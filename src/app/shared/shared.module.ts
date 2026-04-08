@@ -35,6 +35,7 @@ import { NavBarComponent } from './components/molecules/nav-bar/nav-bar.componen
 import { ImportDeckModalComponent } from './components/molecules/import-deck-modal/import-deck-modal.component';
 import { ArchetypeCardComponent } from './components/molecules/archetype-card/archetype-card.component';
 import { ArchetypeVersionsModalComponent } from './components/molecules/archetype-versions-modal/archetype-versions-modal.component';
+import { CreateArchetypeModalComponent } from './components/molecules/create-archetype-modal/create-archetype-modal.component';
 
 // Organisms
 import { CardGridComponent } from './components/organisms/card-grid/card-grid.component';
@@ -72,6 +73,7 @@ const COMPONENTS = [
   ImportDeckModalComponent,
   ArchetypeCardComponent,
   ArchetypeVersionsModalComponent,
+  CreateArchetypeModalComponent,
   // Organisms
   CardGridComponent,
   DeckStatsPanelComponent,

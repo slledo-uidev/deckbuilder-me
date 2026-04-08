@@ -33,6 +33,19 @@
     gap: $theme-spacing-2;
   }
 
+  &__advanced-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $theme-spacing-3;
+  }
+
+  &__advanced-count {
+    font-size: $theme-font-size-sm;
+    color: var(--theme-color-text-secondary);
+    margin: 0;
+  }
+
   &__title {
     font-size: $theme-font-size-2xl;
     font-weight: $theme-font-weight-bold;
@@ -187,91 +200,6 @@
     @media (max-width: $theme-breakpoint-md) {
       font-size: $theme-font-size-base;
     }
-  }
-
-  // ─── Arquetipo inline ───────────────────────────────────────────────────────
-  &__archetype {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  &__archetype-badge {
-    font-size: $theme-font-size-xs;
-    font-weight: $theme-font-weight-medium;
-    color: var(--theme-color-primary);
-    background-color: var(--theme-color-bg-elevated);
-    border: 1px solid var(--theme-color-border-base);
-    border-radius: $theme-radius-sm;
-    padding: 1px 6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 160px;
-  }
-
-  &__archetype-edit-btn {
-    background: none;
-    border: none;
-    padding: 2px 4px;
-    cursor: pointer;
-    color: var(--theme-color-text-muted);
-    border-radius: $theme-radius-sm;
-    display: flex;
-    align-items: center;
-    transition: color 0.15s ease, background-color 0.15s ease;
-    flex-shrink: 0;
-
-    &:hover {
-      color: var(--theme-color-primary);
-      background-color: var(--theme-color-bg-elevated);
-    }
-  }
-
-  &__archetype-edit {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  &__archetype-input {
-    font-size: $theme-font-size-xs;
-    font-family: inherit;
-    padding: 2px 6px;
-    height: 22px;
-    border: 1.5px solid var(--theme-color-primary);
-    border-radius: $theme-radius-sm;
-    background-color: var(--theme-color-bg-elevated);
-    color: var(--theme-color-text-primary);
-    width: 120px;
-    outline: none;
-
-    &:focus {
-      box-shadow: 0 0 0 2px rgba(var(--theme-color-primary-rgb, 142, 212, 199), 0.2);
-    }
-  }
-
-  &__archetype-save-btn,
-  &__archetype-cancel-btn {
-    background: none;
-    border: none;
-    padding: 2px 4px;
-    cursor: pointer;
-    border-radius: $theme-radius-sm;
-    display: flex;
-    align-items: center;
-    transition: color 0.15s ease, background-color 0.15s ease;
-    flex-shrink: 0;
-  }
-
-  &__archetype-save-btn {
-    color: var(--theme-color-success);
-    &:hover { background-color: rgba(76, 175, 80, 0.1); }
-  }
-
-  &__archetype-cancel-btn {
-    color: var(--theme-color-text-muted);
-    &:hover { background-color: var(--theme-color-bg-elevated); }
   }
 
   &__meta {

@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { Card } from '@core/models';
+import { Archetype } from '@core/models';
 
 export interface SaveDeckData {
   name: string;
@@ -16,7 +17,7 @@ export class SaveDeckModalComponent implements OnChanges {
   @Input() isVisible = false;
   @Input() currentName = '';
   @Input() currentArchetype = '';
-  @Input() existingArchetypes: string[] = [];
+  @Input() availableArchetypes: Archetype[] = [];
   @Input() deckCards: Card[] = [];
   @Input() currentPlaceholderId?: string;
 

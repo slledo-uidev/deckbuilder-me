@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StorageService, ValidationService, CardService, AuthService } from '@core/services';
-import { Deck, Card, CardFilter, Color } from '@core/models';
+import { Deck, Card, CardFilter, Color, Archetype } from '@core/models';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DeckCard as StorageDeckCard } from '@core/models/deck.model';
@@ -41,6 +41,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   currentArchetype = '';
   currentPlaceholderId?: string;
   savedDecks: Deck[] = [];
+  archetypes: Archetype[] = [];
   showSaveModal = false;
   showImportModal = false;
   showDeckList = false;
@@ -86,6 +87,11 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     this.storageService.decks$
       .pipe(takeUntil(this.destroy$))
       .subscribe(decks => this.savedDecks = decks);
+
+    // Subscribe to archetypes
+    this.storageService.archetypes$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(archetypes => this.archetypes = archetypes);
 
     // Check for deckId in query params and load deck if present
     this.route.queryParams
@@ -463,14 +469,6 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       }
     });
     return Array.from(colorSet);
-  }
-
-  get existingArchetypes(): string[] {
-    return [...new Set(
-      this.savedDecks
-        .map(d => d.archetype)
-        .filter((a): a is string => !!a)
-    )].sort();
   }
 
   private buildTCGOneText(deck: Deck): string {

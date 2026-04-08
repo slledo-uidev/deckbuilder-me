@@ -90,6 +90,17 @@ export const DEFAULT_VALIDATION_RULES: DeckValidationRules = {
 };
 
 /**
+ * Archetype — a named grouping entity managed independently of decks.
+ * Decks reference an archetype by name (Deck.archetype).
+ */
+export interface Archetype {
+  id: string;             // UUID
+  name: string;           // Display name (unique per user)
+  description?: string;   // Optional description
+  createdAt: Date;
+}
+
+/**
  * Archetype group — used by the Advanced Decklist view.
  * Groups all decks that share the same archetype name.
  */

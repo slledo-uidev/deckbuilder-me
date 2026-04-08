@@ -43,46 +43,6 @@
         <div class="deck-card__content">
           <h3 class="deck-card__title">{{ deck.name }}</h3>
 
-          <!-- Arquetipo: modo lectura -->
-          <div class="deck-card__archetype" *ngIf="editingArchetypeId !== deck.id">
-            <span class="deck-card__archetype-badge">
-              {{ deck.archetype || 'Unclassified' }}
-            </span>
-            <button
-              class="deck-card__archetype-edit-btn"
-              (click)="onStartEditArchetype(deck)"
-              title="Edit archetype"
-              type="button">
-              <lucide-angular name="pencil" [size]="11" class="lucide-icon"></lucide-angular>
-            </button>
-          </div>
-
-          <!-- Arquetipo: modo edición inline -->
-          <div class="deck-card__archetype-edit" *ngIf="editingArchetypeId === deck.id">
-            <input
-              class="deck-card__archetype-input"
-              type="text"
-              [(ngModel)]="editingArchetypeValue"
-              placeholder="e.g. Agumon..."
-              maxlength="60"
-              (keydown)="onArchetypeKeydown($event, deck)"
-              autofocus />
-            <button
-              class="deck-card__archetype-save-btn"
-              (click)="onSaveArchetype(deck)"
-              title="Save"
-              type="button">
-              <lucide-angular name="check" [size]="11" class="lucide-icon"></lucide-angular>
-            </button>
-            <button
-              class="deck-card__archetype-cancel-btn"
-              (click)="onCancelEditArchetype()"
-              title="Cancel"
-              type="button">
-              <lucide-angular name="x" [size]="11" class="lucide-icon"></lucide-angular>
-            </button>
-          </div>
-
           <div class="deck-card__meta">
             <span class="deck-card__stats">
               {{ getDigiEggCount(deck) }}/5 Eggs &bull; {{ getMainCount(deck) }}/50 Main
@@ -130,6 +90,16 @@
   </ng-container>
 
   <ng-container *ngIf="showAdvanced">
+    <!-- Header de vista Advanced con botón de crear arquetipo -->
+    <div class="decks-library__advanced-header">
+      <p class="decks-library__advanced-count" *ngIf="archetypeGroups.length > 0">
+        {{ archetypeGroups.length }} {{ archetypeGroups.length === 1 ? 'archetype' : 'archetypes' }}
+      </p>
+      <app-button variant="outline" size="small" (clicked)="onOpenCreateArchetypeModal()">
+        + New Archetype
+      </app-button>
+    </div>
+
     <app-archetype-grid
       [groups]="archetypeGroups"
       [loading]="loading"
@@ -142,5 +112,12 @@
       (closed)="onModalClose()"
       (deckAction)="onDeckAction($event)">
     </app-archetype-versions-modal>
+
+    <app-create-archetype-modal
+      [isVisible]="isCreateArchetypeModalOpen"
+      [existingNames]="existingArchetypeNames"
+      (saved)="onArchetypeSaved($event)"
+      (cancelled)="onCreateArchetypeModalClose()">
+    </app-create-archetype-modal>
   </ng-container>
 </div>

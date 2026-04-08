@@ -1,0 +1,55 @@
+<app-modal
+  [isVisible]="isVisible"
+  title="New Archetype"
+  size="small"
+  [showFooter]="true"
+  (closed)="onCancel()">
+
+  <div modal-body class="create-archetype-modal">
+
+    <!-- Name -->
+    <div class="create-archetype-modal__field">
+      <label class="create-archetype-modal__label" for="archetype-name-input">
+        Name <span class="create-archetype-modal__required">*</span>
+      </label>
+      <input
+        id="archetype-name-input"
+        class="create-archetype-modal__input"
+        [class.create-archetype-modal__input--error]="nameError"
+        type="text"
+        [(ngModel)]="name"
+        placeholder="e.g. Agumon, Garurumon, BK Agumon..."
+        maxlength="60"
+        autofocus
+        (keydown)="onKeydown($event)" />
+      <span *ngIf="nameError" class="create-archetype-modal__error">{{ nameError }}</span>
+      <span class="create-archetype-modal__char-count">{{ name.length }}/60</span>
+    </div>
+
+    <!-- Description -->
+    <div class="create-archetype-modal__field">
+      <label class="create-archetype-modal__label" for="archetype-desc-input">
+        Description
+        <span class="create-archetype-modal__optional">(optional)</span>
+      </label>
+      <textarea
+        id="archetype-desc-input"
+        class="create-archetype-modal__textarea"
+        [(ngModel)]="description"
+        placeholder="Short description of this archetype..."
+        maxlength="120"
+        rows="2">
+      </textarea>
+      <span class="create-archetype-modal__char-count">{{ description.length }}/120</span>
+    </div>
+
+  </div>
+
+  <div modal-footer>
+    <div class="row row--gap">
+      <app-button variant="outline" (clicked)="onCancel()">Cancel</app-button>
+      <app-button variant="primary" (clicked)="onConfirm()">Create Archetype</app-button>
+    </div>
+  </div>
+
+</app-modal>

@@ -6,7 +6,7 @@
 
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Deck } from '@models/deck.model';
+import { Deck, Archetype } from '@models/deck.model';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -18,19 +18,26 @@ export class StorageService {
   private readonly LEGACY_DECKS_KEY = 'deckbuilder.decks'; // Old key for migration
   private readonly COLLECTION_KEY = 'deckbuilder.collection';
   private readonly SETTINGS_KEY = 'deckbuilder.settings';
-  
+  private readonly ARCHETYPES_KEY_BASE = 'deckbuilder.archetypes';
+
   // Decks cache
   private decksCache$ = new BehaviorSubject<Deck[]>([]);
   public readonly decks$ = this.decksCache$.asObservable();
+
+  // Archetypes cache
+  private archetypesCache$ = new BehaviorSubject<Archetype[]>([]);
+  public readonly archetypes$ = this.archetypesCache$.asObservable();
   
   constructor(private authService: AuthService) {
     // Subscribe to auth changes to reload decks when user changes
     this.authService.currentUser$.subscribe(user => {
       if (user) {
         this.loadDecksFromStorage();
+        this.loadArchetypesFromStorage();
       } else {
         // User logged out, clear cache
         this.decksCache$.next([]);
+        this.archetypesCache$.next([]);
       }
     });
   }
@@ -321,6 +328,67 @@ export class StorageService {
    */
   private generateId(): string {
     return `deck_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  // ─── Archetypes ─────────────────────────────────────────────────────────────
+
+  private getUserArchetypesKey(): string {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) throw new Error('No authenticated user.');
+    return `${this.ARCHETYPES_KEY_BASE}.${currentUser.username}`;
+  }
+
+  private loadArchetypesFromStorage(): void {
+    try {
+      const key = this.getUserArchetypesKey();
+      const json = localStorage.getItem(key);
+      if (json) {
+        const archetypes = JSON.parse(json) as Archetype[];
+        archetypes.forEach(a => { a.createdAt = new Date(a.createdAt); });
+        this.archetypesCache$.next(archetypes);
+      } else {
+        this.archetypesCache$.next([]);
+      }
+    } catch (error) {
+      console.error('Failed to load archetypes from localStorage', error);
+      this.archetypesCache$.next([]);
+    }
+  }
+
+  private saveArchetypesToStorage(archetypes: Archetype[]): boolean {
+    try {
+      const key = this.getUserArchetypesKey();
+      localStorage.setItem(key, JSON.stringify(archetypes));
+      return true;
+    } catch (error) {
+      console.error('Failed to save archetypes to localStorage', error);
+      return false;
+    }
+  }
+
+  public getAllArchetypes(): Archetype[] {
+    return this.archetypesCache$.value;
+  }
+
+  public saveArchetype(archetype: Archetype): boolean {
+    const archetypes = [...this.archetypesCache$.value];
+    const idx = archetypes.findIndex(a => a.id === archetype.id);
+    if (idx >= 0) {
+      archetypes[idx] = archetype;
+    } else {
+      archetype.createdAt = new Date();
+      archetypes.push(archetype);
+    }
+    const success = this.saveArchetypesToStorage(archetypes);
+    if (success) this.archetypesCache$.next(archetypes);
+    return success;
+  }
+
+  public deleteArchetype(id: string): boolean {
+    const archetypes = this.archetypesCache$.value.filter(a => a.id !== id);
+    const success = this.saveArchetypesToStorage(archetypes);
+    if (success) this.archetypesCache$.next(archetypes);
+    return success;
   }
   
   /**
