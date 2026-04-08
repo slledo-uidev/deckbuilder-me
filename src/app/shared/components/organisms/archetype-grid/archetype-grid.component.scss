@@ -1,0 +1,38 @@
+@import 'variables';
+@import 'mixins';
+@import 'd-prob-theme-tokens';
+
+.archetype-grid {
+  width: 100%;
+
+  // ─── Loading ───────────────────────────────────────────────────────────────
+  &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    color: var(--theme-color-text-secondary);
+    font-size: $theme-font-size-base;
+  }
+
+  // ─── Empty ─────────────────────────────────────────────────────────────────
+  &__empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    padding: $theme-spacing-8;
+  }
+
+  // ─── Grid ──────────────────────────────────────────────────────────────────
+  &__container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $theme-spacing-4;
+
+    @media (max-width: $theme-breakpoint-md) {
+      grid-template-columns: 1fr;
+      gap: $theme-spacing-3;
+    }
+  }
+}

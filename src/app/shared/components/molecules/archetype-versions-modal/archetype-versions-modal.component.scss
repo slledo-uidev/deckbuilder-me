@@ -1,0 +1,250 @@
+@import 'variables';
+@import 'mixins';
+@import 'd-prob-theme-tokens';
+
+// ─── Contenedor interno del modal ────────────────────────────────────────────
+.versions-modal {
+  display: flex;
+  flex-direction: column;
+  gap: $theme-spacing-2;
+
+  &__count {
+    font-size: $theme-font-size-sm;
+    color: var(--theme-color-text-secondary);
+    margin: 0 0 $theme-spacing-1;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $theme-spacing-2;
+  }
+}
+
+// ─── Fila de versión ─────────────────────────────────────────────────────────
+.version-row {
+  display: flex;
+  align-items: center;
+  gap: $theme-spacing-3;
+  padding: $theme-spacing-2;
+  border: 1.5px solid var(--theme-color-border-base);
+  border-radius: $theme-radius-lg;
+  background-color: var(--theme-color-bg-card);
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+
+  &:hover {
+    border-color: var(--theme-color-primary);
+    background-color: var(--theme-color-bg-elevated);
+  }
+
+  // Estado de borrado pendiente
+  &--deleting {
+    border-color: var(--theme-color-danger);
+    background-color: rgba(var(--theme-color-danger-rgb, 220, 53, 69), 0.05);
+  }
+
+  // ─── Thumbnail ─────────────────────────────────────────────────────────────
+  &__image {
+    width: 56px;
+    height: 80px;
+    flex-shrink: 0;
+    border-radius: $theme-radius-base;
+    overflow: hidden;
+    background-color: var(--theme-color-bg-elevated);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    @media (max-width: $theme-breakpoint-sm) {
+      display: none;
+    }
+  }
+
+  &__image-fallback {
+    color: var(--theme-color-text-muted);
+  }
+
+  // ─── Info ──────────────────────────────────────────────────────────────────
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: $theme-font-size-base;
+    font-weight: $theme-font-weight-semibold;
+    color: var(--theme-color-text-primary);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__stats {
+    font-size: $theme-font-size-sm;
+    color: var(--theme-color-text-secondary);
+  }
+
+  // ─── Arquetipo inline ──────────────────────────────────────────────────────
+  &__archetype {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__archetype-value {
+    font-size: $theme-font-size-xs;
+    font-weight: $theme-font-weight-medium;
+    color: var(--theme-color-primary);
+    background-color: var(--theme-color-bg-elevated);
+    border: 1px solid var(--theme-color-border-base);
+    border-radius: $theme-radius-sm;
+    padding: 1px 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+  }
+
+  &__archetype-edit-btn {
+    background: none;
+    border: none;
+    padding: 2px 4px;
+    cursor: pointer;
+    color: var(--theme-color-text-muted);
+    border-radius: $theme-radius-sm;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s ease, background-color 0.15s ease;
+    flex-shrink: 0;
+
+    &:hover {
+      color: var(--theme-color-primary);
+      background-color: var(--theme-color-bg-elevated);
+    }
+  }
+
+  &__archetype-edit {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__archetype-input {
+    font-size: $theme-font-size-xs;
+    font-family: inherit;
+    padding: 2px 6px;
+    height: 24px;
+    border: 1.5px solid var(--theme-color-primary);
+    border-radius: $theme-radius-sm;
+    background-color: var(--theme-color-bg-elevated);
+    color: var(--theme-color-text-primary);
+    width: 140px;
+    outline: none;
+    transition: box-shadow 0.15s ease;
+
+    &:focus {
+      box-shadow: 0 0 0 2px rgba(var(--theme-color-primary-rgb, 142, 212, 199), 0.25);
+    }
+  }
+
+  &__archetype-save-btn,
+  &__archetype-cancel-btn {
+    background: none;
+    border: none;
+    padding: 2px 4px;
+    cursor: pointer;
+    border-radius: $theme-radius-sm;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s ease, background-color 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  &__archetype-save-btn {
+    color: var(--theme-color-success);
+    &:hover { background-color: rgba(var(--theme-color-success-rgb, 76, 175, 80), 0.1); }
+  }
+
+  &__archetype-cancel-btn {
+    color: var(--theme-color-text-muted);
+    &:hover { background-color: var(--theme-color-bg-elevated); }
+  }
+
+  &__colors {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  &__color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    display: inline-block;
+    flex-shrink: 0;
+
+    &--red    { background-color: #E74C3C; }
+    &--blue   { background-color: #3498DB; }
+    &--yellow { background-color: #F1C40F; }
+    &--green  { background-color: #27AE60; }
+    &--black  { background-color: #2C3E50; }
+    &--purple { background-color: #9B59B6; }
+    &--white  { background-color: #ECF0F1; border-color: rgba(0,0,0,0.25); }
+  }
+
+  &__date {
+    font-size: $theme-font-size-xs;
+    color: var(--theme-color-text-muted);
+  }
+
+  // ─── Acciones ──────────────────────────────────────────────────────────────
+  &__actions {
+    display: flex;
+    gap: $theme-spacing-1;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+
+    @media (max-width: $theme-breakpoint-md) {
+      flex-direction: column;
+      width: 80px;
+    }
+  }
+
+  // ─── Confirm inline ────────────────────────────────────────────────────────
+  &__confirm {
+    display: flex;
+    align-items: center;
+    gap: $theme-spacing-1;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+
+    @media (max-width: $theme-breakpoint-md) {
+      flex-direction: column;
+      align-items: flex-end;
+    }
+  }
+
+  &__confirm-text {
+    font-size: $theme-font-size-sm;
+    font-weight: $theme-font-weight-medium;
+    color: var(--theme-color-danger);
+    white-space: nowrap;
+  }
+}

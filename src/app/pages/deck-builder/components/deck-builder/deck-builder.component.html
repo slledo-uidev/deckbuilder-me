@@ -24,6 +24,8 @@
     <app-save-deck-modal
       [isVisible]="showSaveModal"
       [currentName]="deckName"
+      [currentArchetype]="currentArchetype"
+      [existingArchetypes]="existingArchetypes"
       [deckCards]="getUniqueCards()"
       [currentPlaceholderId]="currentPlaceholderId"
       (save)="onSaveConfirm($event)"

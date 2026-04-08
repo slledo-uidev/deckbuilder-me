@@ -1,0 +1,43 @@
+<div class="archetype-card" (click)="onSelect()" role="button" tabindex="0"
+  (keydown.enter)="onSelect()" (keydown.space)="onSelect()"
+  [attr.aria-label]="'Open ' + group.archetype + ' archetype'">
+
+  <!-- Thumbnail -->
+  <div class="archetype-card__image">
+    <img
+      *ngIf="thumbnailUrl"
+      [src]="thumbnailUrl"
+      [alt]="group.archetype"
+      loading="lazy" />
+    <div *ngIf="!thumbnailUrl" class="archetype-card__image-placeholder">
+      <lucide-angular name="layers" [size]="32" class="lucide-icon"></lucide-angular>
+    </div>
+    <!-- Version badge -->
+    <span class="archetype-card__badge">{{ versionLabel }}</span>
+  </div>
+
+  <!-- Content -->
+  <div class="archetype-card__content">
+    <h3 class="archetype-card__title">{{ group.archetype }}</h3>
+
+    <!-- Colors -->
+    <div *ngIf="group.colors.length" class="archetype-card__colors">
+      <span
+        *ngFor="let color of group.colors"
+        class="archetype-card__color-dot"
+        [class]="'archetype-card__color-dot ' + colorToClass(color)"
+        [title]="color">
+      </span>
+    </div>
+
+    <span class="archetype-card__date">
+      Updated {{ formatDate(group.latestUpdatedAt) }}
+    </span>
+
+    <!-- CTA -->
+    <div class="archetype-card__footer">
+      <span class="archetype-card__cta">View versions →</span>
+    </div>
+  </div>
+
+</div>

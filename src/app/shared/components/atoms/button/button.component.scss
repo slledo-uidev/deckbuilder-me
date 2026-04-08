@@ -36,6 +36,7 @@
     
     &:hover:not(:disabled) {
       background-color: $color-primary;
+      border: 2px solid $color-primary;
       color: $color-base;
       transform: translateY(-1px);
       box-shadow: $shadow-sm;
@@ -54,6 +55,7 @@
     
     &:hover:not(:disabled) {
       background-color: $color-secondary-dark;
+      border: 2px solid $color-secondary-dark;
       transform: translateY(-1px);
       box-shadow: $shadow-sm;
     }

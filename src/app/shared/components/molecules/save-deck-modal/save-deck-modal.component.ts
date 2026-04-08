@@ -4,6 +4,7 @@ import { Card } from '@core/models';
 export interface SaveDeckData {
   name: string;
   placeholderCardId: string;
+  archetype: string;   // Empty string if not specified
 }
 
 @Component({
@@ -14,6 +15,8 @@ export interface SaveDeckData {
 export class SaveDeckModalComponent implements OnChanges {
   @Input() isVisible = false;
   @Input() currentName = '';
+  @Input() currentArchetype = '';
+  @Input() existingArchetypes: string[] = [];
   @Input() deckCards: Card[] = [];
   @Input() currentPlaceholderId?: string;
 
@@ -21,6 +24,7 @@ export class SaveDeckModalComponent implements OnChanges {
   @Output() cancel = new EventEmitter<void>();
 
   deckName = '';
+  archetype = '';
   nameError = '';
   selectedCardId = '';
 
@@ -28,6 +32,7 @@ export class SaveDeckModalComponent implements OnChanges {
     // Only reset selection when modal opens (isVisible changes from false to true)
     if (changes['isVisible'] && changes['isVisible'].currentValue === true) {
       this.deckName = this.currentName || '';
+      this.archetype = this.currentArchetype || '';
       this.nameError = '';
       
       // Auto-select current placeholder if it exists in current deck cards
@@ -58,7 +63,7 @@ export class SaveDeckModalComponent implements OnChanges {
       this.nameError = 'Please select a placeholder card';
       return;
     }
-    this.save.emit({ name: trimmed, placeholderCardId: this.selectedCardId });
+    this.save.emit({ name: trimmed, placeholderCardId: this.selectedCardId, archetype: this.archetype.trim() });
   }
 
   onCancel(): void {

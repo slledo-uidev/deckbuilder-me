@@ -1,0 +1,142 @@
+@import 'variables';
+@import 'mixins';
+@import 'd-prob-theme-tokens';
+
+// ─── Tamaños ────────────────────────────────────────────────────────────────
+$toggle-sizes: (
+  'small': (
+    track-width: 32px,
+    track-height: 18px,
+    knob-size: 12px,
+    knob-offset: 3px,
+    knob-travel: 14px,
+    font-size: $theme-font-size-sm,
+  ),
+  'medium': (
+    track-width: 44px,
+    track-height: 24px,
+    knob-size: 16px,
+    knob-offset: 4px,
+    knob-travel: 20px,
+    font-size: $theme-font-size-base,
+  ),
+  'large': (
+    track-width: 56px,
+    track-height: 30px,
+    knob-size: 22px,
+    knob-offset: 4px,
+    knob-travel: 26px,
+    font-size: $theme-font-size-md,
+  ),
+);
+
+// ─── Componente base ─────────────────────────────────────────────────────────
+.toggle-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: $theme-spacing-1;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+
+  // Label izquierda: invertir orden
+  &--label-left {
+    flex-direction: row-reverse;
+  }
+
+  // Estado deshabilitado
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  &__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  &__track {
+    position: relative;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background-color: var(--theme-color-bg-elevated);
+    border: 1.5px solid var(--theme-color-border-dark);
+    transition:
+      background-color 0.25s ease,
+      border-color 0.25s ease,
+      box-shadow 0.25s ease;
+  
+    &--on {
+      background-color: var(--theme-color-primary);
+      border-color: var(--theme-color-primary);
+      box-shadow: 0 0 0 3px rgba(var(--theme-color-primary-rgb, 142, 212, 199), 0.18);
+    }
+  }
+  &__knob {
+    position: absolute;
+    top: 50%;
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.2),
+      0 1px 2px rgba(0, 0, 0, 0.14);
+    transform: translateY(-50%) translateX(0);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
+  
+  // ─── Label ──────────────────────────────────────────────────────────────────
+  &__label {
+    font-size: $theme-font-size-base;
+    font-weight: $theme-font-weight-medium;
+    color: var(--theme-color-text-secondary);
+    transition: color 0.25s ease;
+    line-height: $theme-line-height-tight;
+  
+    &--active {
+      color: var(--theme-color-text-primary);
+    }
+  }
+}
+
+// ─── Focus visible (teclado) ─────────────────────────────────────────────────
+.toggle-switch__input:focus-visible ~ .toggle-switch__track {
+  outline: 2px solid var(--theme-color-primary);
+  outline-offset: 2px;
+}
+
+// ─── Hover sobre el track ────────────────────────────────────────────────────
+.toggle-switch:not(.toggle-switch--disabled):hover .toggle-switch__track:not(.toggle-switch__track--on) {
+  border-color: var(--theme-color-primary);
+  background-color: var(--theme-color-bg-elevated-hover);
+}
+
+// ─── Tamaños aplicados ───────────────────────────────────────────────────────
+@each $size, $values in $toggle-sizes {
+  .toggle-switch--#{$size} {
+    .toggle-switch__track {
+      width: map-get($values, track-width);
+      height: map-get($values, track-height);
+    }
+
+    .toggle-switch__knob {
+      width: map-get($values, knob-size);
+      height: map-get($values, knob-size);
+      left: map-get($values, knob-offset);
+
+      &--on {
+        transform: translateY(-50%) translateX(map-get($values, knob-travel));
+      }
+    }
+
+    .toggle-switch__label {
+      font-size: map-get($values, font-size);
+    }
+  }
+}

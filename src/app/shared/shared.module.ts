@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgChartsModule } from 'ng2-charts';
-import { LucideAngularModule, X, ChevronDown, ChevronUp, Plus, Minus, Trash2, Check, AlertCircle, Info, Save, Download, Upload, Filter, Search, BarChart3, PieChart, Layout, Layers, Package, Inbox, RotateCcw, Sun, Moon, User, LogOut, Folder, Grid } from 'lucide-angular';
+import { LucideAngularModule, X, ChevronDown, ChevronUp, Plus, Minus, Trash2, Check, AlertCircle, Info, Save, Download, Upload, Filter, Search, BarChart3, PieChart, Layout, Layers, Package, Inbox, RotateCcw, Sun, Moon, User, LogOut, Folder, Grid, Pencil } from 'lucide-angular';
 
 // Atoms
 import { ButtonComponent } from './components/atoms/button/button.component';
@@ -18,6 +18,7 @@ import { StatItemComponent } from './components/atoms/stat-item/stat-item.compon
 import { AlertComponent } from './components/atoms/alert/alert.component';
 import { SectionTitleComponent } from './components/atoms/section-title/section-title.component';
 import { ThemeToggleComponent } from './components/atoms/theme-toggle/theme-toggle.component';
+import { ToggleSwitchComponent } from './components/atoms/toggle-switch/toggle-switch.component';
 
 // Molecules
 import { SearchBarComponent } from './components/molecules/search-bar/search-bar.component';
@@ -32,11 +33,14 @@ import { CollapsibleHeaderComponent } from './components/molecules/collapsible-h
 import { InlineConfirmComponent } from './components/molecules/inline-confirm/inline-confirm.component';
 import { NavBarComponent } from './components/molecules/nav-bar/nav-bar.component';
 import { ImportDeckModalComponent } from './components/molecules/import-deck-modal/import-deck-modal.component';
+import { ArchetypeCardComponent } from './components/molecules/archetype-card/archetype-card.component';
+import { ArchetypeVersionsModalComponent } from './components/molecules/archetype-versions-modal/archetype-versions-modal.component';
 
 // Organisms
 import { CardGridComponent } from './components/organisms/card-grid/card-grid.component';
 import { DeckStatsPanelComponent } from './components/organisms/deck-stats-panel/deck-stats-panel.component';
 import { DeckListPanelComponent } from './components/organisms/deck-list-panel/deck-list-panel.component';
+import { ArchetypeGridComponent } from './components/organisms/archetype-grid/archetype-grid.component';
 
 const COMPONENTS = [
   // Atoms
@@ -51,6 +55,7 @@ const COMPONENTS = [
   StatItemComponent,
   AlertComponent,
   ThemeToggleComponent,
+  ToggleSwitchComponent,
   SectionTitleComponent,
   // Molecules
   SearchBarComponent,
@@ -65,10 +70,13 @@ const COMPONENTS = [
   InlineConfirmComponent,
   NavBarComponent,
   ImportDeckModalComponent,
+  ArchetypeCardComponent,
+  ArchetypeVersionsModalComponent,
   // Organisms
   CardGridComponent,
   DeckStatsPanelComponent,
-  DeckListPanelComponent
+  DeckListPanelComponent,
+  ArchetypeGridComponent
 ];
 
 @NgModule({
@@ -105,7 +113,8 @@ const COMPONENTS = [
       User,
       LogOut,
       Folder,
-      Grid
+      Grid,
+      Pencil
     })
   ],
   exports: [...COMPONENTS, LucideAngularModule]

@@ -1,0 +1,128 @@
+<app-modal
+  [isVisible]="isOpen"
+  [title]="group?.archetype || ''"
+  size="large"
+  [showFooter]="false"
+  (closed)="onClose()">
+
+  <div modal-body class="versions-modal" *ngIf="group">
+
+    <!-- Subheader: número de versiones -->
+    <p class="versions-modal__count">
+      {{ group.decks.length }} {{ group.decks.length === 1 ? 'version' : 'versions' }} saved
+    </p>
+
+    <!-- Lista de versiones -->
+    <ul class="versions-modal__list">
+      <li
+        *ngFor="let deck of group.decks"
+        class="version-row"
+        [class.version-row--deleting]="pendingDeleteId === deck.id">
+
+        <!-- Thumbnail -->
+        <div class="version-row__image">
+          <img
+            *ngIf="getThumbnailUrl(deck)"
+            [src]="getThumbnailUrl(deck)"
+            [alt]="deck.name"
+            loading="lazy" />
+          <lucide-angular
+            *ngIf="!getThumbnailUrl(deck)"
+            name="layers"
+            [size]="24"
+            class="lucide-icon version-row__image-fallback">
+          </lucide-angular>
+        </div>
+
+        <!-- Info -->
+        <div class="version-row__info">
+          <h4 class="version-row__name">{{ deck.name }}</h4>
+
+          <!-- Arquetipo: modo lectura -->
+          <div class="version-row__archetype" *ngIf="editingArchetypeId !== deck.id">
+            <span class="version-row__archetype-value">
+              {{ deck.archetype || 'Unclassified' }}
+            </span>
+            <button
+              class="version-row__archetype-edit-btn"
+              (click)="onEditArchetype(deck)"
+              [attr.aria-label]="'Edit archetype for ' + deck.name"
+              title="Edit archetype"
+              type="button">
+              <lucide-angular name="pencil" [size]="12" class="lucide-icon"></lucide-angular>
+            </button>
+          </div>
+
+          <!-- Arquetipo: modo edición inline -->
+          <div class="version-row__archetype-edit" *ngIf="editingArchetypeId === deck.id">
+            <input
+              class="version-row__archetype-input"
+              type="text"
+              [(ngModel)]="editingArchetypeValue"
+              placeholder="e.g. Agumon, Garurumon..."
+              maxlength="60"
+              (keydown)="onArchetypeKeydown($event, deck)"
+              autofocus />
+            <button
+              class="version-row__archetype-save-btn"
+              (click)="onArchetypeSave(deck)"
+              title="Save archetype"
+              type="button">
+              <lucide-angular name="check" [size]="12" class="lucide-icon"></lucide-angular>
+            </button>
+            <button
+              class="version-row__archetype-cancel-btn"
+              (click)="onArchetypeCancel()"
+              title="Cancel"
+              type="button">
+              <lucide-angular name="x" [size]="12" class="lucide-icon"></lucide-angular>
+            </button>
+          </div>
+
+          <span class="version-row__stats">
+            {{ getDigiEggCount(deck) }}/5 Eggs &bull; {{ getMainCount(deck) }}/50 Main
+          </span>
+          <div *ngIf="deck.colors.length" class="version-row__colors">
+            <span
+              *ngFor="let color of deck.colors"
+              class="version-row__color-dot"
+              [class]="'version-row__color-dot ' + colorToClass(color)"
+              [title]="color">
+            </span>
+          </div>
+          <span class="version-row__date">{{ formatDate(deck.updatedAt) }}</span>
+        </div>
+
+        <!-- Acciones normales -->
+        <div class="version-row__actions" *ngIf="pendingDeleteId !== deck.id">
+          <app-button variant="primary" size="small" (clicked)="onLoad(deck)">
+            Load
+          </app-button>
+          <app-button variant="outline" size="small" (clicked)="onCopy(deck)">
+            Copy
+          </app-button>
+          <app-button variant="outline" size="small" (clicked)="onExport(deck)">
+            Export
+          </app-button>
+          <app-button variant="secondary" size="small" (clicked)="onDeleteRequest(deck.id)">
+            Delete
+          </app-button>
+        </div>
+
+        <!-- Confirm de borrado inline -->
+        <div class="version-row__confirm" *ngIf="pendingDeleteId === deck.id">
+          <span class="version-row__confirm-text">Delete "{{ deck.name }}"?</span>
+          <app-button variant="secondary" size="small" (clicked)="onDeleteConfirm(deck)">
+            Yes, delete
+          </app-button>
+          <app-button variant="outline" size="small" (clicked)="onDeleteCancel()">
+            Cancel
+          </app-button>
+        </div>
+
+      </li>
+    </ul>
+
+  </div>
+
+</app-modal>

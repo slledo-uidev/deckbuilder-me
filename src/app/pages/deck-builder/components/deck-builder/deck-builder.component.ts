@@ -38,6 +38,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   // Deck persistence state
   currentDeckId: string | null = null;
   deckName = 'My Deck';
+  currentArchetype = '';
   currentPlaceholderId?: string;
   savedDecks: Deck[] = [];
   showSaveModal = false;
@@ -328,6 +329,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   onSaveConfirm(data: SaveDeckData): void {
     this.showSaveModal = false;
     this.deckName = data.name;
+    this.currentArchetype = data.archetype;
 
     const totalCards = this.getTotalCardCount();
     if (totalCards === 0) {
@@ -345,6 +347,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       sideDeck: [], // Empty - Digimon TCG doesn't use side deck
       colors,
       placeholderCardId: data.placeholderCardId,
+      archetype: data.archetype || undefined,
       author: currentUser?.username,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -361,6 +364,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   onLoadDeck(deck: Deck): void {
     this.currentDeckId = deck.id;
     this.deckName = deck.name;
+    this.currentArchetype = deck.archetype || '';
     this.currentPlaceholderId = deck.placeholderCardId;
 
     this.digiEggs = this.hydrateDeckCards(deck.digiEggs);
@@ -459,6 +463,14 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       }
     });
     return Array.from(colorSet);
+  }
+
+  get existingArchetypes(): string[] {
+    return [...new Set(
+      this.savedDecks
+        .map(d => d.archetype)
+        .filter((a): a is string => !!a)
+    )].sort();
   }
 
   private buildTCGOneText(deck: Deck): string {

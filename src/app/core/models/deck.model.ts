@@ -88,3 +88,22 @@ export const DEFAULT_VALIDATION_RULES: DeckValidationRules = {
   maxCopiesPerCard: 4,
   sideDeckMax: undefined  // No official limit
 };
+
+/**
+ * Archetype group — used by the Advanced Decklist view.
+ * Groups all decks that share the same archetype name.
+ */
+export const UNCLASSIFIED_ARCHETYPE = 'Unclassified';
+
+export interface DeckArchetypeGroup {
+  /** Archetype name (Deck.archetype) or UNCLASSIFIED_ARCHETYPE if not set */
+  archetype: string;
+  /** All decks belonging to this archetype, sorted by updatedAt desc */
+  decks: Deck[];
+  /** Date of the most recently updated deck in the group */
+  latestUpdatedAt: Date;
+  /** Union of all colors across decks in the group (deduped) */
+  colors: Color[];
+  /** Thumbnail URL: uses the most recently updated deck's placeholderCardId */
+  thumbnailCardId?: string;
+}

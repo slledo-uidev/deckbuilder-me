@@ -3,6 +3,7 @@
  */
 
 import { CardType } from '@core/models';
+import { Deck, DeckArchetypeGroup, UNCLASSIFIED_ARCHETYPE } from '@core/models';
 
 export interface DeckCard {
   card: any;
@@ -136,4 +137,64 @@ export function formatCardCount(current: number, max?: number): string {
  */
 export function isInRange(value: number, min: number, max: number): boolean {
   return value >= min && value <= max;
+}
+
+/**
+ * Group a flat list of decks by archetype for the Advanced Decklist view.
+ *
+ * - Decks without an archetype are grouped under UNCLASSIFIED_ARCHETYPE.
+ * - Within each group, decks are sorted by updatedAt descending (newest first).
+ * - Groups themselves are sorted by latestUpdatedAt descending.
+ * - colors is the deduped union of all colors across decks in the group.
+ * - thumbnailCardId comes from the most recently updated deck.
+ */
+export function groupDecksByArchetype(decks: Deck[]): DeckArchetypeGroup[] {
+  // 1. Build a map archetype → Deck[]
+  const map = new Map<string, Deck[]>();
+
+  for (const deck of decks) {
+    const key = deck.archetype?.trim() || UNCLASSIFIED_ARCHETYPE;
+    if (!map.has(key)) {
+      map.set(key, []);
+    }
+    map.get(key)!.push(deck);
+  }
+
+  // 2. Convert to DeckArchetypeGroup[], sort decks within each group
+  const groups: DeckArchetypeGroup[] = [];
+
+  map.forEach((groupDecks, archetype) => {
+    // Sort decks newest-first
+    const sorted = [...groupDecks].sort(
+      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    );
+
+    // Most recent deck drives the thumbnail
+    const newest = sorted[0];
+
+    // Deduped color union preserving insertion order
+    const colorSet = new Set<string>();
+    for (const d of sorted) {
+      for (const c of d.colors ?? []) {
+        colorSet.add(c);
+      }
+    }
+
+    groups.push({
+      archetype,
+      decks: sorted,
+      latestUpdatedAt: new Date(newest.updatedAt),
+      colors: Array.from(colorSet) as any[],
+      thumbnailCardId: newest.placeholderCardId
+    });
+  });
+
+  // 3. Sort groups newest-first; UNCLASSIFIED always goes to the end
+  groups.sort((a, b) => {
+    if (a.archetype === UNCLASSIFIED_ARCHETYPE) return 1;
+    if (b.archetype === UNCLASSIFIED_ARCHETYPE) return -1;
+    return b.latestUpdatedAt.getTime() - a.latestUpdatedAt.getTime();
+  });
+
+  return groups;
 }

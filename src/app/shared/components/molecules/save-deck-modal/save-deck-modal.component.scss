@@ -19,6 +19,15 @@
     font-size: $theme-font-size-sm;
     font-weight: $theme-font-weight-semibold;
     color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    gap: $theme-spacing-1;
+  }
+
+  &__optional {
+    font-size: $theme-font-size-xs;
+    font-weight: $theme-font-weight-normal;
+    color: var(--theme-color-text-muted);
   }
 
   &__hint {

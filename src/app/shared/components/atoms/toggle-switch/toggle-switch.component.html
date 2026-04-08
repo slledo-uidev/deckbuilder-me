@@ -1,0 +1,37 @@
+<label
+  [class]="hostClasses"
+  [attr.aria-label]="ariaLabel || label || 'Toggle'"
+  [attr.aria-disabled]="disabled ? 'true' : null">
+
+  <!-- Label izquierda -->
+  <span
+    *ngIf="label && labelPosition === 'left'"
+    class="toggle-switch__label toggle-switch__label--left">
+    {{ label }}
+  </span>
+
+  <!-- Input nativo oculto (accesibilidad screen readers) -->
+  <input
+    type="checkbox"
+    class="toggle-switch__input"
+    [checked]="checked"
+    [disabled]="disabled"
+    [attr.aria-label]="ariaLabel || label"
+    (change)="onToggle()"
+    role="switch"
+    [attr.aria-checked]="checked" />
+
+  <!-- Track + Knob visual -->
+  <span class="toggle-switch__track" [class.toggle-switch__track--on]="checked">
+    <span class="toggle-switch__knob" [class.toggle-switch__knob--on]="checked"></span>
+  </span>
+
+  <!-- Label derecha -->
+  <span
+    *ngIf="label && labelPosition === 'right'"
+    class="toggle-switch__label toggle-switch__label--right"
+    [class.toggle-switch__label--active]="checked">
+    {{ label }}
+  </span>
+
+</label>

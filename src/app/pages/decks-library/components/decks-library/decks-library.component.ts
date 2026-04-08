@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService, CardService } from '@core/services';
-import { Deck, Card } from '@core/models';
+import { Deck, Card, DeckArchetypeGroup } from '@core/models';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { groupDecksByArchetype } from '@shared/utils/deck.utils';
+import { DeckAction } from '@shared/components/molecules/archetype-versions-modal/archetype-versions-modal.component';
 
 @Component({
   selector: 'app-decks-library',
@@ -15,6 +17,15 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   loading = false;
   allCards: Card[] = [];
   showAdvanced: boolean = false;
+
+  // ─── Advanced view state ────────────────────────────────────────────────────
+  archetypeGroups: DeckArchetypeGroup[] = [];
+  selectedGroup: DeckArchetypeGroup | null = null;
+  isModalOpen: boolean = false;
+
+  // ─── Simple view — edición inline de arquetipo ─────────────────────────────
+  editingArchetypeId: string | null = null;
+  editingArchetypeValue: string = '';
   
   private destroy$ = new Subject<void>();
   
@@ -39,13 +50,75 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(decks => {
         this.decks = decks;
-        console.log(`Loaded ${decks.length} saved decks`);
+        this.archetypeGroups = groupDecksByArchetype(decks);
+        console.log(`Loaded ${decks.length} saved decks, ${this.archetypeGroups.length} archetypes`);
       });
   }
   
-  onToggleAdvanced(): void {
-    this.showAdvanced = !this.showAdvanced;
+  onToggleAdvanced(value: boolean): void {
+    this.showAdvanced = value;
   }
+
+  // ─── Advanced view handlers ─────────────────────────────────────────────────
+
+  onArchetypeSelected(group: DeckArchetypeGroup): void {
+    this.selectedGroup = group;
+    this.isModalOpen = true;
+  }
+
+  onModalClose(): void {
+    this.isModalOpen = false;
+    this.selectedGroup = null;
+  }
+
+  onDeckAction(event: DeckAction): void {
+    const { action, deck } = event;
+    switch (action) {
+      case 'load':             this.onLoadDeck(deck);                                    break;
+      case 'copy':             this.onDuplicateDeck(deck.id);                            break;
+      case 'export':           this.onExportDeck(deck.id);                               break;
+      case 'delete':           this.onDeleteDeck(deck.id);                               break;
+      case 'update-archetype': this.onUpdateDeckArchetype(deck, event.newArchetype ?? ''); break;
+    }
+  }
+
+  onUpdateDeckArchetype(deck: Deck, newArchetype: string): void {
+    const updated: Deck = {
+      ...deck,
+      archetype: newArchetype.trim() || undefined,
+      updatedAt: new Date()
+    };
+    this.storageService.saveDeck(updated);
+    // archetypeGroups se recalcula automáticamente via decks$ subscription
+  }
+
+  // ─── Simple view — edición inline de arquetipo ─────────────────────────────
+
+  onStartEditArchetype(deck: Deck): void {
+    this.editingArchetypeId = deck.id;
+    this.editingArchetypeValue = deck.archetype ?? '';
+  }
+
+  onSaveArchetype(deck: Deck): void {
+    this.onUpdateDeckArchetype(deck, this.editingArchetypeValue);
+    this.editingArchetypeId = null;
+    this.editingArchetypeValue = '';
+  }
+
+  onCancelEditArchetype(): void {
+    this.editingArchetypeId = null;
+    this.editingArchetypeValue = '';
+  }
+
+  onArchetypeKeydown(event: KeyboardEvent, deck: Deck): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.onSaveArchetype(deck);
+    } else if (event.key === 'Escape') {
+      this.onCancelEditArchetype();
+    }
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

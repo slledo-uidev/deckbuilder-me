@@ -1,0 +1,26 @@
+<div class="archetype-grid">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="archetype-grid__loading">
+    <p>Loading archetypes...</p>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && groups.length === 0" class="archetype-grid__empty">
+    <app-empty-state
+      message="No archetypes found"
+      icon="layers"
+      size="large">
+    </app-empty-state>
+  </div>
+
+  <!-- Grid -->
+  <div *ngIf="!loading && groups.length > 0" class="archetype-grid__container">
+    <app-archetype-card
+      *ngFor="let group of groups"
+      [group]="group"
+      (selected)="onGroupSelected($event)">
+    </app-archetype-card>
+  </div>
+
+</div>
