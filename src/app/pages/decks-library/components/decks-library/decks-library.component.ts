@@ -5,7 +5,7 @@ import { Deck, Card, DeckArchetypeGroup, Archetype } from '@core/models';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { groupDecksByArchetype } from '@shared/utils/deck.utils';
-import { DeckAction } from '@shared/components/molecules/archetype-versions-modal/archetype-versions-modal.component';
+import { DeckAction, ArchetypeUpdateData } from '@shared/components/molecules/archetype-versions-modal/archetype-versions-modal.component';
 import { CreateArchetypeData } from '@shared/components/molecules/create-archetype-modal/create-archetype-modal.component';
 
 @Component({
@@ -17,14 +17,20 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   decks: Deck[] = [];
   loading = false;
   allCards: Card[] = [];
-  showAdvanced: boolean = false;
+  showAdvanced: boolean = true;
 
   // ─── Advanced view state ────────────────────────────────────────────────────
   archetypeGroups: DeckArchetypeGroup[] = [];
   archetypes: Archetype[] = [];
-  selectedGroup: DeckArchetypeGroup | null = null;
+  selectedArchetypeName: string | null = null;  // nombre del grupo abierto en el modal
   isModalOpen: boolean = false;
   isCreateArchetypeModalOpen: boolean = false;
+
+  /** Siempre devuelve el grupo actualizado desde archetypeGroups */
+  get selectedGroup(): DeckArchetypeGroup | null {
+    if (!this.selectedArchetypeName) return null;
+    return this.archetypeGroups.find(g => g.archetype === this.selectedArchetypeName) ?? null;
+  }
 
   private destroy$ = new Subject<void>();
   
@@ -67,14 +73,19 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
 
   // ─── Advanced view handlers ─────────────────────────────────────────────────
 
+  get selectedArchetype(): Archetype | null {
+    if (!this.selectedGroup) return null;
+    return this.archetypes.find(a => a.name === this.selectedGroup!.archetype) ?? null;
+  }
+
   onArchetypeSelected(group: DeckArchetypeGroup): void {
-    this.selectedGroup = group;
+    this.selectedArchetypeName = group.archetype;
     this.isModalOpen = true;
   }
 
   onModalClose(): void {
     this.isModalOpen = false;
-    this.selectedGroup = null;
+    this.selectedArchetypeName = null;
   }
 
   onOpenCreateArchetypeModal(): void {
@@ -100,14 +111,56 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
     return this.archetypes.map(a => a.name);
   }
 
+  onFavoriteToggled(event: { deck: Deck; isFavorite: boolean }): void {
+    const { deck, isFavorite } = event;
+    // Si se marca como favorito, quitar el favorito anterior del mismo arquetipo
+    if (isFavorite) {
+      this.decks
+        .filter(d => d.archetype === deck.archetype && d.id !== deck.id && d.isFavorite)
+        .forEach(d => this.storageService.saveDeck({ ...d, isFavorite: false }));
+    }
+    this.storageService.saveDeck({ ...deck, isFavorite });
+  }
+
+  onNewVersion(baseDeck: Deck): void {
+    // Duplicar el deck base y navegar al builder con el nuevo id
+    const newDeck: Deck = {
+      ...baseDeck,
+      id: this.generateId(),
+      name: `${baseDeck.name} (New version)`,
+      isFavorite: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.storageService.saveDeck(newDeck);
+    this.onModalClose();
+    this.router.navigate(['/builder'], { queryParams: { deckId: newDeck.id } });
+  }
+
   onDeckAction(event: DeckAction): void {
     const { action, deck } = event;
     switch (action) {
-      case 'load':             this.onLoadDeck(deck);                                    break;
-      case 'copy':             this.onDuplicateDeck(deck.id);                            break;
-      case 'export':           this.onExportDeck(deck.id);                               break;
-      case 'delete':           this.onDeleteDeck(deck.id);                               break;
-      case 'update-archetype': this.onUpdateDeckArchetype(deck, event.newArchetype ?? ''); break;
+      case 'load':   this.onLoadDeck(deck);        break;
+      case 'export': this.onExportDeck(deck.id);    break;
+      case 'delete': this.onDeleteDeck(deck.id);    break;
+    }
+  }
+
+  onArchetypeUpdated(data: ArchetypeUpdateData): void {
+    const existing = this.archetypes.find(a => a.id === data.id);
+    if (!existing) return;
+    const updated: Archetype = {
+      ...existing,
+      name: data.name,
+      description: data.description
+    };
+    this.storageService.saveArchetype(updated);
+    // Si el nombre cambió, actualizar todos los decks que referenciaban el nombre anterior
+    if (existing.name !== data.name) {
+      const affectedDecks = this.decks.filter(d => d.archetype === existing.name);
+      affectedDecks.forEach(deck => {
+        this.storageService.saveDeck({ ...deck, archetype: data.name, updatedAt: new Date() });
+      });
     }
   }
 
@@ -118,7 +171,6 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
       updatedAt: new Date()
     };
     this.storageService.saveDeck(updated);
-    // archetypeGroups se recalcula automáticamente via decks$ subscription
   }
 
   ngOnDestroy(): void {

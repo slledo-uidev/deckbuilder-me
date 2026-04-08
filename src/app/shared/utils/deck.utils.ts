@@ -164,13 +164,15 @@ export function groupDecksByArchetype(decks: Deck[]): DeckArchetypeGroup[] {
   const groups: DeckArchetypeGroup[] = [];
 
   map.forEach((groupDecks, archetype) => {
-    // Sort decks newest-first
+    // Sort decks by creation date descending (newest first = stable, no reorder on edit)
     const sorted = [...groupDecks].sort(
-      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
-    // Most recent deck drives the thumbnail
-    const newest = sorted[0];
+    // Most recently updated deck drives the thumbnail
+    const newest = [...groupDecks].sort(
+      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    )[0];
 
     // Deduped color union preserving insertion order
     const colorSet = new Set<string>();

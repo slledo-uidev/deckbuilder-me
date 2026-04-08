@@ -31,6 +31,7 @@ export interface Deck {
   placeholderCardId?: string;  // Card to display as deck thumbnail
   format?: GameFormat;         // Game format
   archetype?: string;          // Archetype name (e.g., "Medusamon")
+  isFavorite?: boolean;        // Marked as base/favorite version of its archetype
   tags?: string[];             // Custom tags
   
   // Timestamps

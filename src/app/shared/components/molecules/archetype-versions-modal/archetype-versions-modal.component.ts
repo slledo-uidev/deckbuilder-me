@@ -1,12 +1,17 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { Deck, DeckArchetypeGroup } from '@core/models';
+import { Deck, DeckArchetypeGroup, Archetype } from '@core/models';
 
-export type DeckActionType = 'load' | 'copy' | 'export' | 'delete' | 'update-archetype';
+export type DeckActionType = 'load' | 'export' | 'delete';
 
 export interface DeckAction {
   action: DeckActionType;
   deck: Deck;
-  newArchetype?: string;   // Solo para 'update-archetype'
+}
+
+export interface ArchetypeUpdateData {
+  id: string;
+  name: string;
+  description?: string;
 }
 
 @Component({
@@ -16,41 +21,44 @@ export interface DeckAction {
 })
 export class ArchetypeVersionsModalComponent implements OnChanges {
   @Input() group: DeckArchetypeGroup | null = null;
+  @Input() archetype: Archetype | null = null;
   @Input() isOpen: boolean = false;
 
   @Output() closed = new EventEmitter<void>();
   @Output() deckAction = new EventEmitter<DeckAction>();
+  @Output() archetypeUpdated = new EventEmitter<ArchetypeUpdateData>();
+  @Output() newVersion = new EventEmitter<Deck>();
+  @Output() favoriteToggled = new EventEmitter<{ deck: Deck; isFavorite: boolean }>();
 
   /** Id del deck que tiene el confirm de borrado abierto */
   pendingDeleteId: string | null = null;
 
-  /** Id del deck cuyo arquetipo se está editando inline */
-  editingArchetypeId: string | null = null;
-  editingArchetypeValue: string = '';
+  /** Estado de edición del sidebar */
+  isEditingSidebar = false;
+  editName = '';
+  editDescription = '';
+
+  /** Deck marcado como favorito (base version) dentro del grupo actual */
+  get favoriteDeck(): Deck | null {
+    return this.group?.decks.find(d => d.isFavorite) ?? null;
+  }
 
   ngOnChanges(): void {
-    // Resetear estados si se cierra o cambia el grupo
     if (!this.isOpen) {
       this.pendingDeleteId = null;
-      this.editingArchetypeId = null;
-      this.editingArchetypeValue = '';
+      this.isEditingSidebar = false;
     }
   }
 
   onClose(): void {
     this.pendingDeleteId = null;
-    this.editingArchetypeId = null;
-    this.editingArchetypeValue = '';
+    this.isEditingSidebar = false;
     this.closed.emit();
   }
 
   onLoad(deck: Deck): void {
     this.deckAction.emit({ action: 'load', deck });
     this.onClose();
-  }
-
-  onCopy(deck: Deck): void {
-    this.deckAction.emit({ action: 'copy', deck });
   }
 
   onExport(deck: Deck): void {
@@ -70,35 +78,47 @@ export class ArchetypeVersionsModalComponent implements OnChanges {
     this.pendingDeleteId = null;
   }
 
-  // ─── Edición inline de arquetipo ────────────────────────────────────────────
+  // ─── Edición del sidebar ─────────────────────────────────────────────────────
 
-  onEditArchetype(deck: Deck): void {
-    this.editingArchetypeId = deck.id;
-    this.editingArchetypeValue = deck.archetype ?? '';
-    // Cerrar confirm de borrado si estaba abierto en este deck
-    if (this.pendingDeleteId === deck.id) {
-      this.pendingDeleteId = null;
+  onStartEditSidebar(): void {
+    this.editName = this.archetype?.name ?? this.group?.archetype ?? '';
+    this.editDescription = this.archetype?.description ?? '';
+    this.isEditingSidebar = true;
+  }
+
+  onSaveEditSidebar(): void {
+    const trimmedName = this.editName.trim();
+    if (!trimmedName || !this.archetype) return;
+    this.archetypeUpdated.emit({
+      id: this.archetype.id,
+      name: trimmedName,
+      description: this.editDescription.trim() || undefined
+    });
+    this.isEditingSidebar = false;
+  }
+
+  onCancelEditSidebar(): void {
+    this.isEditingSidebar = false;
+  }
+
+  onSidebarKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      this.onCancelEditSidebar();
     }
   }
 
-  onArchetypeSave(deck: Deck): void {
-    const newArchetype = this.editingArchetypeValue.trim();
-    this.deckAction.emit({ action: 'update-archetype', deck, newArchetype });
-    this.editingArchetypeId = null;
-    this.editingArchetypeValue = '';
+  // ─── Favorito y nueva versión ────────────────────────────────────────────────
+
+  onToggleFavorite(deck: Deck): void {
+    // Si ya es favorito, lo desfavorita; si no, lo marca como favorito (y quita al anterior)
+    const isFavorite = !deck.isFavorite;
+    this.favoriteToggled.emit({ deck, isFavorite });
   }
 
-  onArchetypeCancel(): void {
-    this.editingArchetypeId = null;
-    this.editingArchetypeValue = '';
-  }
-
-  onArchetypeKeydown(event: KeyboardEvent, deck: Deck): void {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      this.onArchetypeSave(deck);
-    } else if (event.key === 'Escape') {
-      this.onArchetypeCancel();
+  onNewVersion(): void {
+    const base = this.favoriteDeck ?? this.group?.decks[0] ?? null;
+    if (base) {
+      this.newVersion.emit(base);
     }
   }
 

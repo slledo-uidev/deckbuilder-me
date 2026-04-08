@@ -42,6 +42,9 @@
         <!-- Card Content -->
         <div class="deck-card__content">
           <h3 class="deck-card__title">{{ deck.name }}</h3>
+          <span *ngIf="deck.archetype" class="deck-card__archetype-badge">
+            {{ deck.archetype }}
+          </span>
 
           <div class="deck-card__meta">
             <span class="deck-card__stats">
@@ -108,9 +111,13 @@
 
     <app-archetype-versions-modal
       [group]="selectedGroup"
+      [archetype]="selectedArchetype"
       [isOpen]="isModalOpen"
       (closed)="onModalClose()"
-      (deckAction)="onDeckAction($event)">
+      (deckAction)="onDeckAction($event)"
+      (archetypeUpdated)="onArchetypeUpdated($event)"
+      (favoriteToggled)="onFavoriteToggled($event)"
+      (newVersion)="onNewVersion($event)">
     </app-archetype-versions-modal>
 
     <app-create-archetype-modal

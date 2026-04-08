@@ -1,127 +1,174 @@
 <app-modal
   [isVisible]="isOpen"
-  [title]="group?.archetype || ''"
+  title=""
   size="large"
   [showFooter]="false"
   (closed)="onClose()">
 
   <div modal-body class="versions-modal" *ngIf="group">
 
-    <!-- Subheader: número de versiones -->
-    <p class="versions-modal__count">
-      {{ group.decks.length }} {{ group.decks.length === 1 ? 'version' : 'versions' }} saved
-    </p>
+    <div class="versions-modal__layout">
 
-    <!-- Lista de versiones -->
-    <ul class="versions-modal__list">
-      <li
-        *ngFor="let deck of group.decks"
-        class="version-row"
-        [class.version-row--deleting]="pendingDeleteId === deck.id">
+      <!-- ── COLUMNA IZQUIERDA: info del arquetipo ─────────────────────── -->
+      <aside class="versions-modal__sidebar">
 
-        <!-- Thumbnail -->
-        <div class="version-row__image">
-          <img
-            *ngIf="getThumbnailUrl(deck)"
-            [src]="getThumbnailUrl(deck)"
-            [alt]="deck.name"
-            loading="lazy" />
-          <lucide-angular
-            *ngIf="!getThumbnailUrl(deck)"
-            name="layers"
-            [size]="24"
-            class="lucide-icon version-row__image-fallback">
-          </lucide-angular>
-        </div>
-
-        <!-- Info -->
-        <div class="version-row__info">
-          <h4 class="version-row__name">{{ deck.name }}</h4>
-
-          <!-- Arquetipo: modo lectura -->
-          <div class="version-row__archetype" *ngIf="editingArchetypeId !== deck.id">
-            <span class="version-row__archetype-value">
-              {{ deck.archetype || 'Unclassified' }}
-            </span>
+        <!-- MODO LECTURA -->
+        <ng-container *ngIf="!isEditingSidebar">
+          <div class="versions-modal__sidebar-header">
+            <h2 class="versions-modal__title">{{ group.archetype }}</h2>
             <button
-              class="version-row__archetype-edit-btn"
-              (click)="onEditArchetype(deck)"
-              [attr.aria-label]="'Edit archetype for ' + deck.name"
+              *ngIf="archetype"
+              class="versions-modal__edit-btn"
+              (click)="onStartEditSidebar()"
               title="Edit archetype"
               type="button">
-              <lucide-angular name="pencil" [size]="12" class="lucide-icon"></lucide-angular>
+              <lucide-angular name="pencil" [size]="14" class="lucide-icon"></lucide-angular>
             </button>
           </div>
 
-          <!-- Arquetipo: modo edición inline -->
-          <div class="version-row__archetype-edit" *ngIf="editingArchetypeId === deck.id">
-            <input
-              class="version-row__archetype-input"
-              type="text"
-              [(ngModel)]="editingArchetypeValue"
-              placeholder="e.g. Agumon, Garurumon..."
-              maxlength="60"
-              (keydown)="onArchetypeKeydown($event, deck)"
-              autofocus />
-            <button
-              class="version-row__archetype-save-btn"
-              (click)="onArchetypeSave(deck)"
-              title="Save archetype"
-              type="button">
-              <lucide-angular name="check" [size]="12" class="lucide-icon"></lucide-angular>
-            </button>
-            <button
-              class="version-row__archetype-cancel-btn"
-              (click)="onArchetypeCancel()"
-              title="Cancel"
-              type="button">
-              <lucide-angular name="x" [size]="12" class="lucide-icon"></lucide-angular>
-            </button>
-          </div>
+          <p class="versions-modal__description" *ngIf="archetype?.description; else noDesc">
+            {{ archetype!.description }}
+          </p>
+          <ng-template #noDesc>
+            <p class="versions-modal__description versions-modal__description--empty">
+              No description
+            </p>
+          </ng-template>
 
-          <span class="version-row__stats">
-            {{ getDigiEggCount(deck) }}/5 Eggs &bull; {{ getMainCount(deck) }}/50 Main
-          </span>
-          <div *ngIf="deck.colors.length" class="version-row__colors">
-            <span
-              *ngFor="let color of deck.colors"
-              class="version-row__color-dot"
-              [class]="'version-row__color-dot ' + colorToClass(color)"
-              [title]="color">
+          <div class="versions-modal__meta">
+            <span class="versions-modal__count-badge">
+              <lucide-angular name="layers" [size]="14" class="lucide-icon"></lucide-angular>
+              {{ group.decks.length }} {{ group.decks.length === 1 ? 'version' : 'versions' }}
             </span>
+            <div *ngIf="group.colors.length" class="versions-modal__colors">
+              <span
+                *ngFor="let color of group.colors"
+                class="versions-modal__color-dot"
+                [class]="'versions-modal__color-dot--' + color.toLowerCase()"
+                [title]="color">
+              </span>
+            </div>
           </div>
-          <span class="version-row__date">{{ formatDate(deck.updatedAt) }}</span>
-        </div>
 
-        <!-- Acciones normales -->
-        <div class="version-row__actions" *ngIf="pendingDeleteId !== deck.id">
-          <app-button variant="primary" size="small" (clicked)="onLoad(deck)">
-            Load
-          </app-button>
-          <app-button variant="outline" size="small" (clicked)="onCopy(deck)">
-            Copy
-          </app-button>
-          <app-button variant="outline" size="small" (clicked)="onExport(deck)">
-            Export
-          </app-button>
-          <app-button variant="secondary" size="small" (clicked)="onDeleteRequest(deck.id)">
-            Delete
-          </app-button>
-        </div>
+          <!-- Botón New version al fondo del sidebar -->
+          <button
+            class="versions-modal__new-version-btn"
+            (click)="onNewVersion()"
+            type="button">
+            <lucide-angular name="plus" [size]="14" class="lucide-icon"></lucide-angular>
+            New version
+          </button>
 
-        <!-- Confirm de borrado inline -->
-        <div class="version-row__confirm" *ngIf="pendingDeleteId === deck.id">
-          <span class="version-row__confirm-text">Delete "{{ deck.name }}"?</span>
-          <app-button variant="secondary" size="small" (clicked)="onDeleteConfirm(deck)">
-            Yes, delete
-          </app-button>
-          <app-button variant="outline" size="small" (clicked)="onDeleteCancel()">
-            Cancel
-          </app-button>
-        </div>
+        </ng-container>
 
-      </li>
-    </ul>
+        <!-- MODO EDICIÓN -->
+        <ng-container *ngIf="isEditingSidebar" (keydown)="onSidebarKeydown($event)">
+          <div class="versions-modal__edit-form">
+            <label class="versions-modal__edit-label" for="sidebar-name">Name</label>
+            <input
+              id="sidebar-name"
+              class="versions-modal__edit-input"
+              type="text"
+              [(ngModel)]="editName"
+              maxlength="60"
+              placeholder="Archetype name"
+              autofocus />
+
+            <label class="versions-modal__edit-label" for="sidebar-desc">Description</label>
+            <textarea
+              id="sidebar-desc"
+              class="versions-modal__edit-textarea"
+              [(ngModel)]="editDescription"
+              maxlength="120"
+              placeholder="Optional description..."
+              rows="3">
+            </textarea>
+
+            <div class="versions-modal__edit-actions">
+              <app-button variant="primary" size="small" (clicked)="onSaveEditSidebar()">
+                Save
+              </app-button>
+              <app-button variant="outline" size="small" (clicked)="onCancelEditSidebar()">
+                Cancel
+              </app-button>
+            </div>
+          </div>
+        </ng-container>
+
+      </aside>
+
+      <!-- ── COLUMNA DERECHA: lista de versiones ────────────────────────── -->
+      <div class="versions-modal__content">
+        <ul class="versions-modal__list">
+          <li
+            *ngFor="let deck of group.decks"
+            class="version-row"
+            [class.version-row--deleting]="pendingDeleteId === deck.id">
+
+            <!-- Thumbnail -->
+            <div class="version-row__image">
+              <img
+                *ngIf="getThumbnailUrl(deck)"
+                [src]="getThumbnailUrl(deck)"
+                [alt]="deck.name"
+                loading="lazy" />
+              <lucide-angular
+                *ngIf="!getThumbnailUrl(deck)"
+                name="layers"
+                [size]="24"
+                class="lucide-icon version-row__image-fallback">
+              </lucide-angular>
+            </div>
+
+            <!-- Info -->
+            <div class="version-row__info">
+              <h4 class="version-row__name">{{ deck.name }}</h4>
+              <span *ngIf="deck.archetype" class="version-row__archetype-badge">
+                {{ deck.archetype }}
+              </span>
+              <span class="version-row__stats">
+                {{ getDigiEggCount(deck) }}/5 Eggs &bull; {{ getMainCount(deck) }}/50 Main
+              </span>
+              <div *ngIf="deck.colors.length" class="version-row__colors">
+                <span
+                  *ngFor="let color of deck.colors"
+                  class="version-row__color-dot"
+                  [class]="'version-row__color-dot ' + colorToClass(color)"
+                  [title]="color">
+                </span>
+              </div>
+              <span class="version-row__date">{{ formatDate(deck.updatedAt) }}</span>
+            </div>
+
+            <!-- Estrella de favorito -->
+            <button
+              class="version-row__favorite-btn"
+              [class.version-row__favorite-btn--active]="deck.isFavorite"
+              (click)="onToggleFavorite(deck)"
+              [title]="deck.isFavorite ? 'Remove as base version' : 'Set as base version'"
+              type="button">
+              <lucide-angular name="star" [size]="16" class="lucide-icon"></lucide-angular>
+            </button>
+
+            <!-- Acciones normales -->
+            <div class="version-row__actions" *ngIf="pendingDeleteId !== deck.id">
+              <app-button variant="primary" size="small" (clicked)="onLoad(deck)">Load</app-button>
+              <app-button variant="outline" size="small" (clicked)="onExport(deck)">Export</app-button>
+              <app-button variant="secondary" size="small" (clicked)="onDeleteRequest(deck.id)">Delete</app-button>
+            </div>
+
+            <!-- Confirm de borrado inline -->
+            <div class="version-row__confirm" *ngIf="pendingDeleteId === deck.id">
+              <span class="version-row__confirm-text">Delete "{{ deck.name }}"?</span>
+              <app-button variant="secondary" size="small" (clicked)="onDeleteConfirm(deck)">Yes, delete</app-button>
+              <app-button variant="outline" size="small" (clicked)="onDeleteCancel()">Cancel</app-button>
+            </div>
+
+          </li>
+        </ul>
+      </div>
+
+    </div><!-- /.versions-modal__layout -->
 
   </div>
 

@@ -92,6 +92,7 @@
   
   // Size: Small
   &--small {
+    min-width: 80px;
     padding: $spacing-1 $spacing-2;
     font-size: $font-size-sm;
     min-height: 36px;
