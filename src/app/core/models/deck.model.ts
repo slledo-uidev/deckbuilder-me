@@ -13,6 +13,7 @@ export interface DeckCard {
   cardId: string;              // Reference to Card.id
   quantity: number;            // Number of copies (1-5)
   variantId?: string;          // Preferred variant (optional)
+  isEgg?: boolean;             // true if this card was in Digi-Eggs zone
 }
 
 export interface Deck {

@@ -406,9 +406,10 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     this.isSavingToCloud = true;
     this.cloudSaveError = null;
 
+    // Preserve zone information by marking digi-eggs entries with isEgg=true
     const cardList = [
-      ...deck.digiEggs,
-      ...deck.mainDeck
+      ...deck.digiEggs.map((c: any) => ({ ...(c as any), isEgg: true })),
+      ...deck.mainDeck.map((c: any) => ({ ...(c as any), isEgg: false }))
     ];
 
     try {
@@ -622,7 +623,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       sessionStorage.removeItem('import_cloud_deck');
 
       const version = JSON.parse(raw);
-      const cardList: { cardId: string; quantity: number }[] = version.card_list ?? [];
+      const cardList: any[] = version.card_list ?? [];
 
       this.digiEggs = [];
       this.mainDeck = [];
@@ -638,7 +639,8 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
           return;
         }
         const deckCard: DeckCard = { card, quantity: item.quantity };
-        if (card.level === 2) {
+        // If the remote payload includes isEgg flag use it; otherwise fall back to level check
+        if (item.isEgg === true || (item.isEgg === undefined && card.level === 2)) {
           this.digiEggs.push(deckCard);
         } else {
           this.mainDeck.push(deckCard);

@@ -62,18 +62,20 @@ export class DeckService {
 
     for (const family of (data as any[])) {
       for (const version of (family.decks ?? [])) {
-        const cardList: { cardId: string; quantity: number }[] = version.card_list ?? [];
-        // Separate eggs (level 2) from main deck using a convention:
-        // card_list stores all cards together — at sync time we can't know level,
-        // so we preserve them as-is in mainDeck. The builder re-splits on load.
+        const cardList: any[] = version.card_list ?? [];
+        // If entries include isEgg flag, split into digiEggs and mainDeck accordingly.
+        // Fallback: if no isEgg info, keep all in mainDeck (backwards compatibility).
+        const digiEggsStored = cardList.filter(c => c.isEgg === true).map(c => ({ cardId: c.cardId, quantity: c.quantity }));
+        const mainDeckStored = cardList.filter(c => c.isEgg !== true).map(c => ({ cardId: c.cardId, quantity: c.quantity }));
+
         result.push({
           id: version.id,
           name: version.version_name ?? family.name,
           description: family.description,
           supabaseFamilyId: family.id,
           supabaseVersionId: version.id,
-          digiEggs: [],
-          mainDeck: cardList,
+          digiEggs: digiEggsStored,
+          mainDeck: mainDeckStored,
           sideDeck: [],
           colors: [],
           archetype: family.archetype ?? family.name,
