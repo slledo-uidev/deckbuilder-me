@@ -175,22 +175,60 @@ export class DeckService {
     const userId = this.auth.currentUserId;
     if (!userId) throw new Error('No hay usuario autenticado.');
 
-    // 1. Insert the family
-    const { data: family, error: familyError } = await this.supabase
-      .from('deck_families')
-      .insert([{
-        name: familyName,
-        user_id: userId,
-        archetype: options.archetype,
-        description: options.description
-      }])
-      .select()
-      .single();
+    // 1. Determine family: if familyName is the default placeholder ('Untitled family'),
+    //    try to reuse an existing row for this user; otherwise create a new family.
+    let family: any = null;
 
-    if (familyError) throw familyError;
+  const DEFAULT_FAMILY_NAME = 'no-family';
 
-    // 2. Insert the first version linked to the new family
-    return this.saveNewVersion(family.id, cards, versionName, options.notes);
+    if (familyName === DEFAULT_FAMILY_NAME) {
+      // Try to find an existing default family for this user
+      const { data: existing, error: fetchErr } = await this.supabase
+        .from('deck_families')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('name', DEFAULT_FAMILY_NAME)
+        .maybeSingle();
+
+      if (fetchErr) throw fetchErr;
+
+      if (existing) {
+        family = existing;
+      } else {
+        // Create the default family with archetype set to the sentinel 'no-family'
+        const { data, error } = await this.supabase
+          .from('deck_families')
+          .insert([{
+            name: DEFAULT_FAMILY_NAME,
+            user_id: userId,
+            archetype: DEFAULT_FAMILY_NAME,
+            description: options.description
+          }])
+          .select()
+          .single();
+
+        if (error) throw error;
+        family = data;
+      }
+    } else {
+      // Normal flow: create a new family with provided archetype (if any)
+      const { data, error } = await this.supabase
+        .from('deck_families')
+        .insert([{
+          name: familyName,
+          user_id: userId,
+          archetype: options.archetype,
+          description: options.description
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+      family = data;
+    }
+
+    // 2. Insert the first version linked to the determined family
+    return this.saveNewVersion(family.id, cards, versionName, { notes: options.notes, archetype: options.archetype });
   }
 
   /**
@@ -232,21 +270,35 @@ export class DeckService {
     familyId: string,
     cards: DeckCard[],
     versionName: string,
-    notes: string = ''
+    options: { notes?: string; archetype?: string } = {}
   ): Promise<DeckVersion> {
+    // Build insert payload and ensure archetype is never null: default to 'no-family'
+    const payload: any = {
+      family_id: familyId,
+      version_name: versionName,
+      card_list: cards
+    };
+    if (options.notes !== undefined) payload.notes = options.notes;
+    // If archetype is explicitly provided use it; otherwise default to 'no-family'
+    payload.archetype = options.archetype !== undefined && options.archetype !== null
+      ? options.archetype
+      : 'no-family';
+
     const { data, error } = await this.supabase
       .from('decks')
-      .insert([{
-        family_id: familyId,
-        version_name: versionName,
-        card_list: cards,
-        notes
-      }])
+      .insert([payload])
       .select()
       .single();
 
     if (error) throw error;
-    return data as DeckVersion;
+
+    // Ensure the returned object uses undefined for archetype when not provided
+    const result = data as DeckVersion & { archetype?: string | null };
+    // Normalize DB null to the sentinel 'no-family' so fields are never null
+    if (!Object.prototype.hasOwnProperty.call(result, 'archetype') || result.archetype === null) {
+      (result as any).archetype = 'no-family';
+    }
+    return result as DeckVersion;
   }
 
   /**

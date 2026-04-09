@@ -413,12 +413,16 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
 
     try {
       if (!this.currentFamilyId) {
-        // Deck nuevo → crear familia con el nombre del deck
+        // Deck nuevo → crear familia basada en el arquetipo si está disponible.
+        // Antes se usaba el nombre del deck para crear la familia, lo que provocaba
+        // que cada deck nuevo crease una familia con su nombre. Ahora preferimos
+        // usar el arquetipo (si existe) o un nombre por defecto para la familia.
+      const familyName = (deck.archetype && deck.archetype.trim()) ? deck.archetype.trim() : 'no-family';
         const version = await this.deckService.createNewFamilyWithVersion(
-          deck.name,
+          familyName,
           cardList,
           data.name,
-          { archetype: deck.archetype, description: deck.description }
+          { archetype: deck.archetype ?? 'no-family', description: deck.description }
         );
         this.currentFamilyId = version.family_id;
         this.currentVersionId = version.id ?? null;
@@ -433,7 +437,8 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
         const version = await this.deckService.saveNewVersion(
           this.currentFamilyId,
           cardList,
-          data.name
+          data.name,
+          { archetype: deck.archetype }
         );
         this.currentVersionId = version.id ?? null;
       }

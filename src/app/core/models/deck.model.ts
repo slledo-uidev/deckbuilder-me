@@ -152,6 +152,7 @@ export interface DeckVersion {
   version_name: string;     // Label for this version (e.g. "v1", "Tournament cut")
   card_list: DeckCard[];    // Full card list (digiEggs + mainDeck)
   notes?: string;           // Optional build notes
+  archetype?: string;       // Optional archetype tag duplicated on the version row
   stats?: Record<string, unknown>; // Optional computed stats snapshot
   created_at?: string;      // ISO timestamp — set by Supabase
 }

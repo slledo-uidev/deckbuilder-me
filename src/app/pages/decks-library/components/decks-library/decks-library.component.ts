@@ -17,7 +17,7 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   decks: Deck[] = [];
   loading = false;
   allCards: Card[] = [];
-  showAdvanced: boolean = true ;
+  showAdvanced: boolean = false ;
 
   // ─── Supabase library ───────────────────────────────────────────────────────
   cloudFamilies: DeckFamilyWithVersions[] = [];
