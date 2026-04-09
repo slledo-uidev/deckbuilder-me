@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { StorageService, CardService } from '@core/services';
-import { Deck, Card, DeckArchetypeGroup, Archetype } from '@core/models';
+import { StorageService, CardService, DeckService } from '@core/services';
+import { Deck, Card, DeckArchetypeGroup, Archetype, DeckFamilyWithVersions } from '@core/models';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { groupDecksByArchetype } from '@shared/utils/deck.utils';
@@ -17,12 +17,18 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   decks: Deck[] = [];
   loading = false;
   allCards: Card[] = [];
-  showAdvanced: boolean = true;
+  showAdvanced: boolean = true ;
+
+  // ─── Supabase library ───────────────────────────────────────────────────────
+  cloudFamilies: DeckFamilyWithVersions[] = [];
+  cloudLoading = false;
+  cloudError: string | null = null;
+  expandedFamilyId: string | null = null;
 
   // ─── Advanced view state ────────────────────────────────────────────────────
   archetypeGroups: DeckArchetypeGroup[] = [];
   archetypes: Archetype[] = [];
-  selectedArchetypeName: string | null = null;  // nombre del grupo abierto en el modal
+  selectedArchetypeName: string | null = null;
   isModalOpen: boolean = false;
   isCreateArchetypeModalOpen: boolean = false;
 
@@ -33,30 +39,28 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   }
 
   private destroy$ = new Subject<void>();
-  
+
   constructor(
     private storageService: StorageService,
     private router: Router,
-    private cardService: CardService
+    private cardService: CardService,
+    private deckService: DeckService
   ) { }
-  
+
   ngOnInit(): void {
-    console.log('DecksLibraryComponent initialized');
-    
     // Load all cards
     this.cardService.cards$
       .pipe(takeUntil(this.destroy$))
       .subscribe(cards => {
         this.allCards = cards;
       });
-    
-    // Subscribe to saved decks
+
+    // Subscribe to saved decks (localStorage)
     this.storageService.decks$
       .pipe(takeUntil(this.destroy$))
       .subscribe(decks => {
         this.decks = decks;
         this.archetypeGroups = groupDecksByArchetype(decks);
-        console.log(`Loaded ${decks.length} saved decks, ${this.archetypeGroups.length} archetypes`);
       });
 
     // Subscribe to archetypes
@@ -65,6 +69,58 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
       .subscribe(archetypes => {
         this.archetypes = archetypes;
       });
+
+    // Load cloud library from Supabase
+    this.loadCloudLibrary();
+  }
+
+  // ─── Supabase library ───────────────────────────────────────────────────────
+
+  async loadCloudLibrary(): Promise<void> {
+    this.cloudLoading = true;
+    this.cloudError = null;
+    try {
+      // Sync localStorage from Supabase (source of truth)
+      const remoteDecks = await this.deckService.getDecksForSync();
+      this.storageService.replaceAllDecks(remoteDecks);
+
+      this.cloudFamilies = await this.deckService.getUserLibrary();
+    } catch (error) {
+      console.error('Error loading cloud library:', error);
+      this.cloudError = 'No se pudo cargar la librería en la nube.';
+    } finally {
+      this.cloudLoading = false;
+    }
+  }
+
+  /**
+   * Loads a full deck version from Supabase and opens it in the builder.
+   */
+  async onLoadCloudDeck(versionId: string): Promise<void> {
+    try {
+      const version = await this.deckService.getDeckDetails(versionId);
+      // Navigate to builder — the card_list will be stored in state via query param
+      // For now we store it temporarily in sessionStorage
+      sessionStorage.setItem('import_cloud_deck', JSON.stringify(version));
+      this.router.navigate(['/builder'], { queryParams: { cloudImport: true } });
+    } catch (error) {
+      console.error('Error loading deck version:', error);
+    }
+  }
+
+  getVersionCount(family: DeckFamilyWithVersions): number {
+    return family.decks?.length ?? 0;
+  }
+
+  toggleFamily(familyId: string): void {
+    this.expandedFamilyId = this.expandedFamilyId === familyId ? null : familyId;
+  }
+
+  formatCloudDate(isoString?: string): string {
+    if (!isoString) return '';
+    return new Date(isoString).toLocaleDateString(undefined, {
+      month: 'short', day: 'numeric', year: 'numeric'
+    });
   }
   
   onToggleAdvanced(value: boolean): void {
@@ -96,13 +152,26 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
     this.isCreateArchetypeModalOpen = false;
   }
 
-  onArchetypeSaved(data: CreateArchetypeData): void {
+  async onArchetypeSaved(data: CreateArchetypeData): Promise<void> {
     const archetype: Archetype = {
       id: `archetype_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
       name: data.name,
       description: data.description || undefined,
       createdAt: new Date()
     };
+
+    // Save to Supabase and persist the family ID locally
+    try {
+      const family = await this.deckService.createFamily(data.name, {
+        archetype: data.name,
+        description: data.description || undefined
+      });
+      archetype.supabaseFamilyId = family.id;
+    } catch (err) {
+      console.error('Error al crear la familia en Supabase:', err);
+      // Continue saving locally even if Supabase fails
+    }
+
     this.storageService.saveArchetype(archetype);
     this.isCreateArchetypeModalOpen = false;
   }
@@ -185,10 +254,29 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
       queryParams: { deckId: deck.id } 
     });
   }
+
+  onOpenInEditor(deck: Deck): void {
+    const cardList = [
+      ...deck.digiEggs,
+      ...deck.mainDeck
+    ];
+    sessionStorage.setItem('open_in_editor', JSON.stringify({
+      name: deck.name,
+      cardList
+    }));
+    this.router.navigate(['/builder'], { queryParams: { openEditor: true } });
+  }
   
   onDeleteDeck(deckId: string): void {
     console.log('Deleting deck:', deckId);
+    const deck = this.decks.find(d => d.id === deckId);
     this.storageService.deleteDeck(deckId);
+    // Also delete from Supabase if the deck was synced
+    if (deck?.supabaseFamilyId) {
+      this.deckService.deleteFamily(deck.supabaseFamilyId).catch(err =>
+        console.error('Error deleting family from Supabase:', err)
+      );
+    }
   }
   
   onDuplicateDeck(deckId: string): void {

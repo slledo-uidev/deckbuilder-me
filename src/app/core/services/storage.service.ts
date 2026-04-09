@@ -182,6 +182,19 @@ export class StorageService {
   }
   
   /**
+   * Replace ALL decks in localStorage and cache with the provided array.
+   * Used to sync from Supabase on page load.
+   */
+  public replaceAllDecks(decks: Deck[]): void {
+    decks.forEach(deck => {
+      deck.createdAt = new Date(deck.createdAt);
+      deck.updatedAt = new Date(deck.updatedAt);
+    });
+    this.saveDecksToStorage(decks);
+    this.decksCache$.next([...decks]);
+  }
+
+  /**
    * Delete deck by ID
    */
   public deleteDeck(deckId: string): boolean {

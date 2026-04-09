@@ -12,7 +12,6 @@
     </div>
 
     <app-button variant="primary" size="small" (click)="onCreateNewDeck()">+ Create New Deck</app-button>
-
   </div>
 
   <ng-container *ngIf="!showAdvanced">
@@ -71,8 +70,8 @@
             <app-button
               variant="outline"
               size="small"
-              (clicked)="onDuplicateDeck(deck.id)">
-              Copy
+              (clicked)="onOpenInEditor(deck)">
+              Open Editor
             </app-button>
             <app-button
               variant="outline"

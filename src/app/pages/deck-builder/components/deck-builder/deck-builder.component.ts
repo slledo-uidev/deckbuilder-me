@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { StorageService, ValidationService, CardService, AuthService } from '@core/services';
+import { StorageService, ValidationService, CardService, AuthService, DeckService } from '@core/services';
 import { Deck, Card, CardFilter, Color, Archetype } from '@core/models';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -37,6 +37,10 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
 
   // Deck persistence state
   currentDeckId: string | null = null;
+  currentFamilyId: string | null = null;   // Supabase deck_families.id
+  currentVersionId: string | null = null;  // Supabase deck_versions.id
+  isSavingToCloud = false;
+  cloudSaveError: string | null = null;
   deckName = 'My Deck';
   currentArchetype = '';
   currentPlaceholderId?: string;
@@ -58,6 +62,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     private validationService: ValidationService,
     private cardService: CardService,
     private authService: AuthService,
+    private deckService: DeckService,
     private route: ActivatedRoute
   ) { }
   
@@ -97,9 +102,12 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     this.route.queryParams
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
-        const deckId = params['deckId'];
-        if (deckId) {
-          this.loadDeckById(deckId);
+        if (params['cloudImport']) {
+          this.loadCloudImport();
+        } else if (params['openEditor']) {
+          this.loadOpenInEditor();
+        } else if (params['deckId']) {
+          this.loadDeckById(params['deckId']);
         }
       });
   }
@@ -257,9 +265,11 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       
       // Add cards to deck
       importedDeck.forEach(item => {
-        const card = this.cards.find(c => 
-          c.id === item.cardId || 
-          c.id === item.cardId.replace(/_P\d+$/, '') // Handle parallel versions
+        const normalizedId = item.cardId.toUpperCase();
+        const card = this.cards.find(c =>
+          c.id.toUpperCase() === normalizedId ||
+          c.id.toUpperCase() === normalizedId.replace(/_P\d+$/i, '') ||
+          c.cardNumber?.toUpperCase() === normalizedId
         );
         
         if (card) {
@@ -289,28 +299,44 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   private parseDecklistText(text: string): { quantity: number; name: string; cardId: string }[] {
     const lines = text.split('\n');
     const cards: { quantity: number; name: string; cardId: string }[] = [];
-    
+
     for (const line of lines) {
       const trimmedLine = line.trim();
-      
-      // Skip empty lines and comments
+
+      // Skip empty lines and section headers (// Main Deck, # Digi-Eggs, etc.)
       if (!trimmedLine || trimmedLine.startsWith('//') || trimmedLine.startsWith('#')) {
         continue;
       }
-      
-      // Expected format: "4 Wanyamon BT24-004" or "2 Gomamon BT24-020_P1"
-      // Regex: quantity (number) + name (any text) + cardId (alphanumeric with - and _)
-      const match = trimmedLine.match(/^(\d+)\s+(.+?)\s+([A-Z0-9]+[-_][A-Z0-9_]+)$/i);
-      
-      if (match) {
-        const quantity = parseInt(match[1], 10);
-        const name = match[2].trim();
-        const cardId = match[3].trim();
-        
+
+      let quantity: number | null = null;
+      let cardId: string | null = null;
+      let name = '';
+
+      // ── Format A: "4x BT24-004 Wanyamon"  (qty x cardId name)
+      const matchA = trimmedLine.match(/^(\d+)x\s+([A-Z0-9]+-[A-Z0-9]+(?:_P\d+)?)\s*(.*)/i);
+      if (matchA) {
+        quantity = parseInt(matchA[1], 10);
+        cardId   = matchA[2].trim();
+        name     = matchA[3].trim();
+      }
+
+      // ── Format B: "4 Wanyamon BT24-004"  (qty name cardId)
+      if (!cardId) {
+        const matchB = trimmedLine.match(/^(\d+)\s+(.+?)\s+([A-Z0-9]+-[A-Z0-9]+(?:_P\d+)?)$/i);
+        if (matchB) {
+          quantity = parseInt(matchB[1], 10);
+          name     = matchB[2].trim();
+          cardId   = matchB[3].trim();
+        }
+      }
+
+      if (quantity !== null && cardId) {
         cards.push({ quantity, name, cardId });
+      } else {
+        console.warn(`Import: could not parse line → "${trimmedLine}"`);
       }
     }
-    
+
     return cards;
   }
 
@@ -344,13 +370,14 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
 
     const colors = this.inferDeckColors();
     const currentUser = this.authService.getCurrentUser();
-    
+
+    // ── 1. Save to localStorage (always, as local backup) ───────────────────
     const deck: Deck = {
       id: this.currentDeckId || this.generateDeckId(),
       name: data.name,
       digiEggs: this.digiEggs.map(dc => ({ cardId: dc.card.id, quantity: dc.quantity })),
       mainDeck: this.mainDeck.map(dc => ({ cardId: dc.card.id, quantity: dc.quantity })),
-      sideDeck: [], // Empty - Digimon TCG doesn't use side deck
+      sideDeck: [],
       colors,
       placeholderCardId: data.placeholderCardId,
       archetype: data.archetype || undefined,
@@ -359,11 +386,77 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       updatedAt: new Date()
     };
 
-    const success = this.storageService.saveDeck(deck);
-    if (success) {
+    const localSuccess = this.storageService.saveDeck(deck);
+    if (localSuccess) {
       this.currentDeckId = deck.id;
       this.currentPlaceholderId = data.placeholderCardId;
-      this.showSuccessMessage('Deck saved successfully!');
+    }
+
+    // ── 2. Save to Supabase (async, non-blocking) ────────────────────────────
+    this.saveToSupabase(deck, data);
+  }
+
+  /**
+   * Saves the current deck to Supabase.
+   * - No familyId        → crea familia + versión con el nombre del deck
+   * - familyId pero no versionId → nueva versión en familia existente
+   * - familyId + versionId → actualiza la versión existente (overwrite)
+   */
+  private async saveToSupabase(deck: Deck, data: SaveDeckData): Promise<void> {
+    this.isSavingToCloud = true;
+    this.cloudSaveError = null;
+
+    const cardList = [
+      ...deck.digiEggs,
+      ...deck.mainDeck
+    ];
+
+    try {
+      if (!this.currentFamilyId) {
+        // Deck nuevo → crear familia con el nombre del deck
+        const version = await this.deckService.createNewFamilyWithVersion(
+          deck.name,
+          cardList,
+          data.name,
+          { archetype: deck.archetype, description: deck.description }
+        );
+        this.currentFamilyId = version.family_id;
+        this.currentVersionId = version.id ?? null;
+      } else if (this.currentVersionId) {
+        // Deck existente cargado y modificado → sobreescribir la misma versión
+        await this.deckService.updateVersion(this.currentVersionId, {
+          card_list: cardList,
+          version_name: data.name
+        });
+      } else {
+        // Familia existente pero sin versión guardada aún → nueva versión
+        const version = await this.deckService.saveNewVersion(
+          this.currentFamilyId,
+          cardList,
+          data.name
+        );
+        this.currentVersionId = version.id ?? null;
+      }
+
+      // Persist Supabase IDs in the local deck so delete can find them
+      if (this.currentDeckId && this.currentFamilyId) {
+        const savedDeck = this.storageService.getDeckById(this.currentDeckId);
+        if (savedDeck) {
+          this.storageService.saveDeck({
+            ...savedDeck,
+            supabaseFamilyId: this.currentFamilyId,
+            supabaseVersionId: this.currentVersionId ?? undefined
+          });
+        }
+      }
+
+      this.showSuccessMessage('Deck saved!');
+    } catch (error) {
+      console.error('Error saving deck to Supabase:', error);
+      this.cloudSaveError = 'Cloud save failed — deck saved locally only.';
+      this.showSuccessMessage('Deck saved locally (cloud error).');
+    } finally {
+      this.isSavingToCloud = false;
     }
   }
 
@@ -405,6 +498,9 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
 
   newDeck(): void {
     this.currentDeckId = null;
+    this.currentFamilyId = null;
+    this.currentVersionId = null;
+    this.cloudSaveError = null;
     this.deckName = 'My Deck';
     this.digiEggs = [];
     this.mainDeck = [];
@@ -510,6 +606,87 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     return `deck_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
   /**
+   * Load a deck version imported from Supabase (stored temporarily in sessionStorage).
+   * Called when the builder receives queryParam cloudImport=true.
+   */
+  private loadCloudImport(): void {
+    try {
+      const raw = sessionStorage.getItem('import_cloud_deck');
+      if (!raw) return;
+      sessionStorage.removeItem('import_cloud_deck');
+
+      const version = JSON.parse(raw);
+      const cardList: { cardId: string; quantity: number }[] = version.card_list ?? [];
+
+      this.digiEggs = [];
+      this.mainDeck = [];
+      this.currentDeckId = null;
+      this.currentFamilyId = version.family_id ?? null;
+      this.currentVersionId = version.id ?? null;
+      this.deckName = version.version_name ?? 'Cloud Deck';
+
+      cardList.forEach(item => {
+        const card = this.cards.find(c => c.id === item.cardId);
+        if (!card) {
+          console.warn(`Cloud import: card not found → ${item.cardId}`);
+          return;
+        }
+        const deckCard: DeckCard = { card, quantity: item.quantity };
+        if (card.level === 2) {
+          this.digiEggs.push(deckCard);
+        } else {
+          this.mainDeck.push(deckCard);
+        }
+      });
+
+      this.showSuccessMessage(`"${this.deckName}" loaded from cloud!`);
+    } catch (error) {
+      console.error('Error loading cloud import:', error);
+    }
+  }
+
+  /**
+   * Open a deck from the library as a brand-new deck (no ID, no Supabase link).
+   * Card list is passed via sessionStorage key 'open_in_editor'.
+   * Called when the builder receives queryParam openEditor=true.
+   */
+  private loadOpenInEditor(): void {
+    try {
+      const raw = sessionStorage.getItem('open_in_editor');
+      if (!raw) return;
+      sessionStorage.removeItem('open_in_editor');
+
+      const payload: { name: string; cardList: { cardId: string; quantity: number }[] } = JSON.parse(raw);
+
+      this.digiEggs = [];
+      this.mainDeck = [];
+      this.currentDeckId = null;
+      this.currentFamilyId = null;
+      this.currentVersionId = null;
+      this.cloudSaveError = null;
+      this.deckName = payload.name;
+
+      payload.cardList.forEach(item => {
+        const card = this.cards.find(c => c.id === item.cardId);
+        if (!card) {
+          console.warn(`Open in editor: card not found → ${item.cardId}`);
+          return;
+        }
+        const deckCard: DeckCard = { card, quantity: item.quantity };
+        if (card.level === 2) {
+          this.digiEggs.push(deckCard);
+        } else {
+          this.mainDeck.push(deckCard);
+        }
+      });
+
+      this.showSuccessMessage(`"${this.deckName}" opened as new deck!`);
+    } catch (error) {
+      console.error('Error loading deck in editor:', error);
+    }
+  }
+
+  /**
    * Load a specific deck by ID
    */
   private loadDeckById(deckId: string): void {
@@ -519,8 +696,11 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       return;
     }
 
-    console.log('Loading deck:', deck.name);
     this.currentDeckId = deck.id;
+    // Restore Supabase IDs if this deck was previously synced
+    this.currentFamilyId = deck.supabaseFamilyId ?? null;
+    this.currentVersionId = deck.supabaseVersionId ?? null;
+    this.cloudSaveError = null;
     this.deckName = deck.name;
     this.currentPlaceholderId = deck.placeholderCardId;
 
