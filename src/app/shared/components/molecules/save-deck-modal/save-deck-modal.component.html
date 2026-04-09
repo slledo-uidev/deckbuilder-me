@@ -62,7 +62,8 @@
   <div modal-footer>
     <div class="row row--gap">
       <app-button variant="outline" (clicked)="onCancel()">Cancel</app-button>
-      <app-button variant="primary" (clicked)="onConfirm()">Save Deck</app-button>
+      <app-button variant="outline" (clicked)="onConfirmSaveAsNew()">Save as new</app-button>
+      <app-button variant="primary" (clicked)="onConfirm()">Save</app-button>
     </div>
   </div>
 </app-modal>

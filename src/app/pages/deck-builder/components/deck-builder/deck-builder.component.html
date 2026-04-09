@@ -28,7 +28,8 @@
       [availableArchetypes]="archetypes"
       [deckCards]="getUniqueCards()"
       [currentPlaceholderId]="currentPlaceholderId"
-      (save)="onSaveConfirm($event)"
+      (save)="onSaveConfirm($event, 'save')"
+      (saveAsNew)="onSaveConfirm($event, 'saveAsNew')"
       (cancel)="onSaveCancel()">
     </app-save-deck-modal>
 

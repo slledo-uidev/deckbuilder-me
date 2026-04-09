@@ -31,6 +31,9 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   selectedArchetypeName: string | null = null;
   isModalOpen: boolean = false;
   isCreateArchetypeModalOpen: boolean = false;
+  // View-only deck modal
+  isViewModalOpen: boolean = false;
+  viewingDeck: Deck | null = null;
 
   /** Siempre devuelve el grupo actualizado desde archetypeGroups */
   get selectedGroup(): DeckArchetypeGroup | null {
@@ -248,11 +251,9 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   }
   
   onLoadDeck(deck: Deck): void {
-    console.log('Loading deck:', deck.name);
-    // Navigate to deck builder with deck ID as query parameter
-    this.router.navigate(['/builder'], { 
-      queryParams: { deckId: deck.id } 
-    });
+    // Open the view-only modal for this deck
+    this.viewingDeck = deck;
+    this.isViewModalOpen = true;
   }
 
   onOpenInEditor(deck: Deck): void {
@@ -260,11 +261,22 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
       ...deck.digiEggs,
       ...deck.mainDeck
     ];
+
+    // Include Supabase IDs and local deck id so the builder can decide whether
+    // to treat this as an existing version (editable) or as a fresh import.
     sessionStorage.setItem('open_in_editor', JSON.stringify({
+      id: deck.id,
       name: deck.name,
-      cardList
+      cardList,
+      supabaseFamilyId: deck.supabaseFamilyId,
+      supabaseVersionId: deck.supabaseVersionId
     }));
     this.router.navigate(['/builder'], { queryParams: { openEditor: true } });
+  }
+
+  onViewModalClose(): void {
+    this.isViewModalOpen = false;
+    this.viewingDeck = null;
   }
   
   onDeleteDeck(deckId: string): void {

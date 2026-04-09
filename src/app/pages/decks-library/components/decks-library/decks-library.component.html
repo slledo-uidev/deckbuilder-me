@@ -127,3 +127,11 @@
     </app-create-archetype-modal>
   </ng-container>
 </div>
+
+  <app-view-deck-modal
+    [isVisible]="isViewModalOpen"
+    [deck]="viewingDeck"
+    [allCards]="allCards"
+    (close)="onViewModalClose()"
+    (openInEditor)="onOpenInEditor(viewingDeck!)">
+  </app-view-deck-modal>

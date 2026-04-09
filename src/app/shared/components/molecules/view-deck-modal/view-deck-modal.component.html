@@ -1,0 +1,37 @@
+<div class="view-deck-modal" *ngIf="isVisible">
+  <div class="view-deck-modal__backdrop" (click)="onClose()"></div>
+  <div class="view-deck-modal__content">
+    <header class="view-deck-modal__header">
+      <h3>{{ deck?.name }}</h3>
+      <button class="view-deck-modal__close" (click)="onClose()">✕</button>
+    </header>
+
+    <section class="view-deck-modal__meta">
+      <img *ngIf="deck?.placeholderCardId; else noThumb" [src]="getPlaceholderUrl(deck?.placeholderCardId)" alt="thumb" class="view-deck-modal__thumb">
+      <ng-template #noThumb>
+        <img [src]="getPlaceholderUrl(getCombinedCardList()[0]?.cardId)" alt="thumb" class="view-deck-modal__thumb">
+      </ng-template>
+      <div class="view-deck-modal__info">
+        <p><strong>Archetype:</strong> {{ deck?.archetype || '—' }}</p>
+        <p><strong>Main:</strong> {{ getMainCount(deck) }} cards</p>
+        <p><strong>Digi Eggs:</strong> {{ getDigiEggCount(deck) }} cards</p>
+      </div>
+    </section>
+
+    <section class="view-deck-modal__list">
+      <h4>Lista de cartas</h4>
+      <ul>
+        <li *ngFor="let dc of getCombinedCardList()">
+          <span class="qty">{{ dc.quantity }}x</span>
+          <span class="name">{{ getCardName(dc.cardId) }}</span>
+          <span class="zone">{{ dc.isEgg ? 'Egg' : 'Main' }}</span>
+        </li>
+      </ul>
+    </section>
+
+    <footer class="view-deck-modal__footer">
+      <button class="btn btn--ghost" (click)="onClose()">Cerrar</button>
+      <button class="btn btn--primary" (click)="onOpenInEditor()">Open in Editor</button>
+    </footer>
+  </div>
+</div>

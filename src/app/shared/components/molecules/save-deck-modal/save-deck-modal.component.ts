@@ -22,6 +22,7 @@ export class SaveDeckModalComponent implements OnChanges {
   @Input() currentPlaceholderId?: string;
 
   @Output() save = new EventEmitter<SaveDeckData>();
+  @Output() saveAsNew = new EventEmitter<SaveDeckData>();
   @Output() cancel = new EventEmitter<void>();
 
   deckName = '';
@@ -65,6 +66,23 @@ export class SaveDeckModalComponent implements OnChanges {
       return;
     }
     this.save.emit({ name: trimmed, placeholderCardId: this.selectedCardId, archetype: this.archetype.trim() });
+  }
+
+  onConfirmSaveAsNew(): void {
+    const trimmed = this.deckName.trim();
+    if (!trimmed) {
+      this.nameError = 'Deck name is required';
+      return;
+    }
+    if (trimmed.length > 60) {
+      this.nameError = 'Name must be 60 characters or less';
+      return;
+    }
+    if (!this.selectedCardId) {
+      this.nameError = 'Please select a placeholder card';
+      return;
+    }
+    this.saveAsNew.emit({ name: trimmed, placeholderCardId: this.selectedCardId, archetype: this.archetype.trim() });
   }
 
   onCancel(): void {

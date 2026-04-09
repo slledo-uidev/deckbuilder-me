@@ -167,11 +167,23 @@ export class StorageService {
     
     if (existingIndex >= 0) {
       // Update existing deck
-      decks[existingIndex] = deck;
+      // Store a deep clone to avoid object aliasing between the builder
+      // in-memory objects and the cached storage entry. This prevents bugs
+      // where modifying one reference mutates the other.
+      try {
+        decks[existingIndex] = JSON.parse(JSON.stringify(deck));
+      } catch (err) {
+        // Fallback to direct assign if cloning fails for any reason
+        decks[existingIndex] = deck;
+      }
     } else {
       // Add new deck
       deck.createdAt = new Date();
-      decks.push(deck);
+      try {
+        decks.push(JSON.parse(JSON.stringify(deck)));
+      } catch (err) {
+        decks.push(deck);
+      }
     }
     
     const success = this.saveDecksToStorage(decks);

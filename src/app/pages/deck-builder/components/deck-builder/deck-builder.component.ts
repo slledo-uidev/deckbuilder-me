@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StorageService, ValidationService, CardService, AuthService, DeckService } from '@core/services';
 import { Deck, Card, CardFilter, Color, Archetype } from '@core/models';
 import { Subject } from 'rxjs';
@@ -63,7 +63,8 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     private cardService: CardService,
     private authService: AuthService,
     private deckService: DeckService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
   
   ngOnInit(): void {
@@ -358,7 +359,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     this.showStatsModal = false;
   }
 
-  onSaveConfirm(data: SaveDeckData): void {
+  async onSaveConfirm(data: SaveDeckData, mode: 'save' | 'saveAsNew' = 'save'): Promise<void> {
     this.showSaveModal = false;
     this.deckName = data.name;
     this.currentArchetype = data.archetype;
@@ -372,8 +373,13 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     const currentUser = this.authService.getCurrentUser();
 
     // ── 1. Save to localStorage (always, as local backup) ───────────────────
+    // If user selected "Save as new", force a new local deck id so we don't
+    // overwrite the currently loaded local deck. Otherwise reuse currentDeckId
+    // (to update the existing local deck).
+    const deckId = mode === 'saveAsNew' ? this.generateDeckId() : (this.currentDeckId || this.generateDeckId());
+
     const deck: Deck = {
-      id: this.currentDeckId || this.generateDeckId(),
+      id: deckId,
       name: data.name,
       digiEggs: this.digiEggs.map(dc => ({ cardId: dc.card.id, quantity: dc.quantity })),
       mainDeck: this.mainDeck.map(dc => ({ cardId: dc.card.id, quantity: dc.quantity })),
@@ -386,14 +392,42 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       updatedAt: new Date()
     };
 
+    // If saving as new, snapshot the original deck so we can restore it if
+    // any accidental mutation happens during the cloud save flow.
+    let originalDeckSnapshot: Deck | null = null;
+    if (mode === 'saveAsNew' && this.currentDeckId) {
+      const orig = this.storageService.getDeckById(this.currentDeckId);
+      if (orig) originalDeckSnapshot = JSON.parse(JSON.stringify(orig));
+    }
+
     const localSuccess = this.storageService.saveDeck(deck);
     if (localSuccess) {
       this.currentDeckId = deck.id;
       this.currentPlaceholderId = data.placeholderCardId;
     }
 
-    // ── 2. Save to Supabase (async, non-blocking) ────────────────────────────
-    this.saveToSupabase(deck, data);
+  // ── 2. Save to Supabase (await so we can restore original if needed) ───
+  const cloudSaved = await this.saveToSupabase(deck, data, mode);
+
+    // If we saved as new but the original deck got mutated (thumbnail changed),
+    // restore the original snapshot to keep it untouched.
+    if (originalDeckSnapshot) {
+      const currentOrig = this.storageService.getDeckById(originalDeckSnapshot.id);
+      if (currentOrig && currentOrig.placeholderCardId !== originalDeckSnapshot.placeholderCardId) {
+        this.storageService.saveDeck({ ...currentOrig, placeholderCardId: originalDeckSnapshot.placeholderCardId });
+      }
+    }
+
+    // After saving, navigate back to the Decks Library only if cloud save
+    // completed successfully. If cloud save failed, keep the user in the
+    // builder so they can retry or see the error message.
+    if (cloudSaved) {
+      try {
+        this.router.navigate(['/decks']);
+      } catch (err) {
+        // ignore navigation errors; not critical
+      }
+    }
   }
 
   /**
@@ -402,7 +436,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
    * - familyId pero no versionId → nueva versión en familia existente
    * - familyId + versionId → actualiza la versión existente (overwrite)
    */
-  private async saveToSupabase(deck: Deck, data: SaveDeckData): Promise<void> {
+  private async saveToSupabase(deck: Deck, data: SaveDeckData, mode: 'save' | 'saveAsNew' = 'save'): Promise<boolean> {
     this.isSavingToCloud = true;
     this.cloudSaveError = null;
 
@@ -412,8 +446,8 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       ...deck.mainDeck.map((c: any) => ({ ...(c as any), isEgg: false }))
     ];
 
-    try {
-      if (!this.currentFamilyId) {
+  try {
+  if (!this.currentFamilyId) {
         // Deck nuevo → crear familia basada en el arquetipo si está disponible.
         // Antes se usaba el nombre del deck para crear la familia, lo que provocaba
         // que cada deck nuevo crease una familia con su nombre. Ahora preferimos
@@ -427,41 +461,93 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
         );
         this.currentFamilyId = version.family_id;
         this.currentVersionId = version.id ?? null;
-      } else if (this.currentVersionId) {
-        // Deck existente cargado y modificado → sobreescribir la misma versión
-        await this.deckService.updateVersion(this.currentVersionId, {
-          card_list: cardList,
-          version_name: data.name,
-          thumbnailCardId: deck.placeholderCardId
-        });
       } else {
-        // Familia existente pero sin versión guardada aún → nueva versión
-        const version = await this.deckService.saveNewVersion(
-          this.currentFamilyId,
-          cardList,
-          data.name,
-          { archetype: deck.archetype, thumbnailCardId: deck.placeholderCardId }
-        );
-        this.currentVersionId = version.id ?? null;
+        // If user chose "Save as new" we always create a new version inside the
+        // existing family (or create a family if missing). Otherwise (mode === 'save')
+        // we update the existing version when possible.
+        if (mode === 'saveAsNew') {
+          // Ensure we have a family — create one if needed
+          if (!this.currentFamilyId) {
+            const familyName = (deck.archetype && deck.archetype.trim()) ? deck.archetype.trim() : 'no-family';
+            const version = await this.deckService.createNewFamilyWithVersion(
+              familyName,
+              cardList,
+              data.name,
+              { archetype: deck.archetype ?? 'no-family', description: deck.description, thumbnailCardId: deck.placeholderCardId }
+            );
+            this.currentFamilyId = version.family_id;
+            this.currentVersionId = version.id ?? null;
+          } else {
+            const version = await this.deckService.saveNewVersion(
+              this.currentFamilyId,
+              cardList,
+              data.name,
+              { archetype: deck.archetype, thumbnailCardId: deck.placeholderCardId }
+            );
+            this.currentVersionId = version.id ?? null;
+          }
+        } else {
+          // mode === 'save'
+          if (this.currentVersionId) {
+            // Update existing version
+            await this.deckService.updateVersion(this.currentVersionId, {
+              card_list: cardList,
+              version_name: data.name,
+              thumbnailCardId: deck.placeholderCardId
+            });
+          } else {
+            // Create a new version inside the existing family
+            const version = await this.deckService.saveNewVersion(
+              this.currentFamilyId,
+              cardList,
+              data.name,
+              { archetype: deck.archetype, thumbnailCardId: deck.placeholderCardId }
+            );
+            this.currentVersionId = version.id ?? null;
+          }
+        }
       }
 
-      // Persist Supabase IDs in the local deck so delete can find them
-      if (this.currentDeckId && this.currentFamilyId) {
+      // Persist Supabase IDs locally.
+      // - If we're doing a regular save (overwrite), update the existing local deck.
+      // - If we're doing "save as new", create a new local deck entry that points
+      //   to the newly created Supabase version so the original stays intact.
+      // Persist Supabase IDs into the local deck entry that represents the
+      // current saved deck in the builder. For 'saveAsNew' we previously
+      // created a new local deck before calling this function, so the
+      // appropriate local deck id is in this.currentDeckId. Update that
+      // entry with the supabase ids so it references the new remote version.
+      if (this.currentDeckId) {
         const savedDeck = this.storageService.getDeckById(this.currentDeckId);
         if (savedDeck) {
           this.storageService.saveDeck({
             ...savedDeck,
-            supabaseFamilyId: this.currentFamilyId,
-            supabaseVersionId: this.currentVersionId ?? undefined
+            supabaseFamilyId: this.currentFamilyId ?? savedDeck.supabaseFamilyId,
+            supabaseVersionId: this.currentVersionId ?? savedDeck.supabaseVersionId
           });
         }
+      } else if (this.currentFamilyId) {
+        // No local deck exists (edge-case): create a new local deck that
+        // references the new supabase version.
+        const createdLocal: Deck = {
+          ...deck,
+          id: this.generateDeckId(),
+          supabaseFamilyId: this.currentFamilyId,
+          supabaseVersionId: this.currentVersionId ?? undefined,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        this.storageService.saveDeck(createdLocal);
+        this.currentDeckId = createdLocal.id;
       }
 
       this.showSuccessMessage('Deck saved!');
+      return true;
     } catch (error) {
       console.error('Error saving deck to Supabase:', error);
       this.cloudSaveError = 'Cloud save failed — deck saved locally only.';
       this.showSuccessMessage('Deck saved locally (cloud error).');
+      return false;
     } finally {
       this.isSavingToCloud = false;
     }
@@ -663,14 +749,15 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       const raw = sessionStorage.getItem('open_in_editor');
       if (!raw) return;
       sessionStorage.removeItem('open_in_editor');
-
-      const payload: { name: string; cardList: { cardId: string; quantity: number }[] } = JSON.parse(raw);
+      const payload: { id?: string; name: string; cardList: { cardId: string; quantity: number }[]; supabaseFamilyId?: string; supabaseVersionId?: string } = JSON.parse(raw);
 
       this.digiEggs = [];
       this.mainDeck = [];
-      this.currentDeckId = null;
-      this.currentFamilyId = null;
-      this.currentVersionId = null;
+      // If the payload includes Supabase IDs, preserve them so Save will update
+      // the existing version. Otherwise treat as a fresh deck.
+      this.currentDeckId = payload.id ?? null;
+      this.currentFamilyId = payload.supabaseFamilyId ?? null;
+      this.currentVersionId = payload.supabaseVersionId ?? null;
       this.cloudSaveError = null;
       this.deckName = payload.name;
 
@@ -688,7 +775,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
         }
       });
 
-      this.showSuccessMessage(`"${this.deckName}" opened as new deck!`);
+      this.showSuccessMessage(`"${this.deckName}" opened in editor${this.currentVersionId ? ' (editable)' : ''}!`);
     } catch (error) {
       console.error('Error loading deck in editor:', error);
     }
