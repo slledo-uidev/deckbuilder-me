@@ -186,12 +186,37 @@ export class StorageService {
    * Used to sync from Supabase on page load.
    */
   public replaceAllDecks(decks: Deck[]): void {
-    decks.forEach(deck => {
-      deck.createdAt = new Date(deck.createdAt);
-      deck.updatedAt = new Date(deck.updatedAt);
+    // Preserve local-only fields (like placeholderCardId, isFavorite, tags)
+    const existingDecks = this.decksCache$.value;
+
+    const merged = decks.map(incoming => {
+      // Normalize dates
+      incoming.createdAt = new Date(incoming.createdAt as any);
+      incoming.updatedAt = new Date(incoming.updatedAt as any);
+
+      // Try to find a corresponding local deck by id or supabaseVersionId only.
+      // Matching by family_id can incorrectly map multiple versions to the same
+      // local deck (and copy the same placeholder to all of them), so avoid it.
+      const local = existingDecks.find(d =>
+        d.id === incoming.id ||
+        (d.supabaseVersionId && d.supabaseVersionId === (incoming as any).supabaseVersionId)
+      );
+
+      if (local) {
+        // Copy local-only fields if present
+        if (local.placeholderCardId) incoming.placeholderCardId = local.placeholderCardId;
+        if (local.isFavorite !== undefined) incoming.isFavorite = local.isFavorite;
+        if (local.tags) incoming.tags = local.tags;
+        if (local.author) incoming.author = local.author;
+        // Keep any local supabase IDs if present (don't overwrite)
+        if (local.supabaseFamilyId) incoming.supabaseFamilyId = local.supabaseFamilyId;
+        if (local.supabaseVersionId) incoming.supabaseVersionId = local.supabaseVersionId;
+      }
+      return incoming;
     });
-    this.saveDecksToStorage(decks);
-    this.decksCache$.next([...decks]);
+
+    this.saveDecksToStorage(merged);
+    this.decksCache$.next([...merged]);
   }
 
   /**

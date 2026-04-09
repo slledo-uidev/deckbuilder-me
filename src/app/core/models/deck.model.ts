@@ -153,6 +153,7 @@ export interface DeckVersion {
   card_list: DeckCard[];    // Full card list (digiEggs + mainDeck)
   notes?: string;           // Optional build notes
   archetype?: string;       // Optional archetype tag duplicated on the version row
+  thumbnail_card_id?: string; // Optional thumbnail card id stored in DB (snake_case)
   stats?: Record<string, unknown>; // Optional computed stats snapshot
   created_at?: string;      // ISO timestamp — set by Supabase
 }

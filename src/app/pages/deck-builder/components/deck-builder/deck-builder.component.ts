@@ -422,7 +422,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
           familyName,
           cardList,
           data.name,
-          { archetype: deck.archetype ?? 'no-family', description: deck.description }
+          { archetype: deck.archetype ?? 'no-family', description: deck.description, thumbnailCardId: deck.placeholderCardId }
         );
         this.currentFamilyId = version.family_id;
         this.currentVersionId = version.id ?? null;
@@ -430,7 +430,8 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
         // Deck existente cargado y modificado → sobreescribir la misma versión
         await this.deckService.updateVersion(this.currentVersionId, {
           card_list: cardList,
-          version_name: data.name
+          version_name: data.name,
+          thumbnailCardId: deck.placeholderCardId
         });
       } else {
         // Familia existente pero sin versión guardada aún → nueva versión
@@ -438,7 +439,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
           this.currentFamilyId,
           cardList,
           data.name,
-          { archetype: deck.archetype }
+          { archetype: deck.archetype, thumbnailCardId: deck.placeholderCardId }
         );
         this.currentVersionId = version.id ?? null;
       }

@@ -49,7 +49,8 @@ export class DeckService {
           version_name,
           card_list,
           notes,
-          created_at
+          created_at,
+          thumbnail_card_id
         )
       `)
       .eq('user_id', userId)
@@ -76,6 +77,7 @@ export class DeckService {
           sideDeck: [],
           colors: [],
           archetype: family.archetype ?? family.name,
+          placeholderCardId: (version as any).thumbnail_card_id ?? undefined,
           createdAt: new Date(version.created_at ?? family.created_at),
           updatedAt: new Date(version.created_at ?? family.created_at)
         });
@@ -106,7 +108,8 @@ export class DeckService {
           id,
           version_name,
           created_at,
-          notes
+          notes,
+          thumbnail_card_id
         )
       `)
       .eq('user_id', userId)
@@ -116,7 +119,8 @@ export class DeckService {
       console.error('Error al cargar la librería:', error);
       throw error;
     }
-    return data as DeckFamilyWithVersions[];
+    // Type: Supabase returns fields including user_id which DeckFamilyWithVersions expects.
+    return data as unknown as DeckFamilyWithVersions[];
   }
 
   /**
@@ -170,7 +174,7 @@ export class DeckService {
     familyName: string,
     cards: DeckCard[],
     versionName: string = 'v1.0',
-    options: { archetype?: string; description?: string; notes?: string } = {}
+  options: { archetype?: string; description?: string; notes?: string; thumbnailCardId?: string } = {}
   ): Promise<DeckVersion> {
     const userId = this.auth.currentUserId;
     if (!userId) throw new Error('No hay usuario autenticado.');
@@ -228,7 +232,7 @@ export class DeckService {
     }
 
     // 2. Insert the first version linked to the determined family
-    return this.saveNewVersion(family.id, cards, versionName, { notes: options.notes, archetype: options.archetype });
+    return this.saveNewVersion(family.id, cards, versionName, { notes: options.notes, archetype: options.archetype, thumbnailCardId: options.thumbnailCardId });
   }
 
   /**
@@ -270,7 +274,7 @@ export class DeckService {
     familyId: string,
     cards: DeckCard[],
     versionName: string,
-    options: { notes?: string; archetype?: string } = {}
+    options: { notes?: string; archetype?: string; thumbnailCardId?: string } = {}
   ): Promise<DeckVersion> {
     // Build insert payload and ensure archetype is never null: default to 'no-family'
     const payload: any = {
@@ -283,6 +287,10 @@ export class DeckService {
     payload.archetype = options.archetype !== undefined && options.archetype !== null
       ? options.archetype
       : 'no-family';
+    // Support thumbnail card id persistence in DB
+    if ((options as any).thumbnailCardId !== undefined) {
+      payload.thumbnail_card_id = (options as any).thumbnailCardId;
+    }
 
     const { data, error } = await this.supabase
       .from('decks')
@@ -292,11 +300,15 @@ export class DeckService {
 
     if (error) throw error;
 
-    // Ensure the returned object uses undefined for archetype when not provided
-    const result = data as DeckVersion & { archetype?: string | null };
-    // Normalize DB null to the sentinel 'no-family' so fields are never null
+    // Normalize and return the inserted version
+    const result = data as DeckVersion & { archetype?: string | null; thumbnail_card_id?: string | null };
+    // Ensure archetype is not null
     if (!Object.prototype.hasOwnProperty.call(result, 'archetype') || result.archetype === null) {
       (result as any).archetype = 'no-family';
+    }
+    // Normalize DB null to undefined for thumbnail
+    if (!Object.prototype.hasOwnProperty.call(result, 'thumbnail_card_id') || (result as any).thumbnail_card_id === null) {
+      (result as any).thumbnail_card_id = undefined;
     }
     return result as DeckVersion;
   }
@@ -320,17 +332,28 @@ export class DeckService {
    */
   async updateVersion(
     versionId: string,
-    changes: { card_list?: DeckCard[]; version_name?: string; notes?: string; stats?: Record<string, unknown> }
+    changes: { card_list?: DeckCard[]; version_name?: string; notes?: string; stats?: Record<string, unknown>; thumbnailCardId?: string }
   ): Promise<DeckVersion> {
+    // Map JS-friendly change keys to DB column names (thumbnailCardId -> thumbnail_card_id)
+    const payload: any = { ...changes };
+    if ((changes as any).thumbnailCardId !== undefined) {
+      payload.thumbnail_card_id = (changes as any).thumbnailCardId;
+      delete payload.thumbnailCardId;
+    }
+
     const { data, error } = await this.supabase
       .from('decks')
-      .update(changes)
+      .update(payload)
       .eq('id', versionId)
       .select()
       .single();
 
     if (error) throw error;
-    return data as DeckVersion;
+    const result = data as DeckVersion & { thumbnail_card_id?: string | null };
+    if (!Object.prototype.hasOwnProperty.call(result, 'thumbnail_card_id') || result.thumbnail_card_id === null) {
+      (result as any).thumbnail_card_id = undefined;
+    }
+    return result as DeckVersion;
   }
 
   /**
