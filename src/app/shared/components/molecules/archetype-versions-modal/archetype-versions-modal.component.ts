@@ -26,6 +26,7 @@ export class ArchetypeVersionsModalComponent implements OnChanges {
 
   @Output() closed = new EventEmitter<void>();
   @Output() deckAction = new EventEmitter<DeckAction>();
+  @Output() openInEditor = new EventEmitter<Deck>();
   @Output() archetypeUpdated = new EventEmitter<ArchetypeUpdateData>();
   @Output() newVersion = new EventEmitter<Deck>();
   @Output() favoriteToggled = new EventEmitter<{ deck: Deck; isFavorite: boolean }>();
@@ -58,6 +59,11 @@ export class ArchetypeVersionsModalComponent implements OnChanges {
 
   onLoad(deck: Deck): void {
     this.deckAction.emit({ action: 'load', deck });
+    this.onClose();
+  }
+
+  onOpenEditor(deck: Deck): void {
+    this.openInEditor.emit(deck);
     this.onClose();
   }
 

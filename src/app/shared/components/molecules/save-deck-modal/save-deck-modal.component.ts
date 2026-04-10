@@ -5,7 +5,10 @@ import { Archetype } from '@core/models';
 export interface SaveDeckData {
   name: string;
   placeholderCardId: string;
-  archetype: string;   // Empty string if not specified
+  // familyId is the authoritative selection from the dropdown. If undefined
+  // or empty, no family was selected and the backend should use the default
+  // 'no-family' handling.
+  familyId?: string;
 }
 
 @Component({
@@ -17,24 +20,30 @@ export class SaveDeckModalComponent implements OnChanges {
   @Input() isVisible = false;
   @Input() currentName = '';
   @Input() currentArchetype = '';
+  @Input() currentFamilyId?: string;
   @Input() availableArchetypes: Archetype[] = [];
   @Input() deckCards: Card[] = [];
   @Input() currentPlaceholderId?: string;
+  @Input() showSaveAsNew: boolean = false; // whether to render the "Save as new" CTA
 
   @Output() save = new EventEmitter<SaveDeckData>();
   @Output() saveAsNew = new EventEmitter<SaveDeckData>();
   @Output() cancel = new EventEmitter<void>();
 
   deckName = '';
-  archetype = '';
+  // Selected family id (supabaseFamilyId or local id)
+  selectedFamilyId = '';
   nameError = '';
   selectedCardId = '';
 
   ngOnChanges(changes: SimpleChanges): void {
     // Only reset selection when modal opens (isVisible changes from false to true)
     if (changes['isVisible'] && changes['isVisible'].currentValue === true) {
-      this.deckName = this.currentName || '';
-      this.archetype = this.currentArchetype || '';
+  this.deckName = this.currentName || '';
+      // If the parent passed a currentFamilyId prefer it; otherwise, if a
+      // currentArchetype string is provided (legacy), try to use that as
+      // initial selection.
+      this.selectedFamilyId = this.currentFamilyId ? this.currentFamilyId : (this.currentArchetype || '');
       this.nameError = '';
       
       // Auto-select current placeholder if it exists in current deck cards
@@ -65,7 +74,7 @@ export class SaveDeckModalComponent implements OnChanges {
       this.nameError = 'Please select a placeholder card';
       return;
     }
-    this.save.emit({ name: trimmed, placeholderCardId: this.selectedCardId, archetype: this.archetype.trim() });
+    this.save.emit({ name: trimmed, placeholderCardId: this.selectedCardId, familyId: this.selectedFamilyId || undefined });
   }
 
   onConfirmSaveAsNew(): void {
@@ -82,7 +91,7 @@ export class SaveDeckModalComponent implements OnChanges {
       this.nameError = 'Please select a placeholder card';
       return;
     }
-    this.saveAsNew.emit({ name: trimmed, placeholderCardId: this.selectedCardId, archetype: this.archetype.trim() });
+    this.saveAsNew.emit({ name: trimmed, placeholderCardId: this.selectedCardId, familyId: this.selectedFamilyId || undefined });
   }
 
   onCancel(): void {

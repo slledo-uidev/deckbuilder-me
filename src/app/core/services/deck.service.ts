@@ -153,16 +153,20 @@ export class DeckService {
     const userId = this.auth.currentUserId;
     if (!userId) throw new Error('No hay usuario autenticado.');
 
+    const insertPayload = {
+      name,
+      user_id: userId,
+      archetype: options.archetype ?? name,
+      description: options.description
+    };
+    console.log('[DeckService] createFamily payload:', insertPayload);
     const { data, error } = await this.supabase
       .from('deck_families')
-      .insert([{
-        name,
-        user_id: userId,
-        archetype: options.archetype ?? name,
-        description: options.description
-      }])
+      .insert([insertPayload])
       .select()
       .single();
+
+    console.log('[DeckService] createFamily response:', data, error);
 
     if (error) throw error;
     return data as DeckFamily;
@@ -294,11 +298,13 @@ export class DeckService {
       payload.thumbnail_card_id = (options as any).thumbnailCardId;
     }
 
+    console.log('[DeckService] saveNewVersion payload:', payload);
     const { data, error } = await this.supabase
       .from('decks')
       .insert([payload])
       .select()
       .single();
+    console.log('[DeckService] saveNewVersion response:', data, error);
 
     if (error) throw error;
 

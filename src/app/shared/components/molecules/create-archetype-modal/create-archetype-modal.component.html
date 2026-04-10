@@ -23,6 +23,7 @@
         autofocus
         (keydown)="onKeydown($event)" />
       <span *ngIf="nameError" class="create-archetype-modal__error">{{ nameError }}</span>
+  <span *ngIf="serverError && !nameError" class="create-archetype-modal__error">{{ serverError }}</span>
       <span class="create-archetype-modal__char-count">{{ name.length }}/60</span>
     </div>
 

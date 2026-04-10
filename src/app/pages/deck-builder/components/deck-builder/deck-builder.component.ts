@@ -37,7 +37,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
 
   // Deck persistence state
   currentDeckId: string | null = null;
-  currentFamilyId: string | null = null;   // Supabase deck_families.id
+  currentFamilyId: string | undefined = undefined;   // Supabase deck_families.id
   currentVersionId: string | null = null;  // Supabase deck_versions.id
   isSavingToCloud = false;
   cloudSaveError: string | null = null;
@@ -46,7 +46,11 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   currentPlaceholderId?: string;
   savedDecks: Deck[] = [];
   archetypes: Archetype[] = [];
+  // Archetypes loaded from the remote DB — used specifically by the Save modal
+  dbArchetypes: Archetype[] = [];
   showSaveModal = false;
+  // Whether the current deck was opened via the 'Open Deck' flow from the library.
+  openedViaOpenDeck = false;
   showImportModal = false;
   showDeckList = false;
   saveSuccessMessage = '';
@@ -237,7 +241,28 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   // ─── Persistence ────────────────────────────────────────────────────────────
 
   openSaveModal(): void {
-    this.showSaveModal = true;
+    // Initialize as empty (authoritative source) so we don't fall back to
+    // local archetypes when the DB is empty. Then fetch remote families.
+    this.dbArchetypes = [];
+    this.deckService.getUserLibrary()
+      .then(families => {
+        this.dbArchetypes = families.map(f => ({
+          id: f.id ?? `fam_${f.name}`,
+          name: f.archetype ?? f.name,
+          description: f.description,
+          createdAt: f.created_at ? new Date(f.created_at) : new Date(),
+          supabaseFamilyId: f.id
+        } as Archetype));
+      })
+      .catch(err => {
+        // If remote fetch fails keep dbArchetypes empty — modal will show no DB
+        // families. We still log the error for debugging.
+        console.warn('Could not load remote families for Save modal', err);
+        this.dbArchetypes = [];
+      })
+      .finally(() => {
+        this.showSaveModal = true;
+      });
   }
 
   onSaveCancel(): void {
@@ -362,7 +387,17 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   async onSaveConfirm(data: SaveDeckData, mode: 'save' | 'saveAsNew' = 'save'): Promise<void> {
     this.showSaveModal = false;
     this.deckName = data.name;
-    this.currentArchetype = data.archetype;
+    // Determine selected family name from passed familyId (if any) so we can
+    // show the archetype label in the UI. This must NOT be used to create a
+    // family on the server — the server-side familyId is authoritative.
+  const selectedFamilyId = data.familyId;
+    let selectedFamilyName: string | undefined;
+    if (selectedFamilyId) {
+      const found = this.dbArchetypes.find(a => a.supabaseFamilyId === selectedFamilyId || a.id === selectedFamilyId)
+        || this.archetypes.find(a => a.supabaseFamilyId === selectedFamilyId || a.id === selectedFamilyId);
+      if (found) selectedFamilyName = found.name;
+    }
+    this.currentArchetype = selectedFamilyName ?? '';
 
     const totalCards = this.getTotalCardCount();
     if (totalCards === 0) {
@@ -386,7 +421,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       sideDeck: [],
       colors,
       placeholderCardId: data.placeholderCardId,
-      archetype: data.archetype || undefined,
+  archetype: selectedFamilyName || undefined,
       author: currentUser?.email,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -446,66 +481,82 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       ...deck.mainDeck.map((c: any) => ({ ...(c as any), isEgg: false }))
     ];
 
-  try {
-  if (!this.currentFamilyId) {
-        // Deck nuevo → crear familia basada en el arquetipo si está disponible.
-        // Antes se usaba el nombre del deck para crear la familia, lo que provocaba
-        // que cada deck nuevo crease una familia con su nombre. Ahora preferimos
-        // usar el arquetipo (si existe) o un nombre por defecto para la familia.
-      const familyName = (deck.archetype && deck.archetype.trim()) ? deck.archetype.trim() : 'no-family';
-        const version = await this.deckService.createNewFamilyWithVersion(
-          familyName,
-          cardList,
-          data.name,
-          { archetype: deck.archetype ?? 'no-family', description: deck.description, thumbnailCardId: deck.placeholderCardId }
-        );
-        this.currentFamilyId = version.family_id;
-        this.currentVersionId = version.id ?? null;
-      } else {
-        // If user chose "Save as new" we always create a new version inside the
-        // existing family (or create a family if missing). Otherwise (mode === 'save')
-        // we update the existing version when possible.
+    try {
+      // Prefer the family explicitly selected in the Save modal (data.familyId).
+      // If a local id was passed (from local archetypes), try to resolve it to
+      // the authoritative Supabase family id. If none provided, fall back to
+      // the currently-loaded family in the builder (this.currentFamilyId).
+      // Only if neither exists do we create a new family using the 'no-family'
+      // sentinel.
+      const rawSelected = data.familyId ?? undefined;
+
+      const resolveToSupabaseId = (rawId?: string): string | undefined => {
+        if (!rawId) return undefined;
+        // If it already looks like a Supabase id (UUID/v4-ish), prefer it.
+        // A simple heuristic: contains a '-' and length > 8
+        if (rawId.includes('-') && rawId.length > 8) return rawId;
+        // Search dbArchetypes first (remote authoritative list)
+        const fromDb = this.dbArchetypes.find(a => a.id === rawId || a.supabaseFamilyId === rawId);
+        if (fromDb && fromDb.supabaseFamilyId) return fromDb.supabaseFamilyId;
+        // Fall back to local archetypes stored in localStorage cache
+        const fromLocal = this.archetypes.find(a => a.id === rawId || a.supabaseFamilyId === rawId);
+        if (fromLocal && fromLocal.supabaseFamilyId) return fromLocal.supabaseFamilyId;
+        // If nothing found, return the raw id — the API will either accept or reject it.
+        return rawId;
+      };
+
+      const selectedFamilyId = resolveToSupabaseId(rawSelected);
+      const targetFamilyId = selectedFamilyId ?? (this.currentFamilyId ?? undefined);
+
+      if (targetFamilyId) {
+        console.log('[Save] targetFamilyId (resolved):', targetFamilyId);
+        console.log('[Save] cardList payload:', cardList);
+        // We have a family id to target - create or update versions inside it.
+        // 'saveAsNew' => always create a new version. 'save' => update existing
+        // version if available, otherwise create.
         if (mode === 'saveAsNew') {
-          // Ensure we have a family — create one if needed
-          if (!this.currentFamilyId) {
-            const familyName = (deck.archetype && deck.archetype.trim()) ? deck.archetype.trim() : 'no-family';
-            const version = await this.deckService.createNewFamilyWithVersion(
-              familyName,
-              cardList,
-              data.name,
-              { archetype: deck.archetype ?? 'no-family', description: deck.description, thumbnailCardId: deck.placeholderCardId }
-            );
-            this.currentFamilyId = version.family_id;
-            this.currentVersionId = version.id ?? null;
-          } else {
-            const version = await this.deckService.saveNewVersion(
-              this.currentFamilyId,
-              cardList,
-              data.name,
-              { archetype: deck.archetype, thumbnailCardId: deck.placeholderCardId }
-            );
-            this.currentVersionId = version.id ?? null;
-          }
+          const version = await this.deckService.saveNewVersion(
+            targetFamilyId,
+            cardList,
+            data.name,
+            { archetype: deck.archetype, thumbnailCardId: deck.placeholderCardId }
+          );
+          console.log('[Save] saveNewVersion response:', version);
+          this.currentFamilyId = targetFamilyId;
+          this.currentVersionId = version.id ?? null;
         } else {
           // mode === 'save'
           if (this.currentVersionId) {
-            // Update existing version
-            await this.deckService.updateVersion(this.currentVersionId, {
+            const updated = await this.deckService.updateVersion(this.currentVersionId, {
               card_list: cardList,
               version_name: data.name,
               thumbnailCardId: deck.placeholderCardId
             });
+            console.log('[Save] updateVersion response:', updated);
           } else {
-            // Create a new version inside the existing family
             const version = await this.deckService.saveNewVersion(
-              this.currentFamilyId,
+              targetFamilyId,
               cardList,
               data.name,
               { archetype: deck.archetype, thumbnailCardId: deck.placeholderCardId }
             );
+            console.log('[Save] saveNewVersion response:', version);
+            this.currentFamilyId = targetFamilyId;
             this.currentVersionId = version.id ?? null;
           }
         }
+      } else {
+        // No family selected anywhere: create a new default family + version.
+        console.log('[Save] No family selected, creating new default family');
+        const version = await this.deckService.createNewFamilyWithVersion(
+          'no-family',
+          cardList,
+          data.name,
+          { archetype: 'no-family', description: deck.description, thumbnailCardId: deck.placeholderCardId }
+        );
+        console.log('[Save] createNewFamilyWithVersion response:', version);
+        this.currentFamilyId = version.family_id;
+        this.currentVersionId = version.id ?? null;
       }
 
       // Persist Supabase IDs locally.
@@ -559,6 +610,9 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     this.currentArchetype = deck.archetype || '';
     this.currentPlaceholderId = deck.placeholderCardId;
 
+  // Loaded directly from local library (not via Open Deck flow)
+  this.openedViaOpenDeck = false;
+
     this.digiEggs = this.hydrateDeckCards(deck.digiEggs);
     this.mainDeck = this.hydrateDeckCards(deck.mainDeck);
     // Side deck not used in Digimon TCG
@@ -591,7 +645,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
 
   newDeck(): void {
     this.currentDeckId = null;
-    this.currentFamilyId = null;
+    this.currentFamilyId = undefined;
     this.currentVersionId = null;
     this.cloudSaveError = null;
     this.deckName = 'My Deck';
@@ -714,9 +768,11 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       this.digiEggs = [];
       this.mainDeck = [];
       this.currentDeckId = null;
-      this.currentFamilyId = version.family_id ?? null;
-      this.currentVersionId = version.id ?? null;
+  this.currentFamilyId = version.family_id ?? undefined;
+  this.currentVersionId = version.id ?? null;
       this.deckName = version.version_name ?? 'Cloud Deck';
+  // Cloud import should not show Save as new by default
+  this.openedViaOpenDeck = false;
 
       cardList.forEach(item => {
         const card = this.cards.find(c => c.id === item.cardId);
@@ -755,11 +811,13 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       this.mainDeck = [];
       // If the payload includes Supabase IDs, preserve them so Save will update
       // the existing version. Otherwise treat as a fresh deck.
-      this.currentDeckId = payload.id ?? null;
-      this.currentFamilyId = payload.supabaseFamilyId ?? null;
-      this.currentVersionId = payload.supabaseVersionId ?? null;
+  this.currentDeckId = payload.id ?? null;
+  this.currentFamilyId = payload.supabaseFamilyId ?? undefined;
+  this.currentVersionId = payload.supabaseVersionId ?? null;
       this.cloudSaveError = null;
       this.deckName = payload.name;
+  // Mark that this builder instance was opened via the library's Open Deck flow.
+  this.openedViaOpenDeck = true;
 
       payload.cardList.forEach(item => {
         const card = this.cards.find(c => c.id === item.cardId);
@@ -791,9 +849,9 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.currentDeckId = deck.id;
-    // Restore Supabase IDs if this deck was previously synced
-    this.currentFamilyId = deck.supabaseFamilyId ?? null;
+  this.currentDeckId = deck.id;
+  // Restore Supabase IDs if this deck was previously synced
+  this.currentFamilyId = deck.supabaseFamilyId ?? undefined;
     this.currentVersionId = deck.supabaseVersionId ?? null;
     this.cloudSaveError = null;
     this.deckName = deck.name;

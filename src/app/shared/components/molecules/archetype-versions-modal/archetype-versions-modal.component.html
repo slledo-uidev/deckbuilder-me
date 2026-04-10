@@ -153,6 +153,7 @@
             <!-- Acciones normales -->
             <div class="version-row__actions" *ngIf="pendingDeleteId !== deck.id">
               <app-button variant="primary" size="small" (clicked)="onLoad(deck)">Load</app-button>
+              <app-button variant="outline" size="small" (clicked)="onOpenEditor(deck)">Open Deck</app-button>
               <app-button variant="outline" size="small" (clicked)="onExport(deck)">Export</app-button>
               <app-button variant="secondary" size="small" (clicked)="onDeleteRequest(deck.id)">Delete</app-button>
             </div>

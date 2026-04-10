@@ -31,6 +31,8 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   selectedArchetypeName: string | null = null;
   isModalOpen: boolean = false;
   isCreateArchetypeModalOpen: boolean = false;
+  // Server-side error message to show in the Create Archetype modal
+  createArchetypeError: string | undefined = undefined;
   // View-only deck modal
   isViewModalOpen: boolean = false;
   viewingDeck: Deck | null = null;
@@ -148,6 +150,7 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   }
 
   onOpenCreateArchetypeModal(): void {
+  this.createArchetypeError = undefined;
     this.isCreateArchetypeModalOpen = true;
   }
 
@@ -156,27 +159,47 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   }
 
   async onArchetypeSaved(data: CreateArchetypeData): Promise<void> {
-    const archetype: Archetype = {
-      id: `archetype_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-      name: data.name,
-      description: data.description || undefined,
-      createdAt: new Date()
-    };
-
-    // Save to Supabase and persist the family ID locally
+    // Verify uniqueness using the database (authoritative). If a family with
+    // the same name/archetype already exists, show an error in the modal and
+    // do NOT persist anything locally.
     try {
-      const family = await this.deckService.createFamily(data.name, {
-        archetype: data.name,
-        description: data.description || undefined
-      });
-      archetype.supabaseFamilyId = family.id;
-    } catch (err) {
-      console.error('Error al crear la familia en Supabase:', err);
-      // Continue saving locally even if Supabase fails
-    }
+      const families = await this.deckService.getFamilies();
+      const exists = families.some(f => (f.archetype ?? f.name).toLowerCase() === data.name.toLowerCase());
+      if (exists) {
+        this.createArchetypeError = `An archetype named "${data.name}" already exists`;
+        // Keep modal open so the user can change the name
+        return;
+      }
 
-    this.storageService.saveArchetype(archetype);
-    this.isCreateArchetypeModalOpen = false;
+      const archetype: Archetype = {
+        id: `archetype_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+        name: data.name,
+        description: data.description || undefined,
+        createdAt: new Date()
+      };
+
+      // Save to Supabase and persist the family ID locally
+      try {
+        const family = await this.deckService.createFamily(data.name, {
+          archetype: data.name,
+          description: data.description || undefined
+        });
+        archetype.supabaseFamilyId = family.id;
+      } catch (err) {
+        console.error('Error al crear la familia en Supabase:', err);
+        this.createArchetypeError = 'Error creating archetype in the cloud. Try again later.';
+        return;
+      }
+
+      this.storageService.saveArchetype(archetype);
+  this.isCreateArchetypeModalOpen = false;
+  this.createArchetypeError = undefined;
+      return;
+    } catch (err) {
+      console.error('Error checking existing families on Supabase:', err);
+      this.createArchetypeError = 'Unable to validate archetype uniqueness right now.';
+      return;
+    }
   }
 
   get existingArchetypeNames(): string[] {

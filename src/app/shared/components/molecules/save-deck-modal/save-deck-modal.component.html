@@ -32,10 +32,10 @@
       <select
         id="deck-archetype-select"
         class="save-deck-modal__select"
-        [(ngModel)]="archetype"
+        [(ngModel)]="selectedFamilyId"
       >
         <option value="">— No archetype —</option>
-        <option *ngFor="let a of availableArchetypes" [value]="a.name">{{ a.name }}</option>
+        <option *ngFor="let a of availableArchetypes" [value]="a.supabaseFamilyId || a.id">{{ a.name }}</option>
       </select>
       <span class="save-deck-modal__hint">Groups this deck in the Advanced Decklist view.</span>
     </div>
@@ -62,7 +62,7 @@
   <div modal-footer>
     <div class="row row--gap">
       <app-button variant="outline" (clicked)="onCancel()">Cancel</app-button>
-      <app-button variant="outline" (clicked)="onConfirmSaveAsNew()">Save as new</app-button>
+  <app-button *ngIf="showSaveAsNew" variant="outline" (clicked)="onConfirmSaveAsNew()">Save as new</app-button>
       <app-button variant="primary" (clicked)="onConfirm()">Save</app-button>
     </div>
   </div>

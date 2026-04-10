@@ -12,7 +12,8 @@ export interface CreateArchetypeData {
 })
 export class CreateArchetypeModalComponent implements OnChanges {
   @Input() isVisible: boolean = false;
-  @Input() existingNames: string[] = [];
+  // Optional server-side error message to display (e.g. "already exists")
+  @Input() serverError?: string;
 
   @Output() saved = new EventEmitter<CreateArchetypeData>();
   @Output() cancelled = new EventEmitter<void>();
@@ -27,6 +28,8 @@ export class CreateArchetypeModalComponent implements OnChanges {
       this.description = '';
       this.nameError = '';
     }
+    // Clear client-side nameError when modal is reopened; serverError comes
+    // from parent and is displayed separately.
   }
 
   onConfirm(): void {
@@ -40,13 +43,8 @@ export class CreateArchetypeModalComponent implements OnChanges {
       this.nameError = 'Name must be 60 characters or less';
       return;
     }
-    const duplicate = this.existingNames
-      .some(n => n.toLowerCase() === trimmed.toLowerCase());
-    if (duplicate) {
-      this.nameError = `An archetype named "${trimmed}" already exists`;
-      return;
-    }
 
+    // Emit to parent — uniqueness check and persistence should be done on the server.
     this.saved.emit({ name: trimmed, description: this.description.trim() });
   }
 

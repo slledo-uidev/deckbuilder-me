@@ -114,6 +114,7 @@
       [isOpen]="isModalOpen"
       (closed)="onModalClose()"
       (deckAction)="onDeckAction($event)"
+      (openInEditor)="onOpenInEditor($event)"
       (archetypeUpdated)="onArchetypeUpdated($event)"
       (favoriteToggled)="onFavoriteToggled($event)"
       (newVersion)="onNewVersion($event)">
@@ -121,7 +122,7 @@
 
     <app-create-archetype-modal
       [isVisible]="isCreateArchetypeModalOpen"
-      [existingNames]="existingArchetypeNames"
+      [serverError]="createArchetypeError"
       (saved)="onArchetypeSaved($event)"
       (cancelled)="onCreateArchetypeModalClose()">
     </app-create-archetype-modal>

@@ -25,9 +25,11 @@
       [isVisible]="showSaveModal"
       [currentName]="deckName"
       [currentArchetype]="currentArchetype"
-      [availableArchetypes]="archetypes"
+      [availableArchetypes]="dbArchetypes"
+      [currentFamilyId]="currentFamilyId"
       [deckCards]="getUniqueCards()"
       [currentPlaceholderId]="currentPlaceholderId"
+  [showSaveAsNew]="openedViaOpenDeck"
       (save)="onSaveConfirm($event, 'save')"
       (saveAsNew)="onSaveConfirm($event, 'saveAsNew')"
       (cancel)="onSaveCancel()">
