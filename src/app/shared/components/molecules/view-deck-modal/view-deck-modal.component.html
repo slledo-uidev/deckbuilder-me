@@ -4,7 +4,7 @@
 
     <header class="view-deck-modal__header">
       <h3>{{ deck?.name }}</h3>
-      <button class="view-deck-modal__close" (click)="onClose()" aria-label="Cerrar">✕</button>
+      <app-icon-button icon="x" ariaLabel="Cerrar" size="medium" (clicked)="onClose()"></app-icon-button>
     </header>
 
     <section class="view-deck-modal__meta">

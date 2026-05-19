@@ -66,27 +66,31 @@
           <div class="deck-card__actions">
             <app-button
               variant="primary"
-              size="small"
+              size="square-sm"
+              title="Ver deck"
               (clicked)="onLoadDeck(deck)">
-              Load
+              <lucide-angular name="eye" [size]="16" class="lucide-icon"></lucide-angular>
             </app-button>
             <app-button
               variant="outline"
-              size="small"
+              size="square-sm"
+              title="Abrir en editor"
               (clicked)="onOpenInEditor(deck)">
-              Open Editor
+              <lucide-angular name="pencil" [size]="16" class="lucide-icon"></lucide-angular>
             </app-button>
             <app-button
               variant="outline"
-              size="small"
+              size="square-sm"
+              title="Exportar"
               (clicked)="onExportDeck(deck.id)">
-              Export
+              <lucide-angular name="download" [size]="16" class="lucide-icon"></lucide-angular>
             </app-button>
             <app-button
-              variant="secondary"
-              size="small"
+              variant="danger"
+              size="square-sm"
+              title="Eliminar"
               (clicked)="onDeleteDeck(deck.id)">
-              Delete
+              <lucide-angular name="trash-2" [size]="16" class="lucide-icon"></lucide-angular>
             </app-button>
           </div>
         </div>
@@ -139,3 +143,23 @@
     (close)="onViewModalClose()"
     (openInEditor)="onOpenInEditor(viewingDeck!)">
   </app-view-deck-modal>
+
+  <!-- Confirm delete modal -->
+  <app-modal
+    [isVisible]="isConfirmDeleteOpen"
+    title="Eliminar deck"
+    size="small"
+    (closed)="onCancelDelete()">
+    <div modal-body class="confirm-delete">
+      <p class="confirm-delete__msg">
+        ¿Seguro que quieres eliminar <strong>{{ deckToDeleteName }}</strong>? <br />Esta acción no se puede deshacer.
+      </p>
+      <div class="confirm-delete__actions">
+        <app-button variant="ghost" size="medium" (clicked)="onCancelDelete()">Cancelar</app-button>
+        <app-button variant="danger" size="medium" (clicked)="onConfirmDelete()">
+          <lucide-angular name="trash-2" [size]="14" class="lucide-icon"></lucide-angular>
+          Eliminar
+        </app-button>
+      </div>
+    </div>
+  </app-modal>

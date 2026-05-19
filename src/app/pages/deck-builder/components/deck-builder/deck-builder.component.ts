@@ -356,6 +356,24 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
         }
       }
 
+      // ── Format C: "4 (BT24-003)"  (qty (cardId))
+      if (!cardId) {
+        const matchC = trimmedLine.match(/^(\d+)\s+\(([A-Z0-9]+-[A-Z0-9]+(?:_P\d+)?)\)$/i);
+        if (matchC) {
+          quantity = parseInt(matchC[1], 10);
+          cardId   = matchC[2].trim();
+        }
+      }
+
+      // ── Format D: "BT24-003 x4"  (cardId x qty)
+      if (!cardId) {
+        const matchD = trimmedLine.match(/^([A-Z0-9]+-[A-Z0-9]+(?:_P\d+)?)\s+x?(\d+)$/i);
+        if (matchD) {
+          cardId   = matchD[1].trim();
+          quantity = parseInt(matchD[2], 10);
+        }
+      }
+
       if (quantity !== null && cardId) {
         cards.push({ quantity, name, cardId });
       } else {
@@ -804,7 +822,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       const raw = sessionStorage.getItem('open_in_editor');
       if (!raw) return;
       sessionStorage.removeItem('open_in_editor');
-      const payload: { id?: string; name: string; cardList: { cardId: string; quantity: number }[]; supabaseFamilyId?: string; supabaseVersionId?: string } = JSON.parse(raw);
+      const payload: { id?: string; name: string; cardList: { cardId: string; quantity: number }[]; supabaseFamilyId?: string; supabaseVersionId?: string; isNewVersion?: boolean } = JSON.parse(raw);
 
       this.digiEggs = [];
       this.mainDeck = [];
@@ -815,8 +833,10 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   this.currentVersionId = payload.supabaseVersionId ?? null;
       this.cloudSaveError = null;
       this.deckName = payload.name;
-  // Mark that this builder instance was opened via the library's Open Deck flow.
-  this.openedViaOpenDeck = true;
+  // 'Save as New' only makes sense when editing an existing version (Open Deck).
+  // For the New Version flow the deck has no supabaseVersionId already, so no
+  // need to show the extra option.
+  this.openedViaOpenDeck = !payload.isNewVersion;
 
       payload.cardList.forEach(item => {
         const card = this.cards.find(c => c.id === item.cardId);

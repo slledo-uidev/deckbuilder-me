@@ -37,6 +37,13 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   isViewModalOpen: boolean = false;
   viewingDeck: Deck | null = null;
 
+  // Confirm delete modal
+  isConfirmDeleteOpen: boolean = false;
+  deckToDeleteId: string | null = null;
+  get deckToDeleteName(): string {
+    return this.decks.find(d => d.id === this.deckToDeleteId)?.name ?? 'este deck';
+  }
+
   /** Siempre devuelve el grupo actualizado desde archetypeGroups */
   get selectedGroup(): DeckArchetypeGroup | null {
     if (!this.selectedArchetypeName) return null;
@@ -218,18 +225,22 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   }
 
   onNewVersion(baseDeck: Deck): void {
-    // Duplicar el deck base y navegar al builder con el nuevo id
-    const newDeck: Deck = {
-      ...baseDeck,
-      id: this.generateId(),
+    // Send cards via sessionStorage so the builder's loadOpenInEditor() flow is
+    // triggered (openEditor=true). supabaseVersionId is intentionally omitted so
+    // the builder creates a NEW version instead of overwriting the original.
+    // supabaseFamilyId is kept so the new version is grouped in the same family.
+    const cardList = [
+      ...baseDeck.digiEggs,
+      ...baseDeck.mainDeck
+    ];
+    sessionStorage.setItem('open_in_editor', JSON.stringify({
       name: `${baseDeck.name} (New version)`,
-      isFavorite: false,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    this.storageService.saveDeck(newDeck);
+      cardList,
+      supabaseFamilyId: baseDeck.supabaseFamilyId,
+      isNewVersion: true
+    }));
     this.onModalClose();
-    this.router.navigate(['/builder'], { queryParams: { deckId: newDeck.id } });
+    this.router.navigate(['/builder'], { queryParams: { openEditor: true } });
   }
 
   onDeckAction(event: DeckAction): void {
@@ -303,14 +314,26 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   }
   
   onDeleteDeck(deckId: string): void {
-    const deck = this.decks.find(d => d.id === deckId);
-    this.storageService.deleteDeck(deckId);
-    // Also delete from Supabase if the deck was synced
+    this.deckToDeleteId = deckId;
+    this.isConfirmDeleteOpen = true;
+  }
+
+  onConfirmDelete(): void {
+    if (!this.deckToDeleteId) return;
+    const deck = this.decks.find(d => d.id === this.deckToDeleteId);
+    this.storageService.deleteDeck(this.deckToDeleteId);
     if (deck?.supabaseFamilyId) {
       this.deckService.deleteFamily(deck.supabaseFamilyId).catch(err =>
         console.error('Error deleting family from Supabase:', err)
       );
     }
+    this.isConfirmDeleteOpen = false;
+    this.deckToDeleteId = null;
+  }
+
+  onCancelDelete(): void {
+    this.isConfirmDeleteOpen = false;
+    this.deckToDeleteId = null;
   }
   
   onDuplicateDeck(deckId: string): void {

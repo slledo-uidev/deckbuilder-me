@@ -1,6 +1,6 @@
 <app-modal
   [isVisible]="isOpen"
-  title=""
+  [title]="group?.archetype || ''"
   size="large"
   [showFooter]="false"
   (closed)="onClose()">
@@ -152,10 +152,18 @@
 
             <!-- Acciones normales -->
             <div class="version-row__actions" *ngIf="pendingDeleteId !== deck.id">
-              <app-button variant="primary" size="small" (clicked)="onLoad(deck)">Load</app-button>
-              <app-button variant="outline" size="small" (clicked)="onOpenEditor(deck)">Open Deck</app-button>
-              <app-button variant="outline" size="small" (clicked)="onExport(deck)">Export</app-button>
-              <app-button variant="secondary" size="small" (clicked)="onDeleteRequest(deck.id)">Delete</app-button>
+              <app-button variant="primary" size="square-sm" title="Ver deck" (clicked)="onLoad(deck)">
+                <lucide-angular name="eye" [size]="16" class="lucide-icon"></lucide-angular>
+              </app-button>
+              <app-button variant="outline" size="square-sm" title="Abrir en editor" (clicked)="onOpenEditor(deck)">
+                <lucide-angular name="pencil" [size]="16" class="lucide-icon"></lucide-angular>
+              </app-button>
+              <app-button variant="outline" size="square-sm" title="Exportar" (clicked)="onExport(deck)">
+                <lucide-angular name="download" [size]="16" class="lucide-icon"></lucide-angular>
+              </app-button>
+              <app-button variant="danger" size="square-sm" title="Eliminar" (clicked)="onDeleteRequest(deck.id)">
+                <lucide-angular name="trash-2" [size]="16" class="lucide-icon"></lucide-angular>
+              </app-button>
             </div>
 
             <!-- Confirm de borrado inline -->
