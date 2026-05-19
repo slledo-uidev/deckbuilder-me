@@ -1,6 +1,6 @@
 @import 'variables';
 @import 'mixins';
-@import 'd-prob-theme-tokens';
+
 
 // Override: el modal__body no hace scroll — lo hará la columna derecha
 :host ::ng-deep .modal__body {

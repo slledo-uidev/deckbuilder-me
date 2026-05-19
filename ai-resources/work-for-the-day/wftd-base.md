@@ -1,0 +1,50 @@
+## 📋 Tareas para el dia
+
+NOTA: En este documento se añaden las tareas diarias. Puede ir variando conforme al dia, añadirse y eliminarse. A la hora de trabajar se detalla la tarea especifica a tratar. Al terminar dicha tarea poner un icono de resuelto entre los []
+
+------------------------------------------------------------
+LISTADO DE TAREAS:
+[] 1# XXXX
+[] 2# XXXX
+[] 3# XXXX
+[] 4# XXXX
+[] 5# XXXX
+[] 6# XXXX
+[] 7# XXXX
+
+
+
+
+
+
+------------------------------------------------------------
+DESGLOSE DE LAS TAREAS:
+
+[] 1# XXX
+    Descrición de la tarea:
+        - 
+
+[] 2# XXX
+    Descrición de la tarea:
+        - 
+
+[] 3# XXX
+    Descrición de la tarea:
+        - 
+
+[] 4# XXX
+    Descrición de la tarea:
+        - 
+
+[] 5# XXX
+    Descrición de la tarea:
+        - 
+
+[] 6# XXX
+    Descrición de la tarea:
+        - 
+
+[] 7# XXX
+    Descrición de la tarea:
+        - 
+

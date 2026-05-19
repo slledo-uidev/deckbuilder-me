@@ -3,20 +3,18 @@
 @import 'variables';
 @import 'typography';
 
-/* Import theme system */
-@import './app/scss/d-prob-theme-tokens';
-@import './app/scss/d-prob-theme-variables';
+/* Custom properties CSS (CSS vars en body) */
+@import './app/scss/custom-properties';
 
 /* Global body styles */
 body {
   margin: 0;
   padding: 0;
-  font-family: $theme-font-family-base;
-  font-size: $theme-font-size-base;
-  line-height: $theme-line-height-relaxed;
-  color: var(--theme-color-text-primary);
-  background-color: var(--theme-color-bg-base);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+  line-height: $line-height-relaxed;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-base);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;

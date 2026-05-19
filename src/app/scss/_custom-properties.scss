@@ -1,0 +1,124 @@
+/* ==============================================
+   CSS CUSTOM PROPERTIES
+   Valores dinámicos en tiempo de ejecución.
+   Se definen en body para herencia global.
+   ============================================== */
+
+@import './colors';
+
+body {
+  /* Primary */
+  --color-primary:        #{$color-turquoise-500};
+  --color-primary-hover:  #{$color-turquoise-600};
+  --color-primary-light:  #{$color-turquoise-400};
+  --color-primary-rgb:    120, 195, 180;
+
+  /* Fondos */
+  --color-bg-base:         #{$color-gray-100};
+  --color-bg-elevated:     #{$color-white};
+  --color-bg-elevated-hover: #{$color-gray-50};
+  --color-bg-input:        #{$color-white};
+  --color-bg-card:         #{$color-white};
+
+  /* Texto */
+  --color-text-primary:   #{$color-gray-900};
+  --color-text-secondary: #{$color-gray-600};
+  --color-text-tertiary:  #{$color-gray-500};
+  --color-text-muted:     #{$color-gray-400};
+
+  /* Bordes */
+  --color-border-base:        #{$color-gray-150};
+  --color-border-elevated:    #{$color-gray-300};
+  --color-border-input:       #{$color-gray-200};
+  --color-border-input-hover: #{$color-gray-400};
+
+  /* Estado */
+  --color-success:     #{$color-green-400};
+  --color-success-rgb: 76, 175, 80;
+  --color-warning:     #{$color-orange-400};
+  --color-warning-rgb: 240, 195, 105;
+  --color-error:       #{$color-red-400};
+  --color-error-rgb:   180, 30, 30;
+  --color-info:        #{$color-blue-400};
+  --color-info-rgb:    33, 150, 243;
+
+  /* Sombras */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 4px 15px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.15);
+
+  /* Gradiente principal */
+  --gradient-primary: linear-gradient(135deg, #{$color-turquoise-500} 0%, #{$color-turquoise-600} 100%);
+
+  /* Colores TCG Digimon */
+  --color-digimon-red:        #{$color-digimon-red};
+  --color-digimon-red-bg:     rgba(211, 47, 47, 0.15);
+  --color-digimon-blue:       #{$color-digimon-blue};
+  --color-digimon-blue-bg:    rgba(25, 118, 210, 0.15);
+  --color-digimon-yellow:     #{$color-digimon-yellow};
+  --color-digimon-yellow-bg:  rgba(249, 168, 37, 0.15);
+  --color-digimon-green:      #{$color-digimon-green};
+  --color-digimon-green-bg:   rgba(56, 142, 60, 0.15);
+  --color-digimon-black:      #{$color-digimon-black};
+  --color-digimon-black-bg:   rgba(66, 66, 66, 0.15);
+  --color-digimon-purple:     #{$color-digimon-purple};
+  --color-digimon-purple-bg:  rgba(123, 31, 162, 0.15);
+  --color-digimon-white:      #{$color-digimon-white};
+  --color-digimon-white-bg:   rgba(250, 250, 250, 0.15);
+
+  /* Tipos de carta */
+  --color-type-digimon:     #{$color-type-digimon};
+  --color-type-digimon-bg:  rgba(255, 111, 0, 0.15);
+  --color-type-tamer:       #{$color-type-tamer};
+  --color-type-tamer-bg:    rgba(0, 172, 193, 0.15);
+  --color-type-option:      #{$color-type-option};
+  --color-type-option-bg:   rgba(142, 36, 170, 0.15);
+  --color-type-digi-egg:    #{$color-type-digi-egg};
+  --color-type-digi-egg-bg: rgba(236, 64, 122, 0.15);
+}
+
+/* ======================================================
+   ALIASES --theme-* (compatibilidad con componentes
+   que usan var(--theme-color-*) del sistema antiguo)
+   ====================================================== */
+body {
+  --theme-color-primary:        var(--color-primary);
+  --theme-color-primary-hover:  var(--color-primary-hover);
+  --theme-color-primary-light:  var(--color-primary-light);
+  --theme-color-primary-rgb:    var(--color-primary-rgb);
+
+  --theme-color-bg-base:           var(--color-bg-base);
+  --theme-color-bg-elevated:       var(--color-bg-elevated);
+  --theme-color-bg-elevated-hover: var(--color-bg-elevated-hover);
+  --theme-color-bg-input:          var(--color-bg-input);
+  --theme-color-bg-card:           var(--color-bg-card);
+
+  --theme-color-text-primary:   var(--color-text-primary);
+  --theme-color-text-secondary: var(--color-text-secondary);
+  --theme-color-text-tertiary:  var(--color-text-tertiary);
+  --theme-color-text-muted:     var(--color-text-muted);
+
+  --theme-color-border-base:        var(--color-border-base);
+  --theme-color-border-elevated:    var(--color-border-elevated);
+  --theme-color-border-input:       var(--color-border-input);
+  --theme-color-border-input-hover: var(--color-border-input-hover);
+
+  --theme-color-success:      var(--color-success);
+  --theme-color-success-rgb:  var(--color-success-rgb);
+  --theme-color-success-light: var(--color-success);
+  --theme-color-warning:      var(--color-warning);
+  --theme-color-warning-rgb:  var(--color-warning-rgb);
+  --theme-color-danger:       var(--color-error);
+  --theme-color-error:        var(--color-error);
+  --theme-color-error-rgb:    var(--color-error-rgb);
+  --theme-color-info:         var(--color-info);
+  --theme-color-info-rgb:     var(--color-info-rgb);
+
+  --theme-shadow-sm: var(--shadow-sm);
+  --theme-shadow-md: var(--shadow-md);
+  --theme-shadow-lg: var(--shadow-lg);
+  --theme-shadow-xl: var(--shadow-xl);
+
+  --theme-gradient-primary: var(--gradient-primary);
+}
