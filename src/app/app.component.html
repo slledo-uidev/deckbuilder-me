@@ -1,5 +1,5 @@
 <div class="app">
-  <header class="app__header" *ngIf="!isLoginPage">
+  <header class="app__header" [class.app__header--hidden]="headerHidden" *ngIf="!isLoginPage">
     <div class="app__container">
       <div class="app__header-content">
         <div class="app__header-title">

@@ -1,12 +1,14 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { Deck, Card } from '@core/models';
+
+export type ViewDeckTab = 'preview' | 'decklist';
 
 @Component({
   selector: 'app-view-deck-modal',
   templateUrl: './view-deck-modal.component.html',
   styleUrls: ['./view-deck-modal.component.scss']
 })
-export class ViewDeckModalComponent {
+export class ViewDeckModalComponent implements OnChanges, OnDestroy {
   @Input() isVisible = false;
   @Input() deck: Deck | null = null;
   @Input() allCards: Card[] = [];
@@ -14,7 +16,24 @@ export class ViewDeckModalComponent {
   @Output() close = new EventEmitter<void>();
   @Output() openInEditor = new EventEmitter<void>();
 
+  activeTab: ViewDeckTab = 'preview';
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isVisible']) {
+      document.body.style.overflow = changes['isVisible'].currentValue ? 'hidden' : '';
+    }
+  }
+
+  ngOnDestroy(): void {
+    document.body.style.overflow = '';
+  }
+
+  setTab(tab: ViewDeckTab): void {
+    this.activeTab = tab;
+  }
+
   onClose(): void {
+    this.activeTab = 'preview';
     this.close.emit();
   }
 

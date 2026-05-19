@@ -252,7 +252,7 @@
    ======================================== */
 @mixin card-base {
   background-color: $color-surface;
-  border-radius: $border-radius-lg;
+  border-radius: $border-radius-sm;
   padding: $spacing-4;
   box-shadow: $shadow-sm;
   transition: box-shadow $transition-fast;

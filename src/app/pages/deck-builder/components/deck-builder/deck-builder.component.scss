@@ -4,8 +4,7 @@
 
 .deck-builder {
   min-height: 100vh;
-  background-color: var(--theme-color-bg-base);
-  
+
   &__container {
     @include container;
     padding: $spacing-2;
@@ -18,13 +17,9 @@
   // Header
   &__header {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: flex-start;
     gap: $spacing-2;
     margin-bottom: $spacing-4;
-    padding-bottom: $spacing-2;
-    border-bottom: 1px solid var(--theme-color-border-base);
-    flex-wrap: wrap;
 
     @media (max-width: #{$breakpoint-sm - 1px}) {
       flex-direction: column;
@@ -43,7 +38,7 @@
     font-weight: $font-weight-bold;
     color: var(--theme-color-text-primary);
     margin: 0;
-    
+
     @media (min-width: $breakpoint-md) {
       font-size: $font-size-2xl;
     }
@@ -57,15 +52,47 @@
 
   &__header-actions {
     display: flex;
-    gap: $spacing-2;
-    flex-wrap: wrap;
-    
-    @media (max-width: #{$breakpoint-sm - 1px}) {
-      width: 100%;
-      
-      app-button {
-        flex: 1;
-        min-width: 0;
+    gap: $spacing-1;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  // Filtros toman el espacio restante en el header
+  &__header > &__filters-section {
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  &__hdr-btn {
+    width: 40px;
+    height: 40px;
+    background-color: $color-cyber-700;
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $color-digital-text-sub;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+    flex-shrink: 0;
+
+    &:hover:not(:disabled) {
+      border-color: $color-neon-cyan;
+      color: $color-neon-cyan;
+      background-color: rgba(0, 229, 255, 0.06);
+    }
+
+    &:active:not(:disabled) { transform: translateY(1px); }
+
+    &--primary {
+      border-color: $color-neon-cyan;
+      color: $color-neon-cyan;
+      background-color: rgba(0, 229, 255, 0.08);
+
+      &:hover:not(:disabled) {
+        background-color: rgba(0, 229, 255, 0.18);
+        box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
       }
     }
   }
@@ -90,7 +117,7 @@
     margin-bottom: $spacing-4;
     background-color: var(--theme-color-bg-elevated);
     border: 1px solid var(--theme-color-border-base);
-    border-radius: $border-radius-lg;
+    border-radius: $border-radius-sm;
     padding: $spacing-2;
     
     @media (min-width: $breakpoint-md) {
@@ -207,7 +234,7 @@
     height: 20px;
     padding: 0 6px;
     background-color: var(--theme-color-primary);
-    color: $color-white;
+    color: var(--color-bg-input);
     border-radius: 50%;
     font-size: 11px;
     font-weight: $font-weight-bold;
@@ -275,12 +302,12 @@
       
       &::-webkit-scrollbar-track {
         background: var(--theme-color-bg-base);
-        border-radius: 3px;
+        border-radius: 0;
       }
       
       &::-webkit-scrollbar-thumb {
         background: var(--theme-color-border-elevated);
-        border-radius: 3px;
+        border-radius: 0;
         
         &:hover {
           background: var(--theme-color-primary);
@@ -297,13 +324,28 @@
 
   // Card Results Section
   &__card-results {
-    margin-bottom: $spacing-6;
     display: flex;
     flex-direction: column;
     max-height: 100dvh;
-    
+    background-color: $color-cyber-700;
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    overflow: hidden;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.35) 30%, rgba(0,229,255,0.35) 70%, transparent);
+      z-index: 1;
+    }
+
     @media (min-width: $breakpoint-md) {
-      margin-bottom: $spacing-8;
+      margin-bottom: 0;
     }
   }
 
@@ -311,61 +353,71 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: $spacing-3;
+    padding: $spacing-2 $spacing-3;
+    border-bottom: 1px solid $color-cyber-500;
+    background-color: $color-cyber-700;
+    position: sticky;
+    top: 0;
+    z-index: $z-index-sticky;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     flex-shrink: 0;
   }
-  
+
   &__results-scroll {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding-right: $spacing-2;
+    padding: $spacing-3;
     min-height: 0;
-    
-    // Custom scrollbar
-    &::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    &::-webkit-scrollbar-track {
-      background: var(--theme-color-bg-base);
-      border-radius: 4px;
-    }
-    
+
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-track { background: transparent; }
     &::-webkit-scrollbar-thumb {
-      background: var(--theme-color-border-elevated);
-      border-radius: 4px;
-      
-      &:hover {
-        background: var(--theme-color-primary);
-      }
+      background: $color-cyber-400;
+      border-radius: 0;
+      &:hover { background: $color-neon-cyan-dim; }
     }
   }
 
   &__section-title {
-    font-size: $font-size-xl;
-    font-weight: $font-weight-bold;
-    color: var(--theme-color-text-primary);
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    font-family: $font-family-mono;
+    letter-spacing: 0.04em;
+    color: $color-digital-text;
     margin: 0;
   }
 
   // Deck Construction Section
   &__deck-construction {
-    background-color: var(--theme-color-bg-elevated);
-    border: 1px solid var(--theme-color-border-base);
-    border-radius: $border-radius-lg;
-    padding: $spacing-2 $spacing-3 $spacing-3;
+    background-color: $color-cyber-700;
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
     overflow-y: auto;
-    
-    @media (min-width: $breakpoint-md) {
-      padding: $spacing-2 $spacing-3 $spacing-3;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,193,7,0.3) 30%, rgba(255,193,7,0.3) 70%, transparent);
+      z-index: 1;
     }
-    
+
     @media (min-width: $breakpoint-lg) {
-      padding: $spacing-2 $spacing-3 $spacing-3;
       max-height: 100%;
-      display: flex;
-      flex-direction: column;
+    }
+
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb {
+      background: $color-cyber-400;
+      border-radius: 0;
     }
   }
 
@@ -373,18 +425,16 @@
     display: flex;
     flex-direction: column;
     gap: $spacing-2;
-    margin-bottom: $spacing-3;
-    padding-bottom: $spacing-2;
-    border-bottom: 1px solid var(--theme-color-border-base);
+    padding: $spacing-2 $spacing-3;
+    border-bottom: 1px solid $color-cyber-500;
     flex-shrink: 0;
-    
-    @media (min-width: $breakpoint-md) and (max-width: #{$breakpoint-lg - 1px}) {
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    @media (min-width: $breakpoint-lg) {
+    background-color: $color-cyber-700;
+    position: sticky;
+    top: 0;
+    z-index: $z-index-sticky;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+    @media (min-width: $breakpoint-md) {
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
@@ -393,15 +443,8 @@
 
   &__deck-actions {
     display: flex;
-    gap: $spacing-2;
-    
-    @media (max-width: #{$breakpoint-sm - 1px}) {
-      flex-direction: column;
-      
-      app-button {
-        width: 100%;
-      }
-    }
+    gap: $spacing-1;
+    align-items: center;
   }
 
   &__zone-selector {
@@ -431,6 +474,7 @@
     display: flex;
     flex-direction: column;
     gap: $spacing-3;
+    padding: $spacing-3;
   }
 
   // Validation & Stats

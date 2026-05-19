@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgChartsModule } from 'ng2-charts';
-import { LucideAngularModule, X, ChevronDown, ChevronUp, Plus, Minus, Trash2, Check, AlertCircle, Info, Save, Download, Upload, Filter, Search, BarChart3, PieChart, Layout, Layers, Package, Inbox, RotateCcw, Sun, Moon, User, LogOut, Folder, Grid, Pencil, Star } from 'lucide-angular';
+import { LucideAngularModule, X, ChevronDown, ChevronUp, Plus, Minus, Trash2, Check, AlertCircle, Info, Save, Download, Upload, Filter, Search, BarChart3, PieChart, Layout, Layers, Package, Inbox, RotateCcw, Sun, Moon, User, LogOut, Folder, Grid, Pencil, Star, FilePlus } from 'lucide-angular';
 
 // Atoms
 import { ButtonComponent } from './components/atoms/button/button.component';
@@ -119,7 +119,8 @@ const COMPONENTS = [
       Folder,
       Grid,
       Pencil,
-      Star
+      Star,
+      FilePlus
     })
   ],
   exports: [...COMPONENTS, LucideAngularModule]

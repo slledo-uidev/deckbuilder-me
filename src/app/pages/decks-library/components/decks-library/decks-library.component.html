@@ -1,13 +1,16 @@
 <div class="decks-library">
   <div class="decks-library__header">
     <div class="decks-library__header-content">
-      <h2 class="decks-library__title">Decks Library</h2>
-      <app-toggle-switch
-        [checked]="showAdvanced"
-        label="Advanced Decklist"
-        size="medium"
-        (toggled)="onToggleAdvanced($event)">
-      </app-toggle-switch>
+      <div class="row">
+        <h2 class="decks-library__title">Decks Library</h2>
+        <app-toggle-switch
+          class="app-toggle-switch"
+          [checked]="showAdvanced"
+          label="Advanced Decklist"
+          size="medium"
+          (toggled)="onToggleAdvanced($event)">
+        </app-toggle-switch>
+      </div>
       <p *ngIf="decks.length > 0" class="decks-library__subtitle">{{ decks.length }} {{ decks.length === 1 ? 'deck' : 'decks' }} saved</p>
     </div>
 

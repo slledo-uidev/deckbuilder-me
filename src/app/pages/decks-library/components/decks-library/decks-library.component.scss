@@ -19,7 +19,7 @@
     gap: $theme-spacing-4;
     margin-bottom: $theme-spacing-3;
     padding-bottom: $theme-spacing-2;
-    border-bottom: 1px solid var(--theme-color-border-base);
+    border-bottom: 1px solid $color-cyber-500;
 
     @media (max-width: $theme-breakpoint-md) {
       flex-direction: column;
@@ -31,6 +31,10 @@
     display: flex;
     flex-direction: column;
     gap: $theme-spacing-2;
+    .row{
+      display: flex;
+      gap: $theme-spacing-2;
+    }
   }
 
   &__advanced-header {
@@ -41,53 +45,28 @@
   }
 
   &__advanced-count {
-    font-size: $theme-font-size-sm;
-    color: var(--theme-color-text-secondary);
+    font-size: $font-size-sm;
+    color: $color-digital-text-sub;
     margin: 0;
   }
 
   &__title {
-    font-size: $theme-font-size-2xl;
-    font-weight: $theme-font-weight-bold;
-    color: var(--color-text-primary);
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    font-family: $font-family-mono;
+    letter-spacing: 0.03em;
+    color: $color-digital-text;
     margin: 0;
 
     @media (max-width: $theme-breakpoint-md) {
-      font-size: $theme-font-size-xl;
+      font-size: $font-size-xl;
     }
   }
 
   &__subtitle {
-    font-size: $theme-font-size-base;
-    color: var(--color-text-secondary);
+    font-size: $font-size-base;
+    color: $color-digital-text-sub;
     margin: 0;
-  }
-
-  &__btn-create {
-    padding: $theme-spacing-3 $theme-spacing-4;
-    background-color: var(--color-primary);
-    color: $color-white;
-    border: none;
-    border-radius: $theme-radius-md;
-    font-size: $theme-font-size-base;
-    font-weight: $theme-font-weight-semibold;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-
-    @media (max-width: $theme-breakpoint-md) {
-      width: 100%;
-      padding: $theme-spacing-4;
-    }
-
-    &:hover {
-      background-color: var(--color-primary-dark);
-      transform: translateY(-1px);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
   }
 
   &__empty {
@@ -96,23 +75,6 @@
     align-items: center;
     min-height: 400px;
     padding: $theme-spacing-8;
-  }
-
-  &__btn-empty-action {
-    margin-top: $theme-spacing-4;
-    padding: $theme-spacing-3 $theme-spacing-4;
-    background-color: var(--color-primary);
-    color: $color-white;
-    border: none;
-    border-radius: $theme-radius-md;
-    font-size: $theme-font-size-base;
-    font-weight: $theme-font-weight-semibold;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background-color: var(--color-primary-dark);
-    }
   }
 
   &__grid {
@@ -128,13 +90,13 @@
 
   &__stats {
     padding: $theme-spacing-3 0;
-    border-bottom: 2px solid var(--color-border);
+    border-bottom: 1px solid $color-cyber-500;
   }
 
   &__stats-text {
-    font-size: $theme-font-size-base;
-    font-weight: $theme-font-weight-medium;
-    color: var(--color-text-secondary);
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    color: $color-digital-text-sub;
     margin: 0;
   }
 }
@@ -144,23 +106,23 @@
 .deck-card {
   display: flex;
   gap: $theme-spacing-3;
-  background-color: $color-surface;
-  border: 2px solid var(--theme-color-border-base);
-  border-radius: $theme-radius-lg;
+  background-color: $color-cyber-600;
+  border: 1px solid $color-cyber-500;
+  border-radius: $border-radius-sm;
   overflow: hidden;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: $color-base;
+    border-color: rgba(0, 229, 255, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 229, 255, 0.06);
   }
 
   &__image {
     width: 160px;
     height: auto;
     flex-shrink: 0;
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    background-color: $color-cyber-800;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -186,30 +148,32 @@
     flex-direction: column;
     gap: $theme-spacing-2;
     min-width: 0;
+
   }
 
   &__title {
-    font-size: $theme-font-size-lg;
-    font-weight: $theme-font-weight-bold;
-    color: var(--color-text-primary);
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $color-digital-text;
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
     @media (max-width: $theme-breakpoint-md) {
-      font-size: $theme-font-size-base;
+      font-size: $font-size-base;
     }
   }
 
   &__archetype-badge {
     display: inline-block;
-    font-size: $theme-font-size-xs;
-    font-weight: $theme-font-weight-medium;
-    color: var(--theme-color-primary);
-    background-color: rgba(var(--theme-color-primary-rgb), 0.08);
-    border: 1px solid rgba(var(--theme-color-primary-rgb), 0.2);
-    border-radius: $theme-radius-md;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    font-family: $font-family-mono;
+    color: $color-neon-cyan;
+    background-color: rgba(0, 229, 255, 0.08);
+    border: 1px solid rgba(0, 229, 255, 0.2);
+    border-radius: $border-radius-sm;
     padding: 1px $theme-spacing-2;
     width: fit-content;
     max-width: 100%;
@@ -225,13 +189,13 @@
   }
 
   &__stats {
-    font-size: $theme-font-size-sm;
-    color: var(--color-text-secondary);
+    font-size: $font-size-sm;
+    color: $color-digital-text-sub;
   }
 
   &__date {
-    font-size: $theme-font-size-xs;
-    color: var(--color-text-secondary);
+    font-size: $font-size-xs;
+    color: $color-digital-text-dim;
   }
 
   &__colors {
@@ -244,7 +208,7 @@
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     display: inline-block;
 
     &--red    { background-color: #E74C3C; }
@@ -253,7 +217,7 @@
     &--green  { background-color: #27AE60; }
     &--black  { background-color: #2C3E50; }
     &--purple { background-color: #9B59B6; }
-    &--white  { background-color: #ECF0F1; }
+    &--white  { background-color: #C8D8E0; border-color: rgba(0,0,0,0.1); }
   }
 
   &__actions {
@@ -266,4 +230,10 @@
       gap: $theme-spacing-1;
     }
   }
+}
+
+.app-toggle-switch{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

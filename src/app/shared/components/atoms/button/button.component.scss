@@ -152,6 +152,14 @@
     width: 52px;
     padding: 0;
   }
+
+  &--square-sm {
+    min-height: 44px;
+    height: 44px;
+    width: 44px;
+    font-size: $font-size-base;
+    padding: 0;
+  }
   
   &--full-width {
     width: 100%;

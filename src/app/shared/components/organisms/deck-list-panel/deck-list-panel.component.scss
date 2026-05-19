@@ -13,7 +13,7 @@ $color-tcg-white: #ECF0F1;
 .deck-list-panel {
   background-color: $color-surface;
   border: 1px solid $color-border;
-  border-radius: $border-radius-lg;
+  border-radius: $border-radius-sm;
   overflow: hidden;
 
   &__header {

@@ -63,11 +63,13 @@
         </app-badge>
       </div>
 
-      <!-- Card Grid -->
-      <app-card-grid
-        [cards]="filteredCards"
-        [loading]="loading"
-        (cardClick)="onCardClick($event)" />
+      <div class="card-gallery__results-body">
+        <!-- Card Grid -->
+        <app-card-grid
+          [cards]="filteredCards"
+          [loading]="loading"
+          (cardClick)="onCardClick($event)" />
+      </div>
     </section>
 
   </div>

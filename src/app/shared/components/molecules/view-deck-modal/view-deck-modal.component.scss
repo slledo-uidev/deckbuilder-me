@@ -1,31 +1,379 @@
+@import 'variables';
+@import 'mixins';
+
 .view-deck-modal {
   position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1200;
+  z-index: $z-index-modal;
+  padding: $spacing-4;
 
   &__backdrop {
-    position: absolute; inset: 0; background: rgba(0,0,0,0.5);
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 8, 16, 0.85);
+    backdrop-filter: blur(6px);
   }
 
   &__content {
     position: relative;
-    background: #fff;
-    width: 840px;
-    max-width: calc(100% - 32px);
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    background: $color-cyber-700;
+    border: 1px solid $color-cyber-400;
+    width: 900px;
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: $border-radius-md;
+    padding: $spacing-3;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 0 32px rgba(0, 0, 0, 0.6);
     z-index: 2;
+    animation: slideUp 0.25s ease-out;
+    display: flex;
+    flex-direction: column;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.5) 40%, rgba(0,229,255,0.5) 60%, transparent);
+    }
   }
 
-  &__header { display:flex; justify-content:space-between; align-items:center; }
-  &__thumb { width:120px; height:168px; object-fit:cover; border-radius:4px; margin-right:12px; }
-  &__meta { display:flex; gap:12px; align-items:center; margin:12px 0; }
-  &__list { max-height:300px; overflow:auto; }
-  &__footer { display:flex; justify-content:flex-end; gap:8px; margin-top:12px; }
-  .qty { width:36px; display:inline-block; }
-  .zone { margin-left:8px; color:#666; font-size:12px }
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: $spacing-2;
+    margin-bottom: $spacing-2;
+    border-bottom: 1px solid $color-cyber-500;
+    flex-shrink: 0;
+
+    h3 {
+      margin: 0;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-bold;
+      font-family: $font-family-mono;
+      letter-spacing: 0.04em;
+      color: $color-digital-text;
+    }
+  }
+
+  &__close {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: $border-radius-sm;
+    color: $color-digital-text-sub;
+    font-size: $font-size-lg;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease, border-color 0.2s ease;
+    flex-shrink: 0;
+
+    &:hover {
+      color: $color-neon-cyan;
+      border-color: rgba(0, 229, 255, 0.3);
+    }
+  }
+
+  &__meta {
+    display: flex;
+    gap: $spacing-3;
+    align-items: flex-start;
+    margin-bottom: $spacing-3;
+    flex-shrink: 0;
+  }
+
+  &__thumb {
+    width: 80px;
+    height: 112px;
+    object-fit: cover;
+    border-radius: $border-radius-sm;
+    flex-shrink: 0;
+    border: 1px solid $color-cyber-500;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-1;
+
+    p {
+      margin: 0;
+      font-size: $font-size-sm;
+      color: $color-digital-text-sub;
+
+      strong {
+        color: $color-digital-text;
+        font-family: $font-family-mono;
+        font-size: $font-size-xs;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+    }
+  }
+
+  // ── Pestañas ──────────────────────────────────────────────────────────────
+  &__tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: $spacing-3;
+    border-bottom: 1px solid $color-cyber-500;
+    flex-shrink: 0;
+  }
+
+  &__tab {
+    padding: $spacing-2 $spacing-3;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-size: $font-size-sm;
+    font-family: $font-family-mono;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $color-digital-text-sub;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease;
+
+    &:hover { color: $color-digital-text; }
+
+    &--active {
+      color: $color-neon-cyan;
+      border-bottom-color: $color-neon-cyan;
+    }
+  }
+
+  // ── Contenido de pestaña ──────────────────────────────────────────────────
+  &__tab-content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+    min-height: 0;
+
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb { background: $color-cyber-400; }
+  }
+
+  // ── Zona (Digi-Eggs / Main Deck) ──────────────────────────────────────────
+  &__zone {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+  }
+
+  &__zone-label {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    margin: 0;
+    font-size: $font-size-xs;
+    font-family: $font-family-mono;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding-bottom: $spacing-1;
+    border-bottom: 1px solid $color-cyber-500;
+
+    &--egg  { color: #FFC107; }
+    &--main { color: $color-neon-cyan; }
+  }
+
+  &__zone-count {
+    font-size: $font-size-xs;
+    font-family: $font-family-mono;
+    color: $color-digital-text-sub;
+    font-weight: $font-weight-normal;
+    margin-left: auto;
+  }
+
+  // ── Preview: grid de imágenes ──────────────────────────────────────────────
+  &__card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-1;
+  }
+
+  &__card-thumb {
+    position: relative;
+    width: 72px;
+    flex-shrink: 0;
+    border-radius: $border-radius-sm;
+    overflow: hidden;
+    border: 1px solid $color-cyber-500;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+    cursor: default;
+
+    &:hover {
+      border-color: rgba(0, 229, 255, 0.5);
+      transform: translateY(-2px);
+      z-index: 1;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      aspect-ratio: 5/7;
+      object-fit: cover;
+    }
+  }
+
+  &__card-qty {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: rgba(5, 8, 16, 0.85);
+    color: $color-neon-cyan;
+    font-family: $font-family-mono;
+    font-size: 11px;
+    font-weight: $font-weight-bold;
+    padding: 1px 5px;
+    border-radius: $border-radius-sm;
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    line-height: 1.4;
+  }
+  // ── Separador Digi-Eggs dentro del grid ───────────────────────────────────
+  &__egg-sep {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    margin: $spacing-1 0;
+    font-size: $font-size-xs;
+    font-family: $font-family-mono;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #FFC107;
+    padding-top: $spacing-2;
+    border-top: 1px solid rgba(255, 193, 7, 0.3);
+  }
+
+  &__main-sep {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    margin: $spacing-1 0;
+    font-size: $font-size-xs;
+    font-family: $font-family-mono;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $color-neon-cyan;
+    padding-top: $spacing-2;
+    border-top: 1px solid rgba(0, 229, 255, 0.3);
+  }
+
+  &__card-thumb {
+    &--egg {
+      border-color: rgba(255, 193, 7, 0.5);
+
+      &:hover {
+        border-color: rgba(255, 193, 7, 0.8);
+      }
+    }
+  }
+
+  // ── Separador Digi-Eggs dentro de la lista ────────────────────────────────
+  &__list-sep {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    font-size: $font-size-xs;
+    font-family: $font-family-mono;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #FFC107;
+    padding: $spacing-2 $spacing-2 $spacing-1;
+    margin-top: $spacing-1;
+    border-top: 1px solid rgba(255, 193, 7, 0.3);
+    list-style: none;
+    cursor: default;
+    &:hover { background-color: transparent; }
+
+    &--main {
+      color: $color-neon-cyan;
+      border-top-color: rgba(0, 229, 255, 0.3);
+    }
+  }
+
+  &__list-egg {
+    .qty--egg {
+      color: #FFC107;
+    }
+  }
+  // ── Decklist: lista de texto ───────────────────────────────────────────────
+  &__list-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: $spacing-2;
+      font-size: $font-size-sm;
+      color: $color-digital-text;
+      padding: 4px $spacing-2;
+      border-radius: $border-radius-sm;
+      transition: background-color 0.1s ease;
+
+      &:hover { background-color: rgba($color-cyber-500, 0.4); }
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-2;
+    margin-top: $spacing-3;
+    flex-shrink: 0;
+    padding-top: $spacing-2;
+    border-top: 1px solid $color-cyber-500;
+  }
+
+  .qty {
+    width: 30px;
+    display: inline-block;
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    color: $color-neon-cyan;
+    flex-shrink: 0;
+  }
+
+  .name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-id {
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    color: $color-digital-text-dim;
+    flex-shrink: 0;
+  }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }

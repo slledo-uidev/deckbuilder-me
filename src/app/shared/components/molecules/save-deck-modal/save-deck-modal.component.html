@@ -6,38 +6,40 @@
   (closed)="onCancel()">
 
   <div modal-body>
-    <div class="save-deck-modal__section">
-      <label class="save-deck-modal__label" for="deck-name-input">Deck Name</label>
-      <input
-        id="deck-name-input"
-        class="save-deck-modal__input"
-        [class.save-deck-modal__input--error]="nameError"
-        type="text"
-        [(ngModel)]="deckName"
-        placeholder="e.g. Greymon Aggro 2026"
-        maxlength="60"
-        autofocus
-        (keydown)="onKeydown($event)"
-      />
-      <span *ngIf="nameError" class="save-deck-modal__error">{{ nameError }}</span>
-      <span class="save-deck-modal__char-count">{{ deckName.length }}/60</span>
-    </div>
+    <div class="save-deck-modal__fields-row">
+      <div class="save-deck-modal__section">
+        <label class="save-deck-modal__label" for="deck-name-input">Deck Name</label>
+        <input
+          id="deck-name-input"
+          class="save-deck-modal__input"
+          [class.save-deck-modal__input--error]="nameError"
+          type="text"
+          [(ngModel)]="deckName"
+          placeholder="e.g. Greymon Aggro 2026"
+          maxlength="60"
+          autofocus
+          (keydown)="onKeydown($event)"
+        />
+        <span *ngIf="nameError" class="save-deck-modal__error">{{ nameError }}</span>
+        <span class="save-deck-modal__char-count">{{ deckName.length }}/60</span>
+      </div>
 
-    <!-- Archetype field -->
-    <div class="save-deck-modal__section">
-      <label class="save-deck-modal__label" for="deck-archetype-select">
-        Archetype
-        <span class="save-deck-modal__optional">(optional)</span>
-      </label>
-      <select
-        id="deck-archetype-select"
-        class="save-deck-modal__select"
-        [(ngModel)]="selectedFamilyId"
-      >
-        <option value="">— No archetype —</option>
-        <option *ngFor="let a of availableArchetypes" [value]="a.supabaseFamilyId || a.id">{{ a.name }}</option>
-      </select>
-      <span class="save-deck-modal__hint">Groups this deck in the Advanced Decklist view.</span>
+      <!-- Archetype field -->
+      <div class="save-deck-modal__section">
+        <label class="save-deck-modal__label" for="deck-archetype-select">
+          Archetype
+          <span class="save-deck-modal__optional">(optional)</span>
+        </label>
+        <select
+          id="deck-archetype-select"
+          class="save-deck-modal__select"
+          [(ngModel)]="selectedFamilyId"
+        >
+          <option value="">— No archetype —</option>
+          <option *ngFor="let a of availableArchetypes" [value]="a.supabaseFamilyId || a.id">{{ a.name }}</option>
+        </select>
+        <span class="save-deck-modal__hint">Groups this deck in the Advanced Decklist view.</span>
+      </div>
     </div>
 
     <div class="save-deck-modal__section">

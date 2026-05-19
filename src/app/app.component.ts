@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -11,9 +11,22 @@ import { filter, takeUntil } from 'rxjs/operators';
 export class AppComponent implements OnInit, OnDestroy {
   title = 'Digimon TCG Deck Builder';
   isLoginPage: boolean = false;
+  headerHidden: boolean = false;
+  private lastScrollY = 0;
   private destroy$ = new Subject<void>();
 
   constructor(private router: Router) {}
+
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    const currentY = window.scrollY;
+    if (currentY > this.lastScrollY && currentY > 60) {
+      this.headerHidden = true;   // scrolling down
+    } else {
+      this.headerHidden = false;  // scrolling up
+    }
+    this.lastScrollY = currentY;
+  }
 
   ngOnInit(): void {
     // Check initial route

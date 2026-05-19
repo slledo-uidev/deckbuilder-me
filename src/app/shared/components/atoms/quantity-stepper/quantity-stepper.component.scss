@@ -12,22 +12,22 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid $color-border;
-    background-color: $color-white;
-    color: $color-text-primary;
+    border: 1px solid $color-cyber-500;
+    background-color: $color-cyber-600;
+    color: $color-digital-text-sub;
     border-radius: $border-radius-sm;
     font-size: $font-size-base;
     font-weight: $font-weight-bold;
     cursor: pointer;
-    transition: all $transition-fast;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
     line-height: 1;
     padding: 0;
 
     &:hover:not(:disabled) {
-      background-color: $color-primary;
-      border-color: $color-primary;
-      color: $color-white;
-      transform: scale(1.05);
+      background-color: rgba(0, 229, 255, 0.1);
+      border-color: $color-neon-cyan;
+      color: $color-neon-cyan;
+      transform: scale(1.08);
     }
 
     &:active:not(:disabled) {
@@ -35,17 +35,9 @@
     }
 
     &:disabled {
-      opacity: 0.4;
+      opacity: 0.35;
       cursor: not-allowed;
-      background-color: $color-background;
-    }
-
-    &--decrease {
-      // Specific decrease button styles
-    }
-
-    &--increase {
-      // Specific increase button styles
+      background-color: $color-cyber-700;
     }
   }
 
@@ -54,7 +46,8 @@
     text-align: center;
     font-weight: $font-weight-medium;
     font-size: $font-size-sm;
-    color: $color-text-primary;
+    font-family: $font-family-mono;
+    color: $color-digital-text;
   }
 
   &--small {

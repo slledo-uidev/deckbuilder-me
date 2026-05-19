@@ -3,6 +3,17 @@
 
 
 .save-deck-modal {
+  &__fields-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-3;
+    margin-bottom: $theme-spacing-2;
+
+    @media (max-width: #{$breakpoint-sm - 1px}) {
+      grid-template-columns: 1fr;
+    }
+  }
+
   &__section {
     display: flex;
     flex-direction: column;
@@ -110,7 +121,7 @@
     overflow-y: auto;
     padding: $theme-spacing-2;
     border: 1px solid var(--theme-color-border-base);
-    border-radius: $theme-radius-md;
+    border-radius: $border-radius-sm;
     background-color: var(--color-background);
 
     @media (max-width: $theme-breakpoint-md) {
@@ -122,7 +133,7 @@
   &__card-item {
     cursor: pointer;
     border: 3px solid transparent;
-    border-radius: $theme-radius-md;
+    border-radius: $border-radius-md;
     overflow: hidden;
     transition: all 0.2s ease;
     background-color: var(--color-surface);

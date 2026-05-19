@@ -37,7 +37,7 @@
 
   &__textarea {
     width: 100%;
-    min-height: 300px;
+    max-height: 300px;
     padding: $spacing-3;
     font-family: $font-family-mono;
     font-size: $font-size-sm;
@@ -46,7 +46,7 @@
     border-radius: $border-radius-sm;
     background-color: $color-cyber-800;
     color: $color-digital-text;
-    resize: vertical;
+    resize: none;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     box-sizing: border-box;
 

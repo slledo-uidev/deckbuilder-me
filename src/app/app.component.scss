@@ -10,8 +10,18 @@
     background: linear-gradient(180deg, $color-cyber-900 0%, $color-cyber-800 100%);
     color: $color-digital-text;
     padding: $spacing-2 0;
-    position: relative;
-    z-index: $z-index-sticky;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: $z-index-sticky-header;
+    transform: translateY(0);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.35s ease;
+
+    &--hidden {
+      transform: translateY(-110%);
+    }
     
     // Línea neon inferior (portal signature)
     &::after {
@@ -106,12 +116,14 @@
 
   &__main {
     flex: 1;
+    padding-top: 72px; // compensa el header fixed
 
     &--full {
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
+      padding-top: 0;
     }
   }
   

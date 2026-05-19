@@ -1,18 +1,58 @@
 <div class="deck-builder">
   <div class="deck-builder__container">
-    <!-- Header -->
+    <!-- Header con filtros integrados -->
     <header class="deck-builder__header">
-      <div class="deck-builder__header-info">
-        <h2 class="deck-builder__title">Digimon TCG Deck Builder</h2>
-        <span *ngIf="currentDeckId" class="deck-builder__active-deck">{{ deckName }}</span>
+      <!-- Filtros inline en la cabecera -->
+      <div class="deck-builder__filters-section">
+        <div class="deck-builder__filters-header">
+          <div class="deck-builder__search-bar">
+            <app-search-bar
+              placeholder="Search cards by name..."
+              (searchChange)="onSearchChange($event)">
+            </app-search-bar>
+          </div>
+          <div class="deck-builder__filters-controls">
+            <app-button variant="outline" size="medium" [attr.aria-expanded]="filtersExpanded" (click)="toggleFilters()">
+              {{ filtersExpanded ? 'Hide Filters' : 'Show Filters' }}
+              <span *ngIf="getActiveFilterCount() > 0" class="deck-builder__filters-badge">
+                {{ getActiveFilterCount() }}
+              </span>
+              {{ filtersExpanded ? '▲' : '▼' }}
+            </app-button>
+            <app-button
+              variant="outline"
+              size="square"
+              (click)="onFilterClear()"
+              [disabled]="getActiveFilterCount() === 0"
+              title="Reset all filters"
+              aria-label="Reset filters">
+              <lucide-angular name="rotate-ccw" [size]="16" class="lucide-icon"></lucide-angular>
+            </app-button>
+            <app-button
+              variant="outline"
+              size="square"
+              (click)="newDeck()"
+              title="New Deck"
+              aria-label="New Deck">
+              <lucide-angular name="file-plus" [size]="16" class="lucide-icon"></lucide-angular>
+            </app-button>
+          </div>
+        </div>
+
+        <div
+          class="deck-builder__filters-content"
+          [class.deck-builder__filters-content--expanded]="filtersExpanded">
+          <div class="deck-builder__filters-inner">
+            <app-filter-panel
+              (filterChange)="onFilterChange($event)"
+              (filterClear)="onFilterClear()">
+            </app-filter-panel>
+          </div>
+        </div>
       </div>
-      <div class="deck-builder__header-actions">
-        <app-button variant="outline" size="small" (clicked)="newDeck()">New Deck</app-button>
-        <app-button variant="outline" size="small" (clicked)="openImportModal()">Import</app-button>
-        <app-button variant="secondary" size="small" (clicked)="exportCurrentDeck()">Export</app-button>
-        <app-button variant="primary" size="small" (clicked)="openSaveModal()">Save Deck</app-button>
-        <!-- <app-theme-toggle></app-theme-toggle> -->
-      </div>
+
+      <!-- Guardar y Nuevo Deck -->
+      <!-- (New Deck movido a filtros, Save movido al deck header) -->
     </header>
 
     <!-- Success notification -->
@@ -54,48 +94,7 @@
       </app-deck-list-panel>
     </div>
 
-    <!-- Filters Section (Top, Collapsible) -->
-    <div class="deck-builder__filters-section">
-      <div class="deck-builder__filters-header">
-        <div class="deck-builder__search-bar">
-          <app-search-bar
-            placeholder="Search cards by name..."
-            (searchChange)="onSearchChange($event)">
-          </app-search-bar>
-        </div>
-        <div class="deck-builder__filters-controls">
-
-        <app-button variant="outline" size="medium" [attr.aria-expanded]="filtersExpanded" (click)="toggleFilters()">
-            {{ filtersExpanded ? 'Hide Filters' : 'Show Filters' }} 
-            <span *ngIf="getActiveFilterCount() > 0" class="deck-builder__filters-badge">
-              {{ getActiveFilterCount() }}
-            </span>
-            {{ filtersExpanded ? '▲' : '▼' }}
-        </app-button>
-        <app-button
-          variant="outline" 
-          size="square" 
-          (click)="onFilterClear()"
-          [disabled]="getActiveFilterCount() === 0"
-          title="Reset all filters"
-          aria-label="Reset filters"
-         >
-            <lucide-angular name="rotate-ccw" [size]="16" class="lucide-icon"></lucide-angular>
-        </app-button>
-        </div>
-      </div>
-      
-      <div 
-        class="deck-builder__filters-content" 
-        [class.deck-builder__filters-content--expanded]="filtersExpanded">
-        <div class="deck-builder__filters-inner">
-          <app-filter-panel
-            (filterChange)="onFilterChange($event)"
-            (filterClear)="onFilterClear()">
-          </app-filter-panel>
-        </div>
-      </div>
-    </div>
+    <!-- Filters Section removed (now inside header) -->
 
     <!-- Main Layout: 2 columns -->
     <div class="deck-builder__layout">
@@ -128,8 +127,17 @@
           <div class="deck-builder__deck-header">
             <h3 class="deck-builder__section-title">Your Deck</h3>
             <div class="deck-builder__deck-actions">
-              <app-button variant="outline" size="small" (clicked)="openValidationModal()">Validation</app-button>
-              <app-button variant="outline" size="small" (clicked)="openStatsModal()">Stats</app-button>
+              <app-button variant="outline" size="square-sm" (click)="openImportModal()" title="Import" aria-label="Import">
+                <lucide-angular name="upload" [size]="16" class="lucide-icon"></lucide-angular>
+              </app-button>
+              <app-button variant="outline" size="square-sm" (click)="exportCurrentDeck()" title="Export" aria-label="Export">
+                <lucide-angular name="download" [size]="16" class="lucide-icon"></lucide-angular>
+              </app-button>
+              <app-button variant="primary" size="square-sm" (click)="openSaveModal()" title="Save Deck" aria-label="Save Deck">
+                <lucide-angular name="save" [size]="16" class="lucide-icon"></lucide-angular>
+              </app-button>
+              <!-- <app-button variant="outline" size="small" (clicked)="openValidationModal()">Validation</app-button> -->
+              <!-- <app-button variant="outline" size="small" (clicked)="openStatsModal()">Stats</app-button> -->
             </div>
           </div>
 
