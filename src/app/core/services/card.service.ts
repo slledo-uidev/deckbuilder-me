@@ -62,7 +62,7 @@ export class CardService {
    * Loads complete card catalog on service initialization
    */
   private initializeCache(): void {
-    console.log('CardService initialized - Loading cards from DigimonCard.io API');
+    
     this.getAllCards().subscribe();
   }
   
@@ -74,19 +74,19 @@ export class CardService {
   public getAllCards(): Observable<Card[]> {
     // Return cached cards if already loaded
     if (this.cardsCache$.value.length > 0) {
-      console.log(`Using cached cards: ${this.cardsCache$.value.length} total`);
+        
       return of(this.cardsCache$.value);
     }
     
     this.isLoading$.next(true);
     this.errorSubject$.next(null);
     
-    console.log('Fetching cards from DigimonCard.io API...');
+    
     
     // Convert async function to Observable
     return from(this.fetchAllCardsSequential()).pipe(
       tap(cards => {
-        console.log(`✓ Loaded ${cards.length} cards total from DigimonCard.io API`);
+        
         this.cardsCache$.next(cards);
         this.isLoading$.next(false);
       }),
@@ -95,7 +95,7 @@ export class CardService {
         console.error(errorMsg, error);
         
         // Fallback to local JSON if API fails
-        console.log('Attempting fallback to local JSON...');
+        
         return this.loadFromLocalJSON();
       })
     );
@@ -124,7 +124,7 @@ export class CardService {
         
         if (response) {
           allApiCards.push(...response);
-          console.log(`  ✓ Fetched ${response.length} ${type} cards`);
+          
         }
         
         // Wait to respect rate limiting (15 req/10s = ~750ms between requests is safe)
@@ -151,7 +151,7 @@ export class CardService {
         return cards;
       }),
       tap(cards => {
-        console.log(`✓ Loaded ${cards.length} cards from local JSON (fallback)`);
+        
         this.cardsCache$.next(cards);
         this.isLoading$.next(false);
       }),

@@ -303,7 +303,6 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   }
   
   onDeleteDeck(deckId: string): void {
-    console.log('Deleting deck:', deckId);
     const deck = this.decks.find(d => d.id === deckId);
     this.storageService.deleteDeck(deckId);
     // Also delete from Supabase if the deck was synced
@@ -315,7 +314,6 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   }
   
   onDuplicateDeck(deckId: string): void {
-    console.log('Duplicating deck:', deckId);
     const deck = this.decks.find(d => d.id === deckId);
     if (deck) {
       const duplicatedDeck: Deck = {
@@ -330,7 +328,6 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   }
   
   onExportDeck(deckId: string): void {
-    console.log('Exporting deck:', deckId);
     const deck = this.decks.find(d => d.id === deckId);
     if (deck) {
       this.storageService.exportDeck(deckId);

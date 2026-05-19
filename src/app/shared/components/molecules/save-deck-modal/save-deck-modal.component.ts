@@ -56,7 +56,7 @@ export class SaveDeckModalComponent implements OnChanges {
         this.selectedCardId = '';
       }
       
-      console.log('Modal opened. Selected card:', this.selectedCardId);
+      
     }
   }
 
@@ -113,7 +113,6 @@ export class SaveDeckModalComponent implements OnChanges {
   }
   
   selectCard(cardId: string): void {
-    console.log('Card selected:', cardId);
     this.selectedCardId = cardId;
     this.nameError = ''; // Clear any errors when selecting
   }

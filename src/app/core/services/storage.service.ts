@@ -69,7 +69,7 @@ export class StorageService {
         
         // Only migrate if user has no decks yet
         if (!existingUserDecks) {
-          console.log(`Migrating legacy decks to user: ${currentUser.id}`);
+          
           localStorage.setItem(userKey, legacyDecksJson);
         }
         

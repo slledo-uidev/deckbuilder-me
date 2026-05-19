@@ -159,14 +159,12 @@ export class DeckService {
       archetype: options.archetype ?? name,
       description: options.description
     };
-    console.log('[DeckService] createFamily payload:', insertPayload);
     const { data, error } = await this.supabase
       .from('deck_families')
       .insert([insertPayload])
       .select()
       .single();
-
-    console.log('[DeckService] createFamily response:', data, error);
+    
 
     if (error) throw error;
     return data as DeckFamily;
@@ -298,13 +296,12 @@ export class DeckService {
       payload.thumbnail_card_id = (options as any).thumbnailCardId;
     }
 
-    console.log('[DeckService] saveNewVersion payload:', payload);
     const { data, error } = await this.supabase
       .from('decks')
       .insert([payload])
       .select()
       .single();
-    console.log('[DeckService] saveNewVersion response:', data, error);
+    
 
     if (error) throw error;
 

@@ -27,7 +27,7 @@ export class CardGalleryComponent implements OnInit, OnDestroy {
   constructor(private cardService: CardService) { }
   
   ngOnInit(): void {
-    console.log('CardGalleryComponent initialized - Loading cards...');
+    
     
     // Subscribe to cards
     this.cardService.cards$
@@ -35,7 +35,7 @@ export class CardGalleryComponent implements OnInit, OnDestroy {
       .subscribe(cards => {
         this.cards = cards;
         this.applyFilters();
-        console.log(`Loaded ${cards.length} cards`);
+        
       });
     
     // Subscribe to loading state
@@ -102,7 +102,7 @@ export class CardGalleryComponent implements OnInit, OnDestroy {
   }
   
   onCardClick(card: Card): void {
-    console.log('Card clicked:', card);
+    
     // TODO: Open card detail modal
   }
   

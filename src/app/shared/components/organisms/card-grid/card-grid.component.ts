@@ -101,7 +101,7 @@ export class CardGridComponent implements OnChanges, AfterViewInit, OnDestroy {
     this.intersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting && this.hasMoreCards && !this.isLoadingMore) {
-          console.log('Loading more cards...');
+          
           this.loadMore();
         }
       });

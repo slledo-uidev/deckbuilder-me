@@ -72,7 +72,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   ) { }
   
   ngOnInit(): void {
-    console.log('DeckBuilderComponent initialized - Loading cards...');
+    
     
     // Subscribe to cards
     this.cardService.cards$
@@ -80,7 +80,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       .subscribe(cards => {
         this.cards = cards;
         this.applyFilters();
-        console.log(`Loaded ${cards.length} cards`);
+        
       });
     
     // Subscribe to loading state
@@ -161,12 +161,12 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   }
   
   onCardClick(card: Card): void {
-    console.log('Card clicked:', card);
+    
     // TODO: Open card detail modal
   }
   
   onCardAdd(card: Card): void {
-    console.log('Add card to deck:', card);
+    
     
     // Automatically determine zone based on card level
     // Level 2 cards go to Digi-Eggs, all others to Main Deck
@@ -509,8 +509,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       const targetFamilyId = selectedFamilyId ?? (this.currentFamilyId ?? undefined);
 
       if (targetFamilyId) {
-        console.log('[Save] targetFamilyId (resolved):', targetFamilyId);
-        console.log('[Save] cardList payload:', cardList);
+      
         // We have a family id to target - create or update versions inside it.
         // 'saveAsNew' => always create a new version. 'save' => update existing
         // version if available, otherwise create.
@@ -521,7 +520,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
             data.name,
             { archetype: deck.archetype, thumbnailCardId: deck.placeholderCardId }
           );
-          console.log('[Save] saveNewVersion response:', version);
+          
           this.currentFamilyId = targetFamilyId;
           this.currentVersionId = version.id ?? null;
         } else {
@@ -532,7 +531,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
               version_name: data.name,
               thumbnailCardId: deck.placeholderCardId
             });
-            console.log('[Save] updateVersion response:', updated);
+            
           } else {
             const version = await this.deckService.saveNewVersion(
               targetFamilyId,
@@ -540,21 +539,21 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
               data.name,
               { archetype: deck.archetype, thumbnailCardId: deck.placeholderCardId }
             );
-            console.log('[Save] saveNewVersion response:', version);
+            
             this.currentFamilyId = targetFamilyId;
             this.currentVersionId = version.id ?? null;
           }
         }
       } else {
         // No family selected anywhere: create a new default family + version.
-        console.log('[Save] No family selected, creating new default family');
+        
         const version = await this.deckService.createNewFamilyWithVersion(
           'no-family',
           cardList,
           data.name,
           { archetype: 'no-family', description: deck.description, thumbnailCardId: deck.placeholderCardId }
         );
-        console.log('[Save] createNewFamilyWithVersion response:', version);
+        
         this.currentFamilyId = version.family_id;
         this.currentVersionId = version.id ?? null;
       }
@@ -889,7 +888,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
           }
         });
 
-        console.log(`Deck loaded: ${this.digiEggs.length} digi-eggs, ${this.mainDeck.length} main deck cards`);
+        
       });
   }
   // ─── Existing methods ────────────────────────────────────────────────────────
@@ -904,7 +903,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(filtered => {
         this.filteredCards = filtered;
-        console.log(`Filtered to ${filtered.length} cards`);
+        
       });
   }
   
