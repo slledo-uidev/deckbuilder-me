@@ -6,6 +6,29 @@
 /* Custom properties CSS (CSS vars en body) */
 @import './app/scss/custom-properties';
 
+/* ── Animaciones globales ── */
+@keyframes neon-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(0, 229, 255, 0.3); }
+  50%       { box-shadow: 0 0 14px rgba(0, 229, 255, 0.6), 0 0 28px rgba(0, 229, 255, 0.2); }
+}
+
+@keyframes neon-border-pulse {
+  0%, 100% { border-color: rgba(0, 229, 255, 0.4); }
+  50%       { border-color: rgba(0, 229, 255, 0.9); }
+}
+
+@keyframes scan-line {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes digital-flicker {
+  0%, 92%, 100% { opacity: 1; }
+  93%  { opacity: 0.82; }
+  94%  { opacity: 1; }
+  96%  { opacity: 0.88; }
+}
+
 /* Global body styles */
 body {
   margin: 0;
@@ -15,6 +38,12 @@ body {
   line-height: $line-height-relaxed;
   color: var(--color-text-primary);
   background-color: var(--color-bg-base);
+  /* Grid digital del Mundo Digital — sutil */
+  background-image:
+    linear-gradient(rgba(0, 229, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
@@ -29,8 +58,9 @@ body {
 
 /* Focus visible styles for accessibility */
 :focus-visible {
-  outline: 2px solid var(--theme-color-primary);
+  outline: 1px solid var(--color-primary);
   outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.2);
 }
 
 /* Lucide icons global styles */
@@ -41,21 +71,27 @@ body {
   flex-shrink: 0;
 }
 
-/* Scrollbar styling */
+/* Scrollbar styling — digital look */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: $color-background;
+  background: $color-cyber-900;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: $color-border;
-  border-radius: $border-radius-sm;
-  
+  background: $color-cyber-400;
+  border-radius: 0;
+
   &:hover {
-    background: $color-text-secondary;
+    background: $color-neon-cyan-dim;
   }
+}
+
+/* Selección de texto con color neon */
+::selection {
+  background-color: rgba(0, 229, 255, 0.2);
+  color: var(--color-text-primary);
 }

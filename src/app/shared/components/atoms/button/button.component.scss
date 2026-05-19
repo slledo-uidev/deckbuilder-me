@@ -7,57 +7,60 @@
   justify-content: center;
   gap: $spacing-1;
   padding: $spacing-2 $spacing-4;
-  border: none;
-  border-radius: $border-radius-md;
+  border: 1px solid transparent;
+  border-radius: $border-radius-sm;
   font-family: $font-family-primary;
-  font-size: $font-size-base;
+  font-size: $font-size-sm;
   font-weight: $font-weight-medium;
+  letter-spacing: 0.05em;
   line-height: 1;
   cursor: pointer;
-  transition: all $transition-fast;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
   white-space: nowrap;
   
   &:focus-visible {
-    outline: 2px solid $color-primary;
+    outline: 1px solid $color-neon-cyan;
     outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.2);
   }
   
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.35;
     cursor: not-allowed;
     pointer-events: none;
   }
   
-  // Variant: Primary
+  // ── Primary: borde + texto cyan, fill al hover ──────────────
   &--primary {
-    background-color: $color-base;
-    border: 2px solid $color-base;
-    color: $color-white;
+    background-color: transparent;
+    border-color: $color-neon-cyan;
+    color: $color-neon-cyan;
     
     &:hover:not(:disabled) {
-      background-color: $color-primary;
-      border: 2px solid $color-primary;
-      color: $color-base;
+      background-color: $color-neon-cyan;
+      color: $color-cyber-900;
+      box-shadow: 0 0 18px rgba(0, 229, 255, 0.35);
       transform: translateY(-1px);
-      box-shadow: $shadow-sm;
     }
     
     &:active:not(:disabled) {
       transform: translateY(0);
+      background-color: $color-neon-cyan-hover;
+      box-shadow: none;
     }
   }
   
-  // Variant: Secondary
+  // ── Secondary: borde + texto purple ─────────────────────────
   &--secondary {
-    background-color: $color-secondary;
-    border: 2px solid $color-secondary;
-    color: $color-white;
+    background-color: transparent;
+    border-color: $color-secondary;
+    color: $color-secondary;
     
     &:hover:not(:disabled) {
-      background-color: $color-secondary-dark;
-      border: 2px solid $color-secondary-dark;
+      background-color: $color-secondary;
+      color: $color-white;
+      box-shadow: 0 0 14px rgba(124, 77, 255, 0.4);
       transform: translateY(-1px);
-      box-shadow: $shadow-sm;
     }
     
     &:active:not(:disabled) {
@@ -65,59 +68,84 @@
     }
   }
   
-  // Variant: Outline
+  // ── Outline: igual que primary visualmente ───────────────────
   &--outline {
     background-color: transparent;
-    color: $color-base;
-    border: 2px solid $color-base;
+    border-color: rgba(0, 229, 255, 0.5);
+    color: $color-digital-text;
     
     &:hover:not(:disabled) {
-      background-color: $color-base;
-      color: $color-white;
+      border-color: $color-neon-cyan;
+      color: $color-neon-cyan;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
       transform: translateY(-1px);
-      box-shadow: $shadow-sm;
+    }
+    
+    &:active:not(:disabled) {
+      transform: translateY(0);
     }
   }
 
-  
-  // Variant: Ghost
+  // ── Ghost: sin borde ─────────────────────────────────────────
   &--ghost {
     background-color: transparent;
-    color: $color-text-primary;
+    border-color: transparent;
+    color: $color-digital-text-sub;
     
     &:hover:not(:disabled) {
-      background-color: $color-surface-alt;
+      background-color: rgba(0, 229, 255, 0.07);
+      color: $color-neon-cyan;
+      border-color: rgba(0, 229, 255, 0.2);
+    }
+    
+    &:active:not(:disabled) {
+      background-color: rgba(0, 229, 255, 0.12);
     }
   }
   
-  // Size: Small
+  // ── Danger: rojo neon ────────────────────────────────────────
+  &--danger {
+    background-color: transparent;
+    border-color: $color-error;
+    color: $color-error;
+    
+    &:hover:not(:disabled) {
+      background-color: $color-error;
+      color: $color-white;
+      box-shadow: 0 0 14px rgba(255, 23, 68, 0.35);
+      transform: translateY(-1px);
+    }
+    
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+  }
+  
+  // ── Sizes ─────────────────────────────────────────────────────
   &--small {
     min-width: 80px;
     padding: $spacing-1 $spacing-2;
-    font-size: $font-size-sm;
+    font-size: $font-size-xs;
     min-height: 36px;
     
-    @media (max-width: $breakpoint-md - 1px) {
+    @media (max-width: #{$breakpoint-md - 1px}) {
       min-height: 44px;
       padding: $spacing-2 $spacing-3;
     }
   }
   
-  // Size: Medium (default)
   &--medium {
     padding: $spacing-2 $spacing-4;
-    font-size: $font-size-base;
+    font-size: $font-size-sm;
     min-height: 44px;
   }
   
-  // Size: Large
   &--large {
     padding: $spacing-3 $spacing-6;
-    font-size: $font-size-lg;
+    font-size: $font-size-base;
     min-height: 48px;
   }
 
-    // Variant: Outline-square
   &--square {
     min-height: 52px;
     font-size: $font-size-base;
@@ -125,7 +153,6 @@
     padding: 0;
   }
   
-  // Modifier: Full width
   &--full-width {
     width: 100%;
   }

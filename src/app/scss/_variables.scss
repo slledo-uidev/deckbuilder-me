@@ -20,40 +20,40 @@ $color-tcg-white:  #ECF0F1;
 /* ========================================
    COLORES SEMÁNTICOS
    ======================================== */
-$color-primary:       $color-turquoise-500;
-$color-primary-hover: $color-turquoise-600;
-$color-primary-light: $color-turquoise-400;
+$color-primary:       $color-neon-cyan;
+$color-primary-hover: $color-neon-cyan-hover;
+$color-primary-light: rgba(0, 229, 255, 0.12);
 
-$color-success:       $color-green-400;
-$color-success-light: $color-green-500;
-$color-error:         $color-red-400;
-$color-error-light:   #F8D7DA;
-$color-warning:       $color-orange-400;
-$color-info:          $color-blue-400;
+$color-success:       #00e676;  // neon green
+$color-success-light: #69f0ae;
+$color-error:         #ff1744;  // neon red
+$color-error-light:   rgba(255, 23, 68, 0.15);
+$color-warning:       #ffab00;  // amber
+$color-info:          #2979ff;  // electric blue
 
-$color-text-primary:   $color-gray-900;
-$color-text-secondary: $color-gray-600;
-$color-text-tertiary:  $color-gray-500;
-$color-text-disabled:  $color-gray-400;
-$color-text-inverse:   $color-white;
+$color-text-primary:   $color-digital-text;
+$color-text-secondary: $color-digital-text-sub;
+$color-text-tertiary:  $color-digital-text-dim;
+$color-text-disabled:  $color-cyber-400;
+$color-text-inverse:   $color-cyber-900;
 
-$color-bg-base:     $color-gray-100;
-$color-bg-surface:  $color-gray-50;
-$color-bg-card:     $color-white;
+$color-bg-base:     $color-cyber-800;
+$color-bg-surface:  $color-cyber-700;
+$color-bg-card:     $color-cyber-600;
 
-$color-border:       $color-gray-150;
-$color-border-dark:  $color-gray-300;
-$color-border-input: $color-gray-200;
+$color-border:       $color-cyber-500;
+$color-border-dark:  $color-cyber-400;
+$color-border-input: $color-cyber-500;
 
 /* Aliases de nombres legacy (usados en _mixins y _typography) */
-$color-white:       #ffffff; // ya definido en _colors, pero necesario aquí para rgba()
-$color-background:  $color-gray-50;
-$color-surface:     $color-white;
-$color-surface-alt: $color-gray-50;
-$color-base:        #2a2a2a;
-$color-base-dark:   #0f0f0f;
-$color-secondary:      #FF6600;
-$color-secondary-dark: #CC5200;
+$color-white:       #ffffff;
+$color-background:  $color-cyber-800;
+$color-surface:     $color-cyber-700;
+$color-surface-alt: $color-cyber-600;
+$color-base:        $color-cyber-700;
+$color-base-dark:   $color-cyber-900;
+$color-secondary:      #7c4dff;  // digital purple (Digimon evolution energy)
+$color-secondary-dark: #5c35cc;
 
 /* Transparencias de blanco */
 $color-white-01: rgba($color-white, 0.1);
@@ -105,25 +105,30 @@ $line-height-normal:  1.5;
 $line-height-relaxed: 1.75;
 
 /* ========================================
-   BORDER RADIUS
+   BORDER RADIUS (angular — estética digital)
    ======================================== */
-$border-radius-sm:     4px;
-$border-radius-base:   6px;
-$border-radius-md:     8px;
-$border-radius-lg:     12px;
-$border-radius-xl:     16px;
+$border-radius-sm:     2px;
+$border-radius-base:   3px;
+$border-radius-md:     4px;
+$border-radius-lg:     6px;
+$border-radius-xl:     8px;
 $border-radius-circle: 50%;
 $border-radius-pill:   9999px;
 
 /* ========================================
-   SOMBRAS
+   SOMBRAS (más profundas para fondo oscuro)
    ======================================== */
-$shadow-xs:    0 1px 2px rgba(0, 0, 0, 0.05);
-$shadow-sm:    0 2px 4px rgba(0, 0, 0, 0.1);
-$shadow-md:    0 4px 8px rgba(0, 0, 0, 0.12);
-$shadow-lg:    0 4px 15px rgba(0, 0, 0, 0.15);
-$shadow-xl:    0 8px 16px rgba(0, 0, 0, 0.15);
-$shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+$shadow-xs:    0 1px 4px rgba(0, 0, 0, 0.4);
+$shadow-sm:    0 2px 8px rgba(0, 0, 0, 0.5);
+$shadow-md:    0 4px 16px rgba(0, 0, 0, 0.6);
+$shadow-lg:    0 8px 24px rgba(0, 0, 0, 0.7);
+$shadow-xl:    0 12px 40px rgba(0, 0, 0, 0.8);
+$shadow-inner: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+
+/* Neon glow shadows (Digital World portals) */
+$shadow-neon-sm: 0 0 8px rgba(0, 229, 255, 0.3);
+$shadow-neon-md: 0 0 16px rgba(0, 229, 255, 0.4);
+$shadow-neon-lg: 0 0 32px rgba(0, 229, 255, 0.3), 0 0 64px rgba(0, 229, 255, 0.15);
 
 /* ========================================
    TRANSICIONES
@@ -157,12 +162,12 @@ $z-index-tooltip:        1070;
 /* ========================================
    TOKENS DE COMPONENTE
    ======================================== */
-/* Deck zones */
-$color-eggs-bg:     lighten($color-tcg-yellow, 35%);
+/* Deck zones (versión dark: rgba sobre fondo oscuro) */
+$color-eggs-bg:     rgba($color-tcg-yellow, 0.08);
 $color-eggs-border: $color-tcg-yellow;
-$color-main-bg:     lighten($color-tcg-blue, 38%);
+$color-main-bg:     rgba($color-tcg-blue,   0.08);
 $color-main-border: $color-tcg-blue;
-$color-side-bg:     lighten($color-tcg-purple, 35%);
+$color-side-bg:     rgba($color-tcg-purple, 0.08);
 $color-side-border: $color-tcg-purple;
 
 /* Card type colors (alias de TCG) */

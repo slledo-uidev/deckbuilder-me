@@ -7,22 +7,22 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: $theme-spacing-4;
+  gap: $spacing-4;
 
-  @media (max-width: $theme-breakpoint-md) {
+  @media (max-width: $breakpoint-md) {
     flex-direction: column;
-    gap: $theme-spacing-3;
+    gap: $spacing-3;
   }
 
   &__list {
     display: flex;
-    gap: $spacing-2;
+    gap: $spacing-1;
     list-style: none;
     margin: 0;
     padding: 0;
 
     @media (max-width: $breakpoint-md) {
-      gap: $spacing-1;
+      gap: 4px;
       flex-wrap: wrap;
     }
   }
@@ -38,75 +38,71 @@
     gap: $spacing-2;
     padding: $spacing-1 $spacing-2;
     text-decoration: none;
-    color: $color-white-08;
-    font-size: $font-size-base;
+    color: $color-digital-text-sub;
+    font-size: $font-size-sm;
     font-weight: $font-weight-medium;
-    border-radius: $border-radius-md;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: $border-radius-sm;
+    transition: all 0.2s ease;
     white-space: nowrap;
     position: relative;
     overflow: hidden;
-    background-color: $color-base;
-    border: 1px solid $color-white-02;
-    backdrop-filter: blur(10px);
-    min-height: 48px;
+    background-color: transparent;
+    border: 1px solid $color-cyber-500;
+    min-height: 44px;
+    letter-spacing: 0.04em;
+    font-family: $font-family-mono;
+    text-transform: uppercase;
+    font-size: $font-size-xs;
 
     @media (max-width: $breakpoint-md) {
-      padding: $spacing-2 $spacing-3;
-      font-size: $font-size-sm;
+      padding: $spacing-1 $spacing-2;
       min-height: 40px;
       flex: 1;
     }
 
-    // Efecto de brillo al hover
+    // Efecto scan al hover
     &::before {
       content: '';
       position: absolute;
       top: 0;
       left: -100%;
-      width: 100%;
+      width: 60%;
       height: 100%;
       background: linear-gradient(
         90deg,
         transparent,
-        $color-white-02,
+        rgba(0, 229, 255, 0.08),
         transparent
       );
-      transition: left 0.5s ease;
+      transition: left 0.4s ease;
     }
 
     &:hover {
-      background-color: $color-white-02;
-      color: $color-white;
-      border-color: $color-white-04;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      background-color: rgba(0, 229, 255, 0.06);
+      color: $color-neon-cyan;
+      border-color: rgba(0, 229, 255, 0.4);
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.1);
 
       &::before {
-        left: 100%;
+        left: 150%;
       }
     }
 
     &:active {
-      transform: translateY(0);
+      transform: translateY(1px);
     }
 
     &--active {
-      color: $color-primary;
-      font-weight: $font-weight-bold;
-      border-color: $color-primary;
-      transform: translateY(-1px);
-      
-      &:hover {
-        color: $color-primary;
-        border-color: $color-primary;
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3),
-                    0 0 0 2px $color-white-04;
-      }
+      color: $color-neon-cyan;
+      border-color: rgba(0, 229, 255, 0.6);
+      background-color: rgba(0, 229, 255, 0.05);
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+      animation: neon-pulse 3s ease-in-out infinite;
 
-      &:active {
-        transform: translateY(-1px);
+      &:hover {
+        color: $color-neon-cyan;
+        border-color: $color-neon-cyan;
+        box-shadow: 0 0 16px rgba(0, 229, 255, 0.25);
       }
     }
   }
@@ -115,16 +111,12 @@
     display: inline;
     position: relative;
     z-index: 1;
-
-    @media (max-width: $breakpoint-md) {
-      display: inline;
-    }
   }
 
   &__user {
     position: relative;
 
-    @media (max-width: $theme-breakpoint-md) {
+    @media (max-width: $breakpoint-md) {
       width: 100%;
     }
   }
@@ -132,42 +124,37 @@
   &__user-button {
     display: flex;
     align-items: center;
-    background-color: $color-white-01;
-    border: 1px solid $color-white-02;
-    border-radius: 100%;
+    background-color: $color-cyber-600;
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
     backdrop-filter: blur(10px);
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    color: $color-white-09;
+    transition: all 0.2s ease;
+    color: $color-digital-text-sub;
 
-    height: 48px;
-    width: 48px;
+    height: 44px;
+    width: 44px;
     display: flex;
     justify-content: center;
     align-items: center;
 
-    @media (max-width: $theme-breakpoint-md) {
+    @media (max-width: $breakpoint-md) {
       width: 100%;
       justify-content: space-between;
-      font-size: $theme-font-size-xs;
+      font-size: $font-size-xs;
       min-height: 40px;
     }
 
     &:hover {
-      background-color: $color-white-02;
-      border-color: $color-white-04;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    &:active {
-      transform: translateY(0);
+      background-color: rgba(0, 229, 255, 0.06);
+      border-color: rgba(0, 229, 255, 0.4);
+      color: $color-neon-cyan;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.1);
     }
 
     &--active {
-      background-color: $color-white-02;
-      border-color: $color-white-04;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border-color: rgba(0, 229, 255, 0.5);
+      color: $color-neon-cyan;
     }
   }
 
@@ -178,7 +165,7 @@
   &__username {
     white-space: nowrap;
 
-    @media (max-width: $theme-breakpoint-md) {
+    @media (max-width: $breakpoint-md) {
       display: none;
     }
   }
@@ -194,19 +181,18 @@
 
   &__dropdown {
     position: absolute;
-    top: calc(100% + $theme-spacing-2);
+    top: calc(100% + $spacing-1);
     right: 0;
     min-width: 220px;
-    background-color: $color-white-09;
-    border: 1px solid $color-white-03;
-    border-radius: $border-radius-md;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(10px);
+    background-color: $color-cyber-700;
+    border: 1px solid $color-cyber-400;
+    border-radius: $border-radius-sm;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 16px rgba(0, 229, 255, 0.06);
     overflow: hidden;
-    z-index: 1000;
-    animation: dropdownFadeIn 0.2s ease;
+    z-index: $z-index-dropdown;
+    animation: dropdownFadeIn 0.15s ease;
 
-    @media (max-width: $theme-breakpoint-md) {
+    @media (max-width: $breakpoint-md) {
       right: auto;
       left: 0;
       width: 100%;
@@ -214,47 +200,51 @@
   }
 
   &__dropdown-header {
-    padding: $theme-spacing-3 $theme-spacing-4;
-    border-bottom: 1px solid rgba($color-primary, 0.2);
-    background-color: rgba($color-primary, 0.05);
+    padding: $spacing-2 $spacing-3;
+    border-bottom: 1px solid $color-cyber-500;
+    background-color: rgba(0, 229, 255, 0.03);
   }
 
   &__dropdown-name {
     display: block;
-    font-size: $theme-font-size-base;
-    font-weight: $theme-font-weight-bold;
-    color: $color-primary;
-    margin-bottom: $theme-spacing-1;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+    color: $color-neon-cyan;
+    margin-bottom: 2px;
+    font-family: $font-family-mono;
   }
 
   &__dropdown-username {
     display: block;
-    font-size: $theme-font-size-xs;
-    color: rgba($color-primary, 0.7);
+    font-size: $font-size-xs;
+    color: $color-digital-text-sub;
+    font-family: $font-family-mono;
   }
 
   &__dropdown-item {
     display: flex;
     align-items: center;
-    gap: $theme-spacing-3;
+    gap: $spacing-2;
     width: 100%;
-    padding: $theme-spacing-3 $theme-spacing-4;
+    padding: $spacing-2 $spacing-3;
     background: none;
     border: none;
     cursor: pointer;
-    font-size: $theme-font-size-sm;
-    font-weight: $theme-font-weight-medium;
-    color: $color-primary;
-    transition: all 0.2s ease;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $color-digital-text-sub;
+    transition: all 0.15s ease;
     text-align: left;
 
     &:hover {
-      background-color: rgba($color-primary, 0.1);
-      color: darken($color-primary, 10%);
+      background-color: rgba(0, 229, 255, 0.06);
+      color: $color-neon-cyan;
+      border-left: 2px solid $color-neon-cyan;
+      padding-left: calc($spacing-3 - 2px);
     }
 
     &:active {
-      background-color: rgba($color-primary, 0.15);
+      background-color: rgba(0, 229, 255, 0.1);
     }
   }
 
@@ -266,7 +256,7 @@
 @keyframes dropdownFadeIn {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-6px);
   }
   to {
     opacity: 1;

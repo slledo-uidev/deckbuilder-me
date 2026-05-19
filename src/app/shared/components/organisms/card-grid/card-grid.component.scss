@@ -8,8 +8,9 @@
   &__empty {
     text-align: center;
     padding: $spacing-8 $spacing-4;
-    color: var(--theme-color-text-secondary);
+    color: var(--color-text-secondary);
     font-size: $font-size-lg;
+    font-family: $font-family-mono;
   }
   
   &__container {
@@ -34,9 +35,9 @@
   }
   
   &__item {
-    background-color: var(--theme-color-bg-elevated);
-    border: 2px solid var(--theme-color-border-base);
-    border-radius: $border-radius-md;
+    background-color: $color-cyber-600;
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
     overflow: hidden;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
@@ -45,29 +46,30 @@
     flex-direction: column;
     
     &::after {
-      content: '+ Add to Deck';
+      content: '+ ADD TO DECK';
       position: absolute;
       bottom: 0;
       left: 0;
-      background: $color-base;
-      color: $color-white;
-      padding: 13px $spacing-3;
-      font-size: $font-size-sm;
+      background: rgba(5, 8, 16, 0.92);
+      color: $color-neon-cyan;
+      border-top: 1px solid rgba(0, 229, 255, 0.4);
+      padding: 11px $spacing-2;
+      font-size: 10px;
       font-weight: $font-weight-bold;
+      font-family: $font-family-mono;
+      letter-spacing: 0.1em;
       text-align: center;
-      border-radius: $border-radius-sm;
       opacity: 0;
       transition: opacity 0.2s ease-in-out;
       pointer-events: none;
       white-space: nowrap;
-      box-shadow: var(--theme-shadow-md);
       width: 100%;
     }
     
     &:hover {
       transform: translateY(-4px);
-      box-shadow: var(--theme-shadow-lg);
-      border-color: var(--theme-color-primary);
+      box-shadow: $shadow-md, 0 0 16px rgba(0, 229, 255, 0.12);
+      border-color: rgba(0, 229, 255, 0.5);
       
       &::after {
         opacity: 1;
@@ -79,65 +81,38 @@
     }
     
     &:focus {
-      outline: 2px solid var(--theme-color-primary);
+      outline: 1px solid $color-neon-cyan;
       outline-offset: 2px;
     }
     
-    // Color variants
+    // Color variants con neon glow en cada color TCG
     &--red {
-      border-color: rgba($color-tcg-red, 0.3);
-      
-      &:hover {
-        border-color: $color-tcg-red;
-      }
+      border-color: rgba($color-tcg-red, 0.25);
+      &:hover { border-color: $color-tcg-red; box-shadow: $shadow-md, 0 0 14px rgba($color-tcg-red, 0.3); }
     }
-    
     &--blue {
-      border-color: rgba($color-tcg-blue, 0.3);
-      
-      &:hover {
-        border-color: $color-tcg-blue;
-      }
+      border-color: rgba($color-tcg-blue, 0.25);
+      &:hover { border-color: $color-tcg-blue; box-shadow: $shadow-md, 0 0 14px rgba($color-tcg-blue, 0.3); }
     }
-    
     &--yellow {
-      border-color: rgba($color-tcg-yellow, 0.3);
-      
-      &:hover {
-        border-color: $color-tcg-yellow;
-      }
+      border-color: rgba($color-tcg-yellow, 0.25);
+      &:hover { border-color: $color-tcg-yellow; box-shadow: $shadow-md, 0 0 14px rgba($color-tcg-yellow, 0.25); }
     }
-    
     &--green {
-      border-color: rgba($color-tcg-green, 0.3);
-      
-      &:hover {
-        border-color: $color-tcg-green;
-      }
+      border-color: rgba($color-tcg-green, 0.25);
+      &:hover { border-color: $color-tcg-green; box-shadow: $shadow-md, 0 0 14px rgba($color-tcg-green, 0.3); }
     }
-    
     &--black {
       border-color: rgba($color-tcg-black, 0.3);
-      
-      &:hover {
-        border-color: $color-tcg-black;
-      }
+      &:hover { border-color: lighten($color-tcg-black, 20%); box-shadow: $shadow-md; }
     }
-    
     &--purple {
-      border-color: rgba($color-tcg-purple, 0.3);
-      
-      &:hover {
-        border-color: $color-tcg-purple;
-      }
+      border-color: rgba($color-tcg-purple, 0.25);
+      &:hover { border-color: $color-tcg-purple; box-shadow: $shadow-md, 0 0 14px rgba($color-tcg-purple, 0.3); }
     }
-    
     &--white {
-      border-color: rgba($color-text-secondary, 0.3);
-      
-      &:hover {
-        border-color: $color-text-secondary;
-      }
+      border-color: rgba(200, 200, 220, 0.15);
+      &:hover { border-color: rgba(200, 200, 220, 0.6); box-shadow: $shadow-md; }
     }
   }
   
@@ -145,7 +120,7 @@
     width: 100%;
     aspect-ratio: 7 / 10;
     overflow: hidden;
-    background-color: var(--theme-color-bg-base);
+    background-color: $color-cyber-700;
     position: relative;
     flex-shrink: 0;
   }
@@ -169,7 +144,7 @@
   &__name {
     font-size: $font-size-xs;
     font-weight: $font-weight-bold;
-    color: var(--theme-color-text-primary);
+    color: $color-digital-text;
     line-height: 1.2;
     margin: 0;
     @include truncate;
@@ -181,9 +156,10 @@
   
   &__set {
     font-size: 10px;
-    color: var(--theme-color-text-secondary);
+    color: $color-digital-text-sub;
     margin: 0;
     @include truncate;
+    font-family: $font-family-mono;
     
     @media (min-width: $breakpoint-md) {
       font-size: $font-size-xs;
@@ -192,10 +168,11 @@
   
   &__id {
     font-size: 10px;
-    color: var(--theme-color-text-secondary);
-    font-family: monospace;
+    color: $color-neon-cyan-dim;
+    font-family: $font-family-mono;
     font-weight: $font-weight-medium;
     margin: 0;
+    letter-spacing: 0.04em;
     
     @media (min-width: $breakpoint-md) {
       font-size: 11px;

@@ -14,46 +14,52 @@
   }
 
   &__label {
-    font-size: $theme-font-size-sm;
-    font-weight: $theme-font-weight-semibold;
-    color: var(--theme-color-text-primary);
     display: flex;
     align-items: center;
     gap: $theme-spacing-1;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    font-family: $font-family-mono;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $color-digital-text-sub;
   }
 
   &__required {
-    color: var(--theme-color-danger);
+    color: $color-error;
   }
 
   &__optional {
-    font-size: $theme-font-size-xs;
-    font-weight: $theme-font-weight-normal;
-    color: var(--theme-color-text-muted);
+    font-size: $font-size-xs;
+    font-weight: $font-weight-normal;
+    color: $color-digital-text-dim;
+    text-transform: none;
   }
 
   &__input,
   &__textarea {
     width: 100%;
-    padding: $theme-spacing-1 $theme-spacing-2;
-    font-size: $theme-font-size-base;
-    font-family: inherit;
-    border: 1.5px solid var(--theme-color-border-base);
-    border-radius: $theme-radius-md;
-    background-color: var(--theme-color-bg-elevated);
-    color: var(--theme-color-text-primary);
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-base;
+    font-family: $font-family-primary;
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    background-color: $color-cyber-700;
+    color: $color-digital-text;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
     box-sizing: border-box;
 
+    &::placeholder { color: $color-digital-text-dim; }
+
+    &:hover:not(:disabled) { border-color: $color-cyber-300; }
+
     &:focus {
       outline: none;
-      border-color: var(--theme-color-primary);
-      box-shadow: 0 0 0 3px rgba(var(--theme-color-primary-rgb, 142, 212, 199), 0.15);
+      border-color: $color-neon-cyan;
+      box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.12), 0 0 10px rgba(0, 229, 255, 0.08);
     }
 
-    &--error {
-      border-color: var(--theme-color-danger);
-    }
+    &--error { border-color: $color-error; }
   }
 
   &__input {
@@ -62,17 +68,17 @@
 
   &__textarea {
     resize: vertical;
-    min-height: 60px;
+    min-height: 80px;
   }
 
   &__error {
-    font-size: $theme-font-size-xs;
-    color: var(--theme-color-danger);
+    font-size: $font-size-xs;
+    color: $color-error;
   }
 
   &__char-count {
-    font-size: $theme-font-size-xs;
-    color: var(--theme-color-text-muted);
+    font-size: $font-size-xs;
+    color: $color-digital-text-sub;
     text-align: right;
   }
 }

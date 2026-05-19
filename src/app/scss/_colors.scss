@@ -50,3 +50,29 @@ $color-type-digi-egg: #ec407a;
 /* Absolutos */
 $color-white: #ffffff;
 $color-black: #000000;
+
+/* ==============================================
+   PALETA DIGITAL WORLD / CYBERPUNK
+   Inspirada en el mundo digital de Digimon:
+   oscuridad del mundo digital, portales cyan,
+   energía de evolución.
+   ============================================== */
+
+/* Fondos (deep space digital) */
+$color-cyber-900: #050810;  // Void / más profundo
+$color-cyber-800: #080c14;  // Fondo base
+$color-cyber-700: #0c1220;  // Superficies elevadas
+$color-cyber-600: #111928;  // Tarjetas / paneles
+$color-cyber-500: #1a2535;  // Bordes
+$color-cyber-400: #243040;  // Bordes dark / hover borders
+$color-cyber-300: #2e3d52;  // Bordes elevados
+
+/* Neon principal (portal del Mundo Digital) */
+$color-neon-cyan:        #00e5ff;
+$color-neon-cyan-hover:  #00b8d4;
+$color-neon-cyan-dim:    #007a99;
+
+/* Texto digital */
+$color-digital-text:     #c8e8f0;  // Texto primario (blanco-azulado)
+$color-digital-text-sub: #5e8ca8;  // Texto secundario (azul apagado)
+$color-digital-text-dim: #3d6480;  // Texto terciario / muted

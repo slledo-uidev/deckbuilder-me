@@ -7,12 +7,13 @@
   min-height: 100vh;
   
   &__header {
-    background: linear-gradient(135deg, $color-base 0%, darken($color-base-dark, 10%) 100%);
-    color: $color-white;
+    background: linear-gradient(180deg, $color-cyber-900 0%, $color-cyber-800 100%);
+    color: $color-digital-text;
     padding: $spacing-2 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     position: relative;
+    z-index: $z-index-sticky;
     
+    // Línea neon inferior (portal signature)
     &::after {
       content: '';
       position: absolute;
@@ -23,10 +24,26 @@
       background: linear-gradient(
         90deg,
         transparent 0%,
-        rgba($color-white, 0.3) 20%,
-        rgba($color-white, 0.3) 80%,
+        rgba(0, 229, 255, 0.2) 10%,
+        rgba(0, 229, 255, 0.8) 40%,
+        rgba(0, 229, 255, 1)   50%,
+        rgba(0, 229, 255, 0.8) 60%,
+        rgba(0, 229, 255, 0.2) 90%,
         transparent 100%
       );
+      animation: neon-border-pulse 4s ease-in-out infinite;
+    }
+    
+    // Glow ambiental debajo del header
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 20%;
+      right: 20%;
+      height: 12px;
+      background: radial-gradient(ellipse at center, rgba(0, 229, 255, 0.12) 0%, transparent 70%);
+      pointer-events: none;
     }
   }
   
@@ -34,10 +51,6 @@
     max-width: 1440px;
     margin: 0 auto;
     padding: 0 $spacing-3;
-    
-    @media (min-width: $breakpoint-md) {
-      padding: 0 $spacing-3;
-    }
   }
 
   &__header-content {
@@ -69,21 +82,28 @@
     margin: 0;
     font-size: $font-size-xl;
     font-weight: $font-weight-bold;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    color: $color-neon-cyan;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-shadow: 0 0 16px rgba(0, 229, 255, 0.5);
+    animation: digital-flicker 8s ease-in-out infinite;
+    font-family: $font-family-mono;
     
     @media (min-width: $breakpoint-md) {
-      font-size: $font-size-3xl;
+      font-size: $font-size-2xl;
     }
   }
 
   &__subtitle {
     margin: 0;
-    font-size: $font-size-base;
-    opacity: 0.85;
+    font-size: $font-size-xs;
+    color: $color-digital-text-sub;
     font-weight: $font-weight-normal;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-family: $font-family-mono;
   }
 
-  
   &__main {
     flex: 1;
 
@@ -96,22 +116,23 @@
   }
   
   &__footer {
-    background-color: $color-surface;
-    border-top: 1px solid $color-border;
+    background-color: $color-cyber-900;
+    border-top: 1px solid $color-cyber-500;
     padding: $spacing-3 0;
     
     &-text {
       margin: 0;
       font-size: $font-size-sm;
-      color: $color-text-secondary;
+      color: $color-digital-text-dim;
       text-align: center;
+      font-family: $font-family-mono;
       
       a {
-        color: $color-primary;
+        color: $color-neon-cyan;
         text-decoration: none;
         
         &:hover {
-          text-decoration: underline;
+          text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
         }
       }
     }

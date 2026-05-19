@@ -12,24 +12,24 @@
   &__instructions {
     margin: 0;
     font-size: $font-size-base;
-    color: var(--theme-color-text-secondary);
+    color: $color-digital-text-sub;
     line-height: $line-height-normal;
   }
 
   &__example {
     margin: 0;
     padding: $spacing-2 $spacing-3;
-    background-color: var(--theme-color-bg-elevated);
-    border-radius: $border-radius-md;
+    background-color: $color-cyber-800;
+    border-radius: $border-radius-sm;
     font-size: $font-size-sm;
-    color: var(--theme-color-text-secondary);
-    border-left: 3px solid var(--theme-color-primary);
+    color: $color-digital-text-sub;
+    border-left: 3px solid $color-neon-cyan;
 
     code {
       font-family: $font-family-mono;
       font-size: $font-size-sm;
-      color: var(--theme-color-primary);
-      background-color: rgba(var(--theme-color-primary-rgb), 0.1);
+      color: $color-neon-cyan;
+      background-color: rgba(0, 229, 255, 0.08);
       padding: 2px 6px;
       border-radius: $border-radius-sm;
     }
@@ -42,22 +42,24 @@
     font-family: $font-family-mono;
     font-size: $font-size-sm;
     line-height: $line-height-relaxed;
-    border: 2px solid var(--theme-color-border-base);
-    border-radius: $border-radius-md;
-    background-color: var(--theme-color-bg-base);
-    color: var(--theme-color-text-primary);
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    background-color: $color-cyber-800;
+    color: $color-digital-text;
     resize: vertical;
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+
+    &:hover:not(:disabled) { border-color: $color-cyber-300; }
 
     &:focus {
       outline: none;
-      border-color: var(--theme-color-primary);
-      box-shadow: 0 0 0 3px rgba(var(--theme-color-primary-rgb), 0.1);
+      border-color: $color-neon-cyan;
+      box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.12), 0 0 10px rgba(0, 229, 255, 0.08);
     }
 
     &::placeholder {
-      color: var(--theme-color-text-muted);
-      opacity: 0.6;
+      color: $color-digital-text-dim;
     }
   }
 

@@ -1,81 +1,84 @@
 /* ==============================================
-   CSS CUSTOM PROPERTIES
-   Valores dinámicos en tiempo de ejecución.
-   Se definen en body para herencia global.
+   CSS CUSTOM PROPERTIES — DIGITAL WORLD THEME
+   Estética Digimon Cyberpunk: oscuro, neon cyan,
+   bordes digitales, mundo digital futurista.
    ============================================== */
 
 @import './colors';
 
 body {
-  /* Primary */
-  --color-primary:        #{$color-turquoise-500};
-  --color-primary-hover:  #{$color-turquoise-600};
-  --color-primary-light:  #{$color-turquoise-400};
-  --color-primary-rgb:    120, 195, 180;
+  /* ── Primary: Neon Cyan (portal del Mundo Digital) ── */
+  --color-primary:        #{$color-neon-cyan};
+  --color-primary-hover:  #{$color-neon-cyan-hover};
+  --color-primary-light:  rgba(0, 229, 255, 0.12);
+  --color-primary-rgb:    0, 229, 255;
 
-  /* Fondos */
-  --color-bg-base:         #{$color-gray-100};
-  --color-bg-elevated:     #{$color-white};
-  --color-bg-elevated-hover: #{$color-gray-50};
-  --color-bg-input:        #{$color-white};
-  --color-bg-card:         #{$color-white};
+  /* ── Fondos (Digital World darkness) ── */
+  --color-bg-base:           #{$color-cyber-800};
+  --color-bg-elevated:       #{$color-cyber-700};
+  --color-bg-elevated-hover: #{$color-cyber-600};
+  --color-bg-input:          #{$color-cyber-700};
+  --color-bg-card:           #{$color-cyber-600};
 
-  /* Texto */
-  --color-text-primary:   #{$color-gray-900};
-  --color-text-secondary: #{$color-gray-600};
-  --color-text-tertiary:  #{$color-gray-500};
-  --color-text-muted:     #{$color-gray-400};
+  /* ── Texto ── */
+  --color-text-primary:   #{$color-digital-text};
+  --color-text-secondary: #{$color-digital-text-sub};
+  --color-text-tertiary:  #{$color-digital-text-dim};
+  --color-text-muted:     #{$color-cyber-300};
 
-  /* Bordes */
-  --color-border-base:        #{$color-gray-150};
-  --color-border-elevated:    #{$color-gray-300};
-  --color-border-input:       #{$color-gray-200};
-  --color-border-input-hover: #{$color-gray-400};
+  /* ── Bordes (sutiles, oscuros) ── */
+  --color-border-base:        #{$color-cyber-500};
+  --color-border-elevated:    #{$color-cyber-400};
+  --color-border-input:       #{$color-cyber-500};
+  --color-border-input-hover: #{$color-cyber-300};
 
-  /* Estado */
-  --color-success:     #{$color-green-400};
-  --color-success-rgb: 76, 175, 80;
-  --color-warning:     #{$color-orange-400};
-  --color-warning-rgb: 240, 195, 105;
-  --color-error:       #{$color-red-400};
-  --color-error-rgb:   180, 30, 30;
-  --color-info:        #{$color-blue-400};
-  --color-info-rgb:    33, 150, 243;
+  /* ── Estado (neon) ── */
+  --color-success:      #00e676;
+  --color-success-rgb:  0, 230, 118;
+  --color-warning:      #ffab00;
+  --color-warning-rgb:  255, 171, 0;
+  --color-error:        #ff1744;
+  --color-error-rgb:    255, 23, 68;
+  --color-info:         #2979ff;
+  --color-info-rgb:     41, 121, 255;
 
-  /* Sombras */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 4px 15px rgba(0, 0, 0, 0.15);
-  --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.15);
+  /* ── Sombras (profundas + neon glow) ── */
+  --shadow-sm:      0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-md:      0 4px 16px rgba(0, 0, 0, 0.6);
+  --shadow-lg:      0 8px 24px rgba(0, 0, 0, 0.7);
+  --shadow-xl:      0 12px 40px rgba(0, 0, 0, 0.8);
+  --shadow-neon-sm: 0 0 8px rgba(0, 229, 255, 0.3);
+  --shadow-neon-md: 0 0 16px rgba(0, 229, 255, 0.4);
+  --shadow-neon-lg: 0 0 32px rgba(0, 229, 255, 0.3), 0 0 64px rgba(0, 229, 255, 0.15);
 
-  /* Gradiente principal */
-  --gradient-primary: linear-gradient(135deg, #{$color-turquoise-500} 0%, #{$color-turquoise-600} 100%);
+  /* ── Gradiente ── */
+  --gradient-primary: linear-gradient(135deg, #{$color-neon-cyan} 0%, #{$color-neon-cyan-hover} 100%);
 
-  /* Colores TCG Digimon */
-  --color-digimon-red:        #{$color-digimon-red};
-  --color-digimon-red-bg:     rgba(211, 47, 47, 0.15);
-  --color-digimon-blue:       #{$color-digimon-blue};
-  --color-digimon-blue-bg:    rgba(25, 118, 210, 0.15);
-  --color-digimon-yellow:     #{$color-digimon-yellow};
-  --color-digimon-yellow-bg:  rgba(249, 168, 37, 0.15);
-  --color-digimon-green:      #{$color-digimon-green};
-  --color-digimon-green-bg:   rgba(56, 142, 60, 0.15);
-  --color-digimon-black:      #{$color-digimon-black};
-  --color-digimon-black-bg:   rgba(66, 66, 66, 0.15);
-  --color-digimon-purple:     #{$color-digimon-purple};
-  --color-digimon-purple-bg:  rgba(123, 31, 162, 0.15);
-  --color-digimon-white:      #{$color-digimon-white};
-  --color-digimon-white-bg:   rgba(250, 250, 250, 0.15);
+  /* ── Colores TCG Digimon (vibrant on dark bg) ── */
+  --color-digimon-red:        #ef5350;
+  --color-digimon-red-bg:     rgba(239, 83, 80, 0.15);
+  --color-digimon-blue:       #42a5f5;
+  --color-digimon-blue-bg:    rgba(66, 165, 245, 0.15);
+  --color-digimon-yellow:     #ffb300;
+  --color-digimon-yellow-bg:  rgba(255, 179, 0, 0.15);
+  --color-digimon-green:      #66bb6a;
+  --color-digimon-green-bg:   rgba(102, 187, 106, 0.15);
+  --color-digimon-black:      #757575;
+  --color-digimon-black-bg:   rgba(117, 117, 117, 0.15);
+  --color-digimon-purple:     #ab47bc;
+  --color-digimon-purple-bg:  rgba(171, 71, 188, 0.15);
+  --color-digimon-white:      #e0e0e0;
+  --color-digimon-white-bg:   rgba(224, 224, 224, 0.1);
 
-  /* Tipos de carta */
-  --color-type-digimon:     #{$color-type-digimon};
-  --color-type-digimon-bg:  rgba(255, 111, 0, 0.15);
-  --color-type-tamer:       #{$color-type-tamer};
-  --color-type-tamer-bg:    rgba(0, 172, 193, 0.15);
-  --color-type-option:      #{$color-type-option};
-  --color-type-option-bg:   rgba(142, 36, 170, 0.15);
-  --color-type-digi-egg:    #{$color-type-digi-egg};
-  --color-type-digi-egg-bg: rgba(236, 64, 122, 0.15);
+  /* ── Tipos de carta ── */
+  --color-type-digimon:     #ff9800;
+  --color-type-digimon-bg:  rgba(255, 152, 0, 0.15);
+  --color-type-tamer:       #26c6da;
+  --color-type-tamer-bg:    rgba(38, 198, 218, 0.15);
+  --color-type-option:      #ba68c8;
+  --color-type-option-bg:   rgba(186, 104, 200, 0.15);
+  --color-type-digi-egg:    #f48fb1;
+  --color-type-digi-egg-bg: rgba(244, 143, 177, 0.15);
 }
 
 /* ======================================================

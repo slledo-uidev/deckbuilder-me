@@ -7,9 +7,11 @@
   gap: $spacing-1;
   
   &__label {
-    font-size: $font-size-sm;
+    font-size: $font-size-xs;
     font-weight: $font-weight-medium;
-    color: $color-text-primary;
+    color: $color-digital-text-sub;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
   
   &__error {
@@ -29,38 +31,34 @@
 
 .input {
   padding: $spacing-2 $spacing-3;
-  border: 2px solid $color-border;
-  border-radius: $border-radius-md;
+  border: 1px solid $color-cyber-500;
+  border-radius: $border-radius-sm;
   font-family: $font-family-primary;
   font-size: $font-size-base;
-  color: $color-text-primary;
-  background-color: $color-surface;
-  transition: border-color $transition-fast, box-shadow $transition-fast;
+  color: $color-digital-text;
+  background-color: $color-cyber-700;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   height: 55px;
   
   &::placeholder {
-    color: $color-text-secondary;
+    color: $color-digital-text-dim;
   }
   
   &:hover:not(:disabled) {
-    border-color: $color-border-dark;
+    border-color: $color-cyber-300;
   }
   
   &:focus {
     outline: none;
-    border-color: $color-primary;
-    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+    border-color: $color-neon-cyan;
+    box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15), 0 0 10px rgba(0, 229, 255, 0.1);
   }
   
   &:disabled {
-    background-color: $color-surface-alt;
-    color: $color-text-disabled;
+    background-color: $color-cyber-600;
+    color: $color-digital-text-dim;
     cursor: not-allowed;
-  }
-  
-  // State: Focused
-  &--focused {
-    border-color: $color-primary;
+    opacity: 0.5;
   }
   
   // State: Error
@@ -69,7 +67,7 @@
     
     &:focus {
       border-color: $color-error;
-      box-shadow: 0 0 0 3px rgba($color-error, 0.1);
+      box-shadow: 0 0 0 3px rgba(255, 23, 68, 0.15);
     }
   }
 }
