@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
-export type ButtonSize = 'small' | 'medium' | 'large' | 'square' | 'square-sm';
+export type ButtonSize = 'small' | 'medium' | 'large' | 'square' | 'square-sm' | 'square-xs';
 
 @Component({
   selector: 'app-button',

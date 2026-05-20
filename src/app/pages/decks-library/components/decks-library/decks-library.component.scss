@@ -27,14 +27,17 @@
     }
   }
 
-  &__header-content {
+  &__header-left {
     display: flex;
     flex-direction: column;
-    gap: $theme-spacing-2;
-    .row{
-      display: flex;
-      gap: $theme-spacing-2;
-    }
+    gap: $theme-spacing-1;
+  }
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    gap: $theme-spacing-3;
+    flex-wrap: wrap;
   }
 
   &__advanced-header {
@@ -42,6 +45,12 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: $theme-spacing-3;
+  }
+
+  &__advanced-actions {
+    display: flex;
+    align-items: center;
+    gap: $theme-spacing-2;
   }
 
   &__advanced-count {
@@ -257,8 +266,216 @@
   }
 }
 
-.app-toggle-switch{
+// ─── Manage archetypes modal ──────────────────────────────────────────────────
+
+.manage-archetypes {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: $theme-spacing-2;
+  min-height: 80px;
+
+  &__empty {
+    font-size: $font-size-sm;
+    color: $color-digital-text-dim;
+    text-align: center;
+    padding: $theme-spacing-4 0;
+    margin: 0;
+    font-style: italic;
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $theme-spacing-1;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: $theme-spacing-2;
+    padding: $theme-spacing-2 $theme-spacing-3;
+    background-color: $color-cyber-700;
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    transition: border-color 0.2s ease;
+
+    &--deleting {
+      border-color: rgba(239, 68, 68, 0.4);
+      background-color: rgba(239, 68, 68, 0.05);
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__name {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    font-family: $font-family-mono;
+    color: $color-digital-text;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__desc {
+    font-size: $font-size-xs;
+    color: $color-digital-text-dim;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &--empty {
+      font-style: italic;
+      color: $color-digital-text-dim;
+      opacity: 0.6;
+    }
+  }
+
+  &__confirm-text {
+    flex: 1;
+    font-size: $font-size-sm;
+    color: $color-digital-text-sub;
+
+    strong {
+      color: $color-digital-text;
+      font-family: $font-family-mono;
+    }
+  }
+
+  &__confirm-actions {
+    display: flex;
+    gap: $theme-spacing-1;
+    flex-shrink: 0;
+  }
+}
+
+.confirm-delete {
+  display: flex;
+
+  &__msg {
+    text-align: center;
+    margin: 0;
+    font-size: $font-size-sm;
+    color: $color-digital-text-sub;
+    line-height: $line-height-relaxed;
+
+    strong {
+      color: $color-digital-text;
+      font-family: $font-family-mono;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+    gap: $spacing-2;
+  }
+}
+
+// ─── Tabs ────────────────────────────────────────────────────────────────────
+
+.decks-library {
+  &__tabs {
+    position: relative;
+    display: flex;
+    gap: 0;
+    background-color: $color-cyber-700;
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    padding: 3px;
+    width: fit-content;
+  }
+
+  &__tab {
+    position: relative;
+    z-index: 1;
+    padding: 6px $theme-spacing-4;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    font-family: $font-family-mono;
+    color: $color-digital-text-sub;
+    background: transparent;
+    border: none;
+    border-radius: calc(#{$border-radius-sm} - 2px);
+    cursor: pointer;
+    transition: color 0.25s ease;
+    white-space: nowrap;
+
+    &--active {
+      color: $color-cyber-900;
+    }
+
+    &:hover:not(&--active) {
+      color: $color-digital-text;
+    }
+  }
+
+  &__tab-indicator {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    left: 3px;
+    width: calc(50% - 3px);
+    background-color: $color-neon-cyan;
+    border-radius: calc(#{$border-radius-sm} - 2px);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+
+    &--right {
+      transform: translateX(calc(100% + 2px));
+    }
+  }
+
+  // ─── Slider viewport ───────────────────────────────────────────────────────
+  // Ambos paneles comparten la misma celda de grid; solo uno es visible
+  // a la vez sin que el otro ocupe espacio en el flujo del documento.
+  &__slider {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    overflow: hidden;
+  }
+
+  &__panel {
+    padding-top: 2px;
+    grid-area: 1 / 1 / 2 / 2;   // misma celda para ambos paneles
+    min-width: 0;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+
+    // Panel 1 visible por defecto
+    &:nth-child(1) {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    // Panel 2 fuera a la derecha por defecto
+    &:nth-child(2) {
+      transform: translateX(105%);
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  // Cuando está activa la pestaña Advanced: panel 1 sale a la izquierda,
+  // panel 2 entra desde la derecha
+  &__slider--advanced {
+    .decks-library__panel:nth-child(1) {
+      transform: translateX(-105%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .decks-library__panel:nth-child(2) {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
 }

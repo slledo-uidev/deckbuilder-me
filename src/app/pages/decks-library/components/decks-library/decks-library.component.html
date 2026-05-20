@@ -1,23 +1,39 @@
 <div class="decks-library">
   <div class="decks-library__header">
-    <div class="decks-library__header-content">
-      <div class="row">
-        <h2 class="decks-library__title">Decks Library</h2>
-        <app-toggle-switch
-          class="app-toggle-switch"
-          [checked]="showAdvanced"
-          label="Advanced Decklist"
-          size="medium"
-          (toggled)="onToggleAdvanced($event)">
-        </app-toggle-switch>
+    <!-- Izquierda: título + tabs -->
+    <div class="decks-library__header-left">
+      <div class="decks-library__title-row">
+        <!-- Tabs -->
+        <div class="decks-library__tabs">
+          <button
+            class="decks-library__tab"
+            [class.decks-library__tab--active]="!showAdvanced"
+            (click)="onToggleAdvanced(false)"
+            type="button">
+            Decklist
+          </button>
+          <button
+            class="decks-library__tab"
+            [class.decks-library__tab--active]="showAdvanced"
+            (click)="onToggleAdvanced(true)"
+            type="button">
+            Advanced
+          </button>
+          <span class="decks-library__tab-indicator" [class.decks-library__tab-indicator--right]="showAdvanced"></span>
+        </div>
       </div>
       <p *ngIf="decks.length > 0" class="decks-library__subtitle">{{ decks.length }} {{ decks.length === 1 ? 'deck' : 'decks' }} saved</p>
     </div>
-
+    <!-- Derecha: botón acción principal -->
     <app-button variant="primary" size="small" (click)="onCreateNewDeck()">+ Create New Deck</app-button>
   </div>
 
-  <ng-container *ngIf="!showAdvanced">
+  <!-- ── Slider ────────────────────────────────────────────────────────────── -->
+  <div class="decks-library__slider" [class.decks-library__slider--advanced]="showAdvanced">
+
+    <!-- Panel 0: Decklist -->
+    <div class="decks-library__panel">
+  <ng-container>
     <!-- Empty State -->
     <div *ngIf="decks.length === 0" class="decks-library__empty">
       <app-empty-state
@@ -96,17 +112,25 @@
         </div>
       </div>
     </div>
-  </ng-container>
+    </ng-container>
+    </div><!-- /.panel -->
 
-  <ng-container *ngIf="showAdvanced">
+    <!-- Panel 1: Advanced Decklist -->
+    <div class="decks-library__panel">
+  <ng-container>
     <!-- Header de vista Advanced con botón de crear arquetipo -->
     <div class="decks-library__advanced-header">
       <p class="decks-library__advanced-count" *ngIf="archetypeGroups.length > 0">
         {{ archetypeGroups.length }} {{ archetypeGroups.length === 1 ? 'archetype' : 'archetypes' }}
       </p>
-      <app-button variant="outline" size="small" (clicked)="onOpenCreateArchetypeModal()">
-        + New Archetype
-      </app-button>
+      <div class="decks-library__advanced-actions">
+        <app-button variant="outline" size="small" (clicked)="onOpenCreateArchetypeModal()">
+          + New Archetype
+        </app-button>
+        <app-button variant="outline" size="square-xs" title="Gestionar arquetipos" (clicked)="onOpenManageArchetypes()">
+          <lucide-angular name="settings" [size]="15" class="lucide-icon"></lucide-angular>
+        </app-button>
+      </div>
     </div>
 
     <app-archetype-grid
@@ -115,7 +139,13 @@
       (groupSelected)="onArchetypeSelected($event)">
     </app-archetype-grid>
 
-    <app-archetype-versions-modal
+  </ng-container>
+    </div><!-- /.panel -->
+
+  </div><!-- /.slider -->
+
+  <!-- ── Modales (fuera del slider para evitar overflow:hidden) ──────────── -->
+  <app-archetype-versions-modal
       [group]="selectedGroup"
       [archetype]="selectedArchetype"
       [isOpen]="isModalOpen"
@@ -133,8 +163,6 @@
       (saved)="onArchetypeSaved($event)"
       (cancelled)="onCreateArchetypeModalClose()">
     </app-create-archetype-modal>
-  </ng-container>
-</div>
 
   <app-view-deck-modal
     [isVisible]="isViewModalOpen"
@@ -143,6 +171,51 @@
     (close)="onViewModalClose()"
     (openInEditor)="onOpenInEditor(viewingDeck!)">
   </app-view-deck-modal>
+
+  <!-- Manage archetypes modal -->
+  <app-modal
+    [isVisible]="isManageArchetypesOpen"
+    title="Manage Archetypes"
+    size="medium"
+    (closed)="onCloseManageArchetypes()">
+    <div modal-body class="manage-archetypes">
+      <p *ngIf="allArchetypeEntries.length === 0" class="manage-archetypes__empty">No hay arquetipos guardados.</p>
+      <ul *ngIf="allArchetypeEntries.length > 0" class="manage-archetypes__list">
+        <li *ngFor="let entry of allArchetypeEntries" class="manage-archetypes__item"
+          [class.manage-archetypes__item--deleting]="archetypeToDeleteName === entry.name">
+
+          <!-- Modo normal -->
+          <ng-container *ngIf="archetypeToDeleteName !== entry.name">
+            <div class="manage-archetypes__info">
+              <span class="manage-archetypes__name">{{ entry.name }}</span>
+              <span class="manage-archetypes__desc"
+                [class.manage-archetypes__desc--empty]="entry.deckCount === 0">
+                {{ entry.deckCount === 0 ? 'Sin mazos asignados' : (entry.deckCount + (entry.deckCount === 1 ? ' versión' : ' versiones')) }}
+              </span>
+            </div>
+            <app-button variant="danger" size="square-sm" title="Eliminar arquetipo"
+              (clicked)="onRequestDeleteArchetype(entry.name)">
+              <lucide-angular name="trash-2" [size]="14" class="lucide-icon"></lucide-angular>
+            </app-button>
+          </ng-container>
+
+          <!-- Confirm inline -->
+          <ng-container *ngIf="archetypeToDeleteName === entry.name">
+            <span class="manage-archetypes__confirm-text">
+              ¿Eliminar <strong>{{ entry.name }}</strong>?
+            </span>
+            <div class="manage-archetypes__confirm-actions">
+              <app-button variant="ghost" size="small" (clicked)="onCancelDeleteArchetype()">Cancelar</app-button>
+              <app-button variant="danger" size="small" (clicked)="onConfirmDeleteArchetype(entry)">
+                <lucide-angular name="trash-2" [size]="13" class="lucide-icon"></lucide-angular>
+                Eliminar
+              </app-button>
+            </div>
+          </ng-container>
+        </li>
+      </ul>
+    </div>
+  </app-modal>
 
   <!-- Confirm delete modal -->
   <app-modal

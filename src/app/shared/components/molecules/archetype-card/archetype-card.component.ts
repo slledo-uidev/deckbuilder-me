@@ -21,16 +21,22 @@ export class ArchetypeCardComponent {
   }
 
   get thumbnailUrl(): string {
-    if (this.group.thumbnailCardId) {
-      return `https://images.digimoncard.io/images/cards/${this.group.thumbnailCardId}.jpg`;
-    }
-    // Fallback: use first card of the most recent deck
-    const firstDeck = this.group.decks[0];
-    const firstCard = [...(firstDeck?.mainDeck ?? []), ...(firstDeck?.digiEggs ?? [])][0];
-    if (firstCard?.cardId) {
-      return `https://images.digimoncard.io/images/cards/${firstCard.cardId}.jpg`;
-    }
-    return '';
+    const img = (cardId?: string) =>
+      cardId ? `https://images.digimoncard.io/images/cards/${cardId}.jpg` : '';
+
+    // 1. Favorite deck thumbnail
+    const favorite = this.group.decks.find(d => d.isFavorite);
+    if (favorite?.placeholderCardId) return img(favorite.placeholderCardId);
+
+    // 2. Most recently created deck thumbnail
+    const latest = [...this.group.decks].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )[0];
+    if (latest?.placeholderCardId) return img(latest.placeholderCardId);
+
+    // 3. Fallback: first card of that deck
+    const firstCard = [...(latest?.mainDeck ?? []), ...(latest?.digiEggs ?? [])][0];
+    return img(firstCard?.cardId);
   }
 
   formatDate(date: Date): string {

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService, CardService, DeckService } from '@core/services';
-import { Deck, Card, DeckArchetypeGroup, Archetype, DeckFamilyWithVersions } from '@core/models';
+import { Deck, Card, DeckArchetypeGroup, Archetype, DeckFamilyWithVersions, DeckFamily } from '@core/models';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { groupDecksByArchetype } from '@shared/utils/deck.utils';
@@ -21,6 +21,7 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
 
   // ─── Supabase library ───────────────────────────────────────────────────────
   cloudFamilies: DeckFamilyWithVersions[] = [];
+  dbFamilies: DeckFamily[] = [];
   cloudLoading = false;
   cloudError: string | null = null;
   expandedFamilyId: string | null = null;
@@ -42,6 +43,46 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   deckToDeleteId: string | null = null;
   get deckToDeleteName(): string {
     return this.decks.find(d => d.id === this.deckToDeleteId)?.name ?? 'este deck';
+  }
+
+  // Manage archetypes modal
+  isManageArchetypesOpen: boolean = false;
+  archetypeToDeleteName: string | null = null;
+
+  /**
+   * Unified list for the manage-archetypes modal.
+   * Merges DB families (source of truth) with local archetypeGroups so that
+   * families with no deck versions are still shown.
+   */
+  get allArchetypeEntries(): { name: string; familyId?: string; deckCount: number }[] {
+    const entries = new Map<string, { name: string; familyId?: string; deckCount: number }>();
+
+    // Start from DB families (all 4 from Supabase)
+    for (const f of this.dbFamilies) {
+      const name = (f.archetype ?? f.name).trim();
+      entries.set(name.toLowerCase(), { name, familyId: f.id, deckCount: 0 });
+    }
+
+    // Overlay deck counts from local groups
+    for (const g of this.archetypeGroups) {
+      const key = g.archetype.toLowerCase();
+      const existing = entries.get(key);
+      if (existing) {
+        existing.deckCount = g.decks.length;
+        if (!existing.familyId) {
+          existing.familyId = g.decks.find(d => d.supabaseFamilyId)?.supabaseFamilyId;
+        }
+      } else {
+        // Local-only group (not yet in DB)
+        entries.set(key, {
+          name: g.archetype,
+          familyId: g.decks.find(d => d.supabaseFamilyId)?.supabaseFamilyId,
+          deckCount: g.decks.length
+        });
+      }
+    }
+
+    return Array.from(entries.values()).sort((a, b) => a.name.localeCompare(b.name));
   }
 
   /** Siempre devuelve el grupo actualizado desde archetypeGroups */
@@ -97,6 +138,7 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
       this.storageService.replaceAllDecks(remoteDecks);
 
       this.cloudFamilies = await this.deckService.getUserLibrary();
+      this.dbFamilies = await this.deckService.getFamilies();
     } catch (error) {
       console.error('Error loading cloud library:', error);
       this.cloudError = 'No se pudo cargar la librería en la nube.';
@@ -350,6 +392,46 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
     }
   }
   
+  onOpenManageArchetypes(): void {
+    this.archetypeToDeleteName = null;
+    this.isManageArchetypesOpen = true;
+  }
+
+  onCloseManageArchetypes(): void {
+    this.isManageArchetypesOpen = false;
+    this.archetypeToDeleteName = null;
+  }
+
+  onRequestDeleteArchetype(name: string): void {
+    this.archetypeToDeleteName = name;
+  }
+
+  onCancelDeleteArchetype(): void {
+    this.archetypeToDeleteName = null;
+  }
+
+  async onConfirmDeleteArchetype(entry: { name: string; familyId?: string; deckCount: number }): Promise<void> {
+    if (!this.archetypeToDeleteName) return;
+
+    // Delete local archetype entity (if it exists in localStorage)
+    const localArchetype = this.archetypes.find(a => a.name === this.archetypeToDeleteName);
+    if (localArchetype) {
+      this.storageService.deleteArchetype(localArchetype.id);
+    }
+
+    // Delete the Supabase family
+    const familyId = entry.familyId;
+    if (familyId) {
+      this.deckService.deleteFamily(familyId).catch(err =>
+        console.error('Error deleting archetype family from Supabase:', err)
+      );
+      // Refresh dbFamilies after deletion
+      this.deckService.getFamilies().then(f => this.dbFamilies = f).catch(() => {});
+    }
+
+    this.archetypeToDeleteName = null;
+  }
+
   onExportDeck(deckId: string): void {
     const deck = this.decks.find(d => d.id === deckId);
     if (deck) {
