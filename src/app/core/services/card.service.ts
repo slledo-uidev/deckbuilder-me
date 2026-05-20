@@ -42,6 +42,16 @@ export class CardService {
   // DigimonCard.io Public API
   private readonly API_BASE_URL = 'https://digimoncard.io/api-public';
   private readonly IMAGE_BASE_URL = 'https://images.digimoncard.io/images/cards';
+
+  /**
+   * Set name prefixes that are announced but NOT yet commercially released.
+   * Matches against card.set (= set_name[0] from the API), e.g. "EX-12: EXTRA BOOSTER...".
+   * Update this list when new sets are spoiled; remove entries when sets become available.
+   */
+  private readonly UNRELEASED_SET_PREFIXES: string[] = [
+    'EX-12',  // EX-12: EXTRA BOOSTER DIGITAL WORLD SHAMBALA
+    'LM-09',  // LM-09: LIMITED CARD PACK DISTANCIA CERO
+  ];
   
   // Cache for cards
   private cardsCache$ = new BehaviorSubject<Card[]>([]);
@@ -474,9 +484,17 @@ export class CardService {
   }
 
   /**
-   * Returns true if the card's date_added is in the future (announced but not yet released).
+   * Returns true if the card belongs to an announced-but-not-yet-released set.
+   * Primary check: card.set starts with a known unreleased set prefix (UNRELEASED_SET_PREFIXES).
+   * Fallback: card's date_added is a future date (for sets where the API uses actual release dates).
    */
   private isPrerelease(card: Card): boolean {
+    // Primary: check against the configured list of unreleased set name prefixes
+    const setName = (card.set || '').toLowerCase();
+    if (this.UNRELEASED_SET_PREFIXES.some(p => setName.startsWith(p.toLowerCase()))) {
+      return true;
+    }
+    // Fallback: date_added is in the future (some sets may use actual release dates)
     if (!card.releaseDate) return false;
     const today = new Date().toISOString().split('T')[0];
     const cardDate = card.releaseDate.split(' ')[0];
