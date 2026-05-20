@@ -31,6 +31,7 @@ export class FilterPanelComponent implements OnInit {
   selectedSets: string[] = [];
   selectedCost: number | undefined;
   selectedLevel: number | undefined;
+  showPrerelease: boolean = false;
   
   isExpanded = true;
   
@@ -143,6 +144,7 @@ export class FilterPanelComponent implements OnInit {
     this.selectedSets = [];
     this.selectedCost = undefined;
     this.selectedLevel = undefined;
+    this.showPrerelease = false;
     
     this.filterClear.emit();
     // Don't call emitFilter() here - let the parent handle it
@@ -160,6 +162,7 @@ export class FilterPanelComponent implements OnInit {
     if (this.selectedSets.length > 0) count++;
     if (this.selectedCost !== undefined) count++;
     if (this.selectedLevel !== undefined) count++;
+    if (this.showPrerelease) count++;
     return count;
   }
   
@@ -185,6 +188,9 @@ export class FilterPanelComponent implements OnInit {
     if (this.selectedLevel !== undefined) {
       filter.levelMin = this.selectedLevel;
       filter.levelMax = this.selectedLevel;
+    }
+    if (this.showPrerelease) {
+      filter.showPrerelease = true;
     }
     
     this.filterChange.emit(filter);

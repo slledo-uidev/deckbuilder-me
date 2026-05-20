@@ -32,6 +32,7 @@ interface DigimonCardIOResponse {
   image_url?: string;  // Added: API provides image_url
   cardnumber?: string;
   parallel_id?: number;  // Added: Might indicate alternate art version
+  date_added?: string;   // ISO-like release date (e.g. "2025-11-25 10:12:18")
 }
 
 @Injectable({
@@ -146,9 +147,7 @@ export class CardService {
   private loadFromLocalJSON(): Observable<Card[]> {
     return this.http.get<Card[]>('/assets/data/cards.json').pipe(
       map(cards => {
-        // Sort cards by set and card number (natural sort)
-        cards.sort((a, b) => this.compareCardIds(a.id, b.id));
-        return cards;
+        return this.sortCardsByRelease(cards);
       }),
       tap(cards => {
         
@@ -186,13 +185,9 @@ export class CardService {
       }
     }
     
-    // Convert to Card model and sort by ID
+    // Convert to Card model and sort by set release date desc, card number asc within set
     const cards = Array.from(uniqueCards.values()).map(apiCard => this.mapApiCardToCard(apiCard));
-    
-    // Sort cards by set and card number (natural sort)
-    cards.sort((a, b) => this.compareCardIds(a.id, b.id));
-    
-    return cards;
+    return this.sortCardsByRelease(cards);
   }
   
   /**
@@ -240,7 +235,8 @@ export class CardService {
       effect: apiCard.main_effect || '',
       inheritedEffect: apiCard.source_effect || '',
       securityEffect: apiCard.alt_effect || '',
-      keywords: this.extractKeywords(apiCard.main_effect || '')
+      keywords: this.extractKeywords(apiCard.main_effect || ''),
+      releaseDate: apiCard.date_added || undefined
     };
   }
   
@@ -468,12 +464,78 @@ export class CardService {
       );
     }
     
-    // Sort by set and card number (natural sort)
-    filtered.sort((a, b) => {
-      return this.compareCardIds(a.id, b.id);
+    // By default hide prerelease/announced-only cards
+    if (!filter.showPrerelease) {
+      filtered = filtered.filter(card => !this.isPrerelease(card));
+    }
+
+    // Sort: newest sets first, then card number ascending within same set
+    return this.sortCardsByRelease(filtered);
+  }
+
+  /**
+   * Returns true if the card's date_added is in the future (announced but not yet released).
+   */
+  private isPrerelease(card: Card): boolean {
+    if (!card.releaseDate) return false;
+    const today = new Date().toISOString().split('T')[0];
+    const cardDate = card.releaseDate.split(' ')[0];
+    return cardDate > today;
+  }
+
+  /**
+   * Sort cards newest-set-first, card number ascending within the same set.
+   * Uses the minimum date_added per set prefix+number (e.g. "BT25") as the
+   * set's release date so that all cards of the same set stay grouped together.
+   */
+  private sortCardsByRelease(cards: Card[]): Card[] {
+    // Step 1: compute the earliest date_added per set (= release date of that set)
+    const setDates = new Map<string, string>();
+    for (const card of cards) {
+      if (!card.releaseDate) continue;
+      const key = this.extractSetKey(card.id);
+      const existing = setDates.get(key);
+      if (!existing || card.releaseDate < existing) {
+        setDates.set(key, card.releaseDate);
+      }
+    }
+
+    // Step 2: sort
+    return [...cards].sort((a, b) => {
+      const setA = this.extractSetKey(a.id);
+      const setB = this.extractSetKey(b.id);
+
+      // Same set → card number ascending
+      if (setA === setB) {
+        return this.getCardNum(a.id) - this.getCardNum(b.id);
+      }
+
+      // Different sets → newest set first
+      const dateA = setDates.get(setA);
+      const dateB = setDates.get(setB);
+
+      if (dateA && dateB) {
+        const diff = dateB.localeCompare(dateA);
+        if (diff !== 0) return diff;
+      } else if (dateA && !dateB) {
+        return -1;
+      } else if (!dateA && dateB) {
+        return 1;
+      }
+
+      // Fallback for cards without dates: set number descending
+      return this.compareCardIds(b.id, a.id);
     });
-    
-    return filtered;
+  }
+
+  /** Returns "BT25" for "BT25-001", "EX12" for "EX12-001", etc. */
+  private extractSetKey(cardId: string): string {
+    const match = cardId.match(/^([A-Z]+\d+)-/i);
+    return match ? match[1].toUpperCase() : cardId.toUpperCase();
+  }
+
+  private getCardNum(cardId: string): number {
+    return parseInt(cardId.split('-')[1] || '0', 10);
   }
   
   /**

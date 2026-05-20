@@ -1,0 +1,40 @@
+<label
+  class="checkbox"
+  [class.checkbox--checked]="checked"
+  [class.checkbox--disabled]="disabled"
+  [attr.aria-label]="ariaLabel || label"
+  (click)="$event.preventDefault(); toggle()"
+  (keydown.space)="$event.preventDefault(); toggle()"
+  (keydown.enter)="$event.preventDefault(); toggle()"
+  tabindex="0"
+  role="checkbox"
+  [attr.aria-checked]="checked"
+  [attr.aria-disabled]="disabled">
+
+  <!-- Hidden native input for form compatibility -->
+  <input
+    type="checkbox"
+    class="checkbox__native"
+    [checked]="checked"
+    [disabled]="disabled"
+    tabindex="-1"
+    aria-hidden="true"
+    (change)="$event.stopPropagation()" />
+
+  <!-- Custom box -->
+  <span class="checkbox__box">
+    <svg
+      *ngIf="checked"
+      class="checkbox__check"
+      viewBox="0 0 12 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 5L4.5 8.5L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </span>
+
+  <!-- Label -->
+  <span *ngIf="label" class="checkbox__label">{{ label }}</span>
+  <ng-content></ng-content>
+
+</label>

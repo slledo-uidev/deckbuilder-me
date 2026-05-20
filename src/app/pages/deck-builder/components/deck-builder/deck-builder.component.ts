@@ -914,16 +914,10 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   // ─── Existing methods ────────────────────────────────────────────────────────
 
   private applyFilters(): void {
-    if (Object.keys(this.currentFilter).length === 0 || (Object.keys(this.currentFilter).length === 1 && !this.currentFilter.searchText)) {
-      this.filteredCards = this.cards;
-      return;
-    }
-    
     this.cardService.searchCards(this.currentFilter)
       .pipe(takeUntil(this.destroy$))
       .subscribe(filtered => {
         this.filteredCards = filtered;
-        
       });
   }
   

@@ -34,6 +34,9 @@ export interface CardFilter {
   
   // Alternate arts
   showAlternateArts?: boolean; // Show alternate art variants (default: false)
+
+  // Prerelease / announced-only cards
+  showPrerelease?: boolean;    // Show cards not yet legally available (default: false)
 }
 
 /**

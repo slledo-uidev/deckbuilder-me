@@ -115,6 +115,16 @@
       </div>
     </div>
     
+    <!-- Prerelease toggle -->
+    <div class="filter-panel__section">
+      <app-checkbox
+        class="app-checkbox"
+        label="Mostrar cartas no legales / anunciadas"
+        [checked]="showPrerelease"
+        (changed)="showPrerelease = $event">
+      </app-checkbox>
+    </div>
+
   </div>
   <!-- Apply Filters Button -->
   <div class="filter-panel__section filter-panel__section--actions">

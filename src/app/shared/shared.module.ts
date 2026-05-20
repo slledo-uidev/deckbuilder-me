@@ -19,6 +19,7 @@ import { AlertComponent } from './components/atoms/alert/alert.component';
 import { SectionTitleComponent } from './components/atoms/section-title/section-title.component';
 import { ThemeToggleComponent } from './components/atoms/theme-toggle/theme-toggle.component';
 import { ToggleSwitchComponent } from './components/atoms/toggle-switch/toggle-switch.component';
+import { CheckboxComponent } from './components/atoms/checkbox/checkbox.component';
 
 // Molecules
 import { SearchBarComponent } from './components/molecules/search-bar/search-bar.component';
@@ -58,6 +59,7 @@ const COMPONENTS = [
   AlertComponent,
   ThemeToggleComponent,
   ToggleSwitchComponent,
+  CheckboxComponent,
   SectionTitleComponent,
   // Molecules
   SearchBarComponent,

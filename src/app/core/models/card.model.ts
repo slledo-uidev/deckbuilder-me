@@ -74,4 +74,7 @@ export interface Card {
   
   // Keywords and search
   keywords: string[];         // Keywords (e.g., ["Reboot", "Blocker"])
+
+  // Release info
+  releaseDate?: string;       // ISO-like date from API (e.g. "2025-11-25 10:12:18")
 }

@@ -1,0 +1,105 @@
+@import 'variables';
+@import 'mixins';
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: $theme-spacing-2;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  position: relative;
+
+  // ── Native input: hidden but accessible ──────────────────────────────────
+  &__native {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  // ── Custom box ────────────────────────────────────────────────────────────
+  &__box {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    background-color: $color-cyber-700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  // ── Checkmark SVG ─────────────────────────────────────────────────────────
+  &__check {
+    width: 12px;
+    height: 10px;
+    color: $color-cyber-900;
+    display: block;
+  }
+
+  // ── Label text ────────────────────────────────────────────────────────────
+  &__label {
+    font-size: $font-size-sm;
+    font-family: $font-family-mono;
+    color: $color-digital-text-sub;
+    line-height: 1.4;
+    transition: color 0.2s ease;
+  }
+
+  // ── States ────────────────────────────────────────────────────────────────
+
+  // Hover (unchecked)
+  &:hover:not(&--disabled) &__box {
+    border-color: rgba(0, 229, 255, 0.5);
+    box-shadow: 0 0 6px rgba(0, 229, 255, 0.15);
+  }
+
+  &:hover:not(&--disabled) &__label {
+    color: $color-digital-text;
+  }
+
+  // Focus ring
+  &:focus-visible &__box {
+    border-color: $color-neon-cyan;
+    box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.25);
+  }
+
+  // Checked state
+  &--checked {
+    .checkbox__box {
+      background-color: $color-neon-cyan;
+      border-color: $color-neon-cyan;
+      box-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+    }
+
+    .checkbox__label {
+      color: $color-digital-text;
+    }
+  }
+
+  // Checked + hover
+  &--checked:hover:not(&--disabled) {
+    .checkbox__box {
+      background-color: $color-neon-cyan-hover;
+      border-color: $color-neon-cyan-hover;
+    }
+  }
+
+  // Disabled state
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+
+    .checkbox__box {
+      border-color: $color-cyber-400;
+      background-color: $color-cyber-600;
+    }
+  }
+}
