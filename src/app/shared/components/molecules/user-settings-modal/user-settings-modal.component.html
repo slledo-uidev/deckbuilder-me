@@ -1,0 +1,55 @@
+<app-modal
+  [isVisible]="isVisible"
+  [title]="'Settings'"
+  [size]="'small'"
+  [showHeader]="true"
+  [showFooter]="true"
+  [showCloseButton]="true"
+  (closed)="onClose()">
+
+  <div modal-body class="user-settings-modal__body">
+
+    <!-- User info -->
+    <div class="user-settings-modal__user-info">
+      <div class="user-settings-modal__avatar">
+        <lucide-angular name="user" [size]="28"></lucide-angular>
+      </div>
+      <div class="user-settings-modal__user-details">
+        <span class="user-settings-modal__display-name">{{ currentUser?.displayName }}</span>
+        <span class="user-settings-modal__email">{{ currentUser?.email }}</span>
+      </div>
+    </div>
+
+    <div class="user-settings-modal__divider"></div>
+
+    <!-- Library mode -->
+    <div class="user-settings-modal__section">
+      <label class="user-settings-modal__section-label">Library default view</label>
+      <p class="user-settings-modal__section-desc">Choose the view shown by default when opening the Decks Library.</p>
+      <div class="user-settings-modal__tabs">
+        <button
+          class="user-settings-modal__tab"
+          [class.user-settings-modal__tab--active]="libraryMode === 'decklist'"
+          (click)="setLibraryMode('decklist')">
+          Decklist
+        </button>
+        <button
+          class="user-settings-modal__tab"
+          [class.user-settings-modal__tab--active]="libraryMode === 'advanced'"
+          (click)="setLibraryMode('advanced')">
+          Advanced
+        </button>
+        <span class="user-settings-modal__tab-indicator"
+              [class.user-settings-modal__tab-indicator--right]="libraryMode === 'advanced'">
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <div modal-footer class="user-settings-modal__footer">
+    <app-button variant="outline" size="medium" (clicked)="onClose()">Cancel</app-button>
+    <app-button variant="primary" size="medium" (clicked)="onSave()">Save</app-button>
+  </div>
+
+</app-modal>

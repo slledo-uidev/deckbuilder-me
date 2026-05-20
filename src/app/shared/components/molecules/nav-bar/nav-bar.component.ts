@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, EventEmitter, OnInit, OnDestroy, HostListener, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -19,6 +19,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   currentUser: AppUser | null = null;
   isUserMenuOpen: boolean = false;
+  @Output() settingsRequested = new EventEmitter<void>();
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -57,5 +58,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.authService.logout().then(() => {
       this.router.navigate(['/login']);
     });
+  }
+
+  openSettings(): void {
+    this.isUserMenuOpen = false;
+    this.settingsRequested.emit();
   }
 }

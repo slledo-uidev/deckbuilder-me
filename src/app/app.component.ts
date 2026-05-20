@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { AuthService } from '@services/auth.service';
+import { AppUser } from '@models/user.model';
 
 @Component({
   selector: 'app-root',
@@ -12,10 +14,12 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'Digimon TCG Deck Builder';
   isLoginPage: boolean = false;
   headerHidden: boolean = false;
+  isSettingsModalOpen: boolean = false;
+  currentUser: AppUser | null = null;
   private lastScrollY = 0;
   private destroy$ = new Subject<void>();
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
@@ -41,6 +45,18 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe((event: any) => {
         this.checkLoginRoute(event.urlAfterRedirects || event.url);
       });
+
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => { this.currentUser = user; });
+  }
+
+  openSettingsModal(): void {
+    this.isSettingsModalOpen = true;
+  }
+
+  onSettingsModalClosed(): void {
+    this.isSettingsModalOpen = false;
   }
 
   ngOnDestroy(): void {

@@ -5,7 +5,7 @@
         <div class="app__header-title">
           <h1 class="app__title">ME Deck Archive</h1>
         </div>
-        <app-nav-bar class="app__nav"></app-nav-bar>
+        <app-nav-bar class="app__nav" (settingsRequested)="openSettingsModal()"></app-nav-bar>
       </div>
     </div>
   </header>
@@ -14,6 +14,12 @@
     <router-outlet></router-outlet>
   </main>
   
+<app-user-settings-modal
+  [isVisible]="isSettingsModalOpen"
+  [currentUser]="currentUser"
+  (closed)="onSettingsModalClosed()">
+</app-user-settings-modal>
+
   <footer class="app__footer" *ngIf="!isLoginPage">
     <div class="app__container">
       <p class="app__footer-text">

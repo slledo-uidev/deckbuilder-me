@@ -1,0 +1,151 @@
+@import 'variables';
+@import 'mixins';
+
+.user-settings-modal {
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+  }
+
+  // ── User info ──────────────────────────────────────────────────────────────
+  &__user-info {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    padding: $spacing-3;
+    background-color: rgba(0, 229, 255, 0.04);
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+  }
+
+  &__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    background-color: $color-cyber-700;
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 50%;
+    color: $color-neon-cyan;
+  }
+
+  &__user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__display-name {
+    display: block;
+    font-size: $font-size-base;
+    font-weight: $font-weight-bold;
+    font-family: $font-family-mono;
+    color: $color-neon-cyan;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+  }
+
+  &__email {
+    display: block;
+    font-size: $font-size-sm;
+    font-family: $font-family-mono;
+    color: $color-digital-text-sub;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__divider {
+    height: 1px;
+    background-color: $color-cyber-500;
+    margin: 0 -$spacing-1;
+  }
+
+  // ── Section ────────────────────────────────────────────────────────────────
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+  }
+
+  &__section-label {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+    font-family: $font-family-mono;
+    color: $color-digital-text;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__section-desc {
+    margin: 0;
+    font-size: $font-size-xs;
+    color: $color-digital-text-sub;
+    line-height: $line-height-normal;
+  }
+
+  // ── Tabs (same pattern as decks-library) ──────────────────────────────────
+  &__tabs {
+    position: relative;
+    display: flex;
+    gap: 0;
+    background-color: $color-cyber-700;
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    padding: 3px;
+    width: fit-content;
+  }
+
+  &__tab {
+    position: relative;
+    z-index: 1;
+    padding: 8px $spacing-4;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    font-family: $font-family-mono;
+    color: $color-digital-text-sub;
+    background: transparent;
+    border: none;
+    border-radius: calc(#{$border-radius-sm} - 2px);
+    cursor: pointer;
+    transition: color 0.25s ease;
+    white-space: nowrap;
+
+    &--active {
+      color: $color-cyber-900;
+    }
+
+    &:hover:not(&--active) {
+      color: $color-digital-text;
+    }
+  }
+
+  &__tab-indicator {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    left: 3px;
+    width: calc(50% - 3px);
+    background-color: $color-neon-cyan;
+    border-radius: calc(#{$border-radius-sm} - 2px);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+
+    &--right {
+      transform: translateX(calc(100% + 2px));
+    }
+  }
+
+  // ── Footer ─────────────────────────────────────────────────────────────────
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-2;
+  }
+}

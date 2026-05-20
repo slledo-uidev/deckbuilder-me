@@ -101,6 +101,10 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    // Set initial tab based on user preference
+    const settings = this.storageService.getSettings();
+    this.showAdvanced = settings?.libraryMode === 'advanced';
+
     // Load all cards
     this.cardService.cards$
       .pipe(takeUntil(this.destroy$))
