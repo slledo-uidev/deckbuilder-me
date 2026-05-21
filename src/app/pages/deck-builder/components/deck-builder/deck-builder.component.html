@@ -55,11 +55,6 @@
       <!-- (New Deck movido a filtros, Save movido al deck header) -->
     </header>
 
-    <!-- Success notification -->
-    <div *ngIf="saveSuccessMessage" class="deck-builder__notify">
-      {{ saveSuccessMessage }}
-    </div>
-
     <!-- Save deck modal -->
     <app-save-deck-modal
       [isVisible]="showSaveModal"

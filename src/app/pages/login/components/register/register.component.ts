@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '@services/auth.service';
+import { ToastService } from '@services/toast.service';
 
 function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value;
@@ -16,14 +17,13 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
 })
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
-  errorMessage   = '';
-  successMessage = '';
-  isSubmitting   = false;
+  isSubmitting = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -43,19 +43,17 @@ export class RegisterComponent implements OnInit {
   async onRegister(): Promise<void> {
     if (this.registerForm.invalid) { return; }
 
-    this.isSubmitting   = true;
-    this.errorMessage   = '';
-    this.successMessage = '';
+    this.isSubmitting = true;
 
     const { email, password, displayName } = this.registerForm.value;
     const error = await this.authService.register(email, password, displayName);
 
     if (!error) {
-      this.successMessage = 'Cuenta creada. Revisa tu email para confirmarla y luego inicia sesión.';
-      this.isSubmitting   = false;
+      this.toast.success('Cuenta creada. Revisa tu email para confirmarla y luego inicia sesión.');
+      this.isSubmitting = false;
       this.registerForm.reset();
     } else {
-      this.errorMessage = this.mapError(error);
+      this.toast.error(this.mapError(error));
       this.isSubmitting = false;
     }
   }
@@ -72,9 +70,9 @@ export class RegisterComponent implements OnInit {
 
   goToLogin(): void { this.router.navigate(['/login']); }
 
-  get regDisplayName()   { return this.registerForm.get('displayName'); }
-  get regEmail()         { return this.registerForm.get('email'); }
-  get regPassword()      { return this.registerForm.get('password'); }
+  get regDisplayName()    { return this.registerForm.get('displayName'); }
+  get regEmail()          { return this.registerForm.get('email'); }
+  get regPassword()       { return this.registerForm.get('password'); }
   get regConfirmPassword(){ return this.registerForm.get('confirmPassword'); }
-  get passwordsMismatch(){ return this.registerForm.hasError('passwordsMismatch') && this.regConfirmPassword?.touched; }
+  get passwordsMismatch() { return this.registerForm.hasError('passwordsMismatch') && this.regConfirmPassword?.touched; }
 }

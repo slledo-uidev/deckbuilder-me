@@ -1,0 +1,21 @@
+<div class="toast-container">
+  <div
+    *ngFor="let toast of toasts$ | async; trackBy: trackById"
+    class="toast toast--{{ toast.variant }}"
+    role="alert"
+  >
+    <lucide-angular
+      class="toast__icon"
+      [name]="toast.variant === 'success' ? 'check' :
+              toast.variant === 'error'   ? 'alert-circle' :
+              toast.variant === 'warning' ? 'alert-circle' : 'info'"
+      [size]="18">
+    </lucide-angular>
+
+    <span class="toast__message">{{ toast.message }}</span>
+
+    <button class="toast__close" type="button" (click)="dismiss(toast.id)" aria-label="Cerrar">
+      <lucide-angular name="x" [size]="16"></lucide-angular>
+    </button>
+  </div>
+</div>

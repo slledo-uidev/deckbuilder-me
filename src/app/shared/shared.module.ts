@@ -40,6 +40,7 @@ import { CreateArchetypeModalComponent } from './components/molecules/create-arc
 import { ViewDeckModalComponent } from './components/molecules/view-deck-modal/view-deck-modal.component';
 import { UserSettingsModalComponent } from './components/molecules/user-settings-modal/user-settings-modal.component';
 import { AuthVisualComponent } from './components/molecules/auth-visual/auth-visual.component';
+import { ToastComponent } from './components/molecules/toast/toast.component';
 
 // Organisms
 import { CardGridComponent } from './components/organisms/card-grid/card-grid.component';
@@ -82,6 +83,7 @@ const COMPONENTS = [
   ViewDeckModalComponent,
   UserSettingsModalComponent,
   AuthVisualComponent,
+  ToastComponent,
   // Organisms
   CardGridComponent,
   DeckStatsPanelComponent,

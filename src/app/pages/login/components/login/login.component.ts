@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '@services/auth.service';
+import { ToastService } from '@services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -10,13 +11,13 @@ import { AuthService } from '@services/auth.service';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
-  errorMessage = '';
-  isSubmitting  = false;
+  isSubmitting = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -35,7 +36,6 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) { return; }
 
     this.isSubmitting = true;
-    this.errorMessage = '';
 
     const { username: email, password } = this.loginForm.value;
     const error = await this.authService.login(email, password);
@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
     if (!error) {
       this.router.navigate(['/gallery']);
     } else {
-      this.errorMessage = 'Email o contraseña incorrectos';
+      this.toast.error('Email o contraseña incorrectos');
       this.isSubmitting = false;
     }
   }

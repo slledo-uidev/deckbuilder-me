@@ -70,14 +70,6 @@
           ></app-input>
         </div>
 
-        <app-alert *ngIf="errorMessage" variant="error-login" class="login__error">
-          {{ errorMessage }}
-        </app-alert>
-
-        <app-alert *ngIf="successMessage" variant="success" class="login__error">
-          {{ successMessage }}
-        </app-alert>
-
         <app-button
           type="submit"
           [fullWidth]="true"

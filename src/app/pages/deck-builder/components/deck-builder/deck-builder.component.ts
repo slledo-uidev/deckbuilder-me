@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StorageService, ValidationService, CardService, AuthService, DeckService } from '@core/services';
+import { ToastService } from '@services/toast.service';
 import { Deck, Card, CardFilter, Color, Archetype } from '@core/models';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -53,8 +54,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   openedViaOpenDeck = false;
   showImportModal = false;
   showDeckList = false;
-  saveSuccessMessage = '';
-  
+
   // Modal states
   showValidationModal = false;
   showStatsModal = false;
@@ -68,7 +68,8 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private deckService: DeckService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toast: ToastService
   ) { }
   
   ngOnInit(): void {
@@ -312,13 +313,11 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
         }
       });
       
-      this.saveSuccessMessage = 'Deck imported successfully!';
-      setTimeout(() => this.saveSuccessMessage = '', 3000);
+      this.toast.success('Deck imported successfully!');
       
     } catch (error) {
       console.error('Error parsing decklist:', error);
-      this.saveSuccessMessage = 'Error importing deck. Please check the format.';
-      setTimeout(() => this.saveSuccessMessage = '', 3000);
+      this.toast.error('Error importing deck. Please check the format.');
     }
   }
 
@@ -762,8 +761,7 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   }
 
   private showSuccessMessage(msg: string): void {
-    this.saveSuccessMessage = msg;
-    setTimeout(() => this.saveSuccessMessage = '', 3000);
+    this.toast.success(msg);
   }
 
   private generateDeckId(): string {
