@@ -1,51 +1,156 @@
 <div class="login">
   <div class="login__container">
     <app-card class="login__card">
-      <div class="login__header">
-        <h1 class="login__title">Digimon TCG Deckbuilder</h1>
-        <p class="login__subtitle">Inicia sesión para gestionar tus decks</p>
+
+      <!-- ── LOGO ────────────────────────────────────────────────────── -->
+      <div class="login__logo">
+        <lucide-angular name="layers" [size]="36" class="login__logo-icon"></lucide-angular>
+        <span class="login__logo-text">ME Deck Archive</span>
       </div>
 
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login__form">
-        <div class="login__field">
-          <label for="username" class="login__label">Usuario</label>
-          <app-input
-            id="username"
-            type="text"
-            placeholder="Introduce tu usuario"
-            formControlName="username"
-            [fullWidth]="true"
-            [error]="username?.invalid && username?.touched ? 'El usuario es requerido' : ''"
-          ></app-input>
+      <!-- ══ LOGIN MODE ══════════════════════════════════════════════════ -->
+      <ng-container *ngIf="mode === 'login'">
+        <div class="login__header">
+          <h1 class="login__title">Bienvenido</h1>
+          <p class="login__subtitle">Inicia sesión para gestionar tus decks</p>
         </div>
 
-        <div class="login__field">
-          <label for="password" class="login__label">Contraseña</label>
-          <app-input
-            id="password"
-            type="password"
-            placeholder="Introduce tu contraseña"
-            formControlName="password"
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login__form">
+          <div class="login__field">
+            <label for="username" class="login__label">Email</label>
+            <app-input
+              id="username"
+              type="text"
+              placeholder="tu@email.com"
+              formControlName="username"
+              [fullWidth]="true"
+              [error]="username?.invalid && username?.touched ? 'Introduce un email válido' : ''"
+            ></app-input>
+          </div>
+
+          <div class="login__field">
+            <label for="password" class="login__label">Contraseña</label>
+            <app-input
+              id="password"
+              type="password"
+              placeholder="Tu contraseña"
+              formControlName="password"
+              [fullWidth]="true"
+              [error]="password?.invalid && password?.touched ? 'La contraseña es requerida' : ''"
+            ></app-input>
+          </div>
+
+          <app-alert *ngIf="errorMessage" variant="error-login" class="login__error">
+            {{ errorMessage }}
+          </app-alert>
+
+          <app-button
+            type="submit"
             [fullWidth]="true"
-            [error]="password?.invalid && password?.touched ? 'La contraseña es requerida' : ''"
-          ></app-input>
+            [disabled]="loginForm.invalid || isSubmitting"
+            variant="primary"
+            size="large"
+          >
+            {{ isSubmitting ? 'Iniciando sesión...' : 'Iniciar sesión' }}
+          </app-button>
+        </form>
+
+        <div class="login__switch">
+          <span class="login__switch-text">¿No tienes cuenta?</span>
+          <button class="login__switch-link" type="button" (click)="switchToRegister()">
+            Crear cuenta
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- ══ REGISTER MODE ═══════════════════════════════════════════════ -->
+      <ng-container *ngIf="mode === 'register'">
+        <div class="login__header">
+          <h1 class="login__title">Crear cuenta</h1>
+          <p class="login__subtitle">Únete y empieza a construir tus decks</p>
         </div>
 
-        <app-alert *ngIf="errorMessage" variant="error-login" class="login__error">
-          {{ errorMessage }}
-        </app-alert>
+        <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="login__form">
+          <div class="login__field">
+            <label for="reg-name" class="login__label">Nombre de usuario</label>
+            <app-input
+              id="reg-name"
+              type="text"
+              placeholder="Cómo quieres que te llamen"
+              formControlName="displayName"
+              [fullWidth]="true"
+              [error]="regDisplayName?.invalid && regDisplayName?.touched
+                ? (regDisplayName?.errors?.['minlength'] ? 'Mínimo 3 caracteres' : 'Nombre requerido')
+                : ''"
+            ></app-input>
+          </div>
 
-        <app-button
-          type="submit"
-          [fullWidth]="true"
-          [disabled]="loginForm.invalid || isSubmitting"
-          variant="primary"
-          size="large"
-        >
-          {{ isSubmitting ? 'Iniciando sesión...' : 'Iniciar sesión' }}
-        </app-button>
-      </form>
+          <div class="login__field">
+            <label for="reg-email" class="login__label">Email</label>
+            <app-input
+              id="reg-email"
+              type="text"
+              placeholder="tu@email.com"
+              formControlName="email"
+              [fullWidth]="true"
+              [error]="regEmail?.invalid && regEmail?.touched ? 'Introduce un email válido' : ''"
+            ></app-input>
+          </div>
+
+          <div class="login__field">
+            <label for="reg-password" class="login__label">Contraseña</label>
+            <app-input
+              id="reg-password"
+              type="password"
+              placeholder="Mínimo 8 caracteres"
+              formControlName="password"
+              [fullWidth]="true"
+              [error]="regPassword?.invalid && regPassword?.touched
+                ? (regPassword?.errors?.['minlength'] ? 'Mínimo 8 caracteres' : 'Contraseña requerida')
+                : ''"
+            ></app-input>
+          </div>
+
+          <div class="login__field">
+            <label for="reg-confirm" class="login__label">Confirmar contraseña</label>
+            <app-input
+              id="reg-confirm"
+              type="password"
+              placeholder="Repite la contraseña"
+              formControlName="confirmPassword"
+              [fullWidth]="true"
+              [error]="passwordsMismatch ? 'Las contraseñas no coinciden' : ''"
+            ></app-input>
+          </div>
+
+          <app-alert *ngIf="errorMessage" variant="error-login" class="login__error">
+            {{ errorMessage }}
+          </app-alert>
+
+          <app-alert *ngIf="successMessage" variant="success" class="login__error">
+            {{ successMessage }}
+          </app-alert>
+
+          <app-button
+            type="submit"
+            [fullWidth]="true"
+            [disabled]="registerForm.invalid || isSubmitting"
+            variant="primary"
+            size="large"
+          >
+            {{ isSubmitting ? 'Creando cuenta...' : 'Crear cuenta' }}
+          </app-button>
+        </form>
+
+        <div class="login__switch">
+          <span class="login__switch-text">¿Ya tienes cuenta?</span>
+          <button class="login__switch-link" type="button" (click)="switchToLogin()">
+            Iniciar sesión
+          </button>
+        </div>
+      </ng-container>
 
     </app-card>
   </div>
 </div>
+

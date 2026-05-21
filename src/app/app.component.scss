@@ -82,6 +82,18 @@
     gap: $spacing-1;
   }
 
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+  }
+
+  &__logo-icon {
+    color: $color-neon-cyan;
+    filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.6));
+    flex-shrink: 0;
+  }
+
   &__nav {
     @media (max-width: $breakpoint-md) {
       width: 100%;

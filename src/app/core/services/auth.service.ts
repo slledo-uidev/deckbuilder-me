@@ -53,6 +53,19 @@ export class AuthService {
   }
 
   /**
+   * Register a new user with email, password and display name via Supabase.
+   * Returns an error string on failure, null on success.
+   */
+  public async register(email: string, password: string, displayName: string): Promise<string | null> {
+    const { error } = await this.supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { displayName } }
+    });
+    return error ? error.message : null;
+  }
+
+  /**
    * Logout current user
    */
   public async logout(): Promise<void> {
