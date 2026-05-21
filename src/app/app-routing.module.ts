@@ -13,6 +13,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule)
   },
   {
+    path: 'register',
+    loadChildren: () => import('./pages/login/register.module').then(m => m.RegisterModule)
+  },
+  {
     path: 'gallery',
     loadChildren: () => import('./pages/card-gallery/card-gallery.module').then(m => m.CardGalleryModule),
     canActivate: [AuthGuard]

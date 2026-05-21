@@ -1,0 +1,145 @@
+@import 'variables';
+@import 'mixins';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Keyframes
+// ─────────────────────────────────────────────────────────────────────────────
+@keyframes orbeFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-12px) rotate(3deg); }
+}
+@keyframes hexRotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes hexRotateRev {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.6); }
+}
+@keyframes gridScroll {
+  from { background-position: 0 0; }
+  to   { background-position: 40px 40px; }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Host = panel izquierdo del grid
+// ─────────────────────────────────────────────────────────────────────────────
+:host {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    145deg,
+    $color-cyber-900 0%,
+    #05102a 40%,
+    #031020 100%
+  );
+  padding: $spacing-8 $spacing-6;
+  overflow: hidden;
+
+  // Borde derecho neon
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 10%;
+    bottom: 10%;
+    width: 1px;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      rgba(0, 229, 255, 0.5) 30%,
+      rgba(0, 229, 255, 0.8) 50%,
+      rgba(0, 229, 255, 0.5) 70%,
+      transparent
+    );
+  }
+
+  @media (max-width: $breakpoint-md) { display: none; }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Elementos internos
+// ─────────────────────────────────────────────────────────────────────────────
+.auth-visual {
+  &__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0, 229, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 229, 255, 0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: gridScroll 8s linear infinite;
+    pointer-events: none;
+  }
+
+  &__art {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 320px;
+    animation: orbeFloat 6s ease-in-out infinite;
+    filter: drop-shadow(0 0 24px rgba(0, 229, 255, 0.2));
+  }
+
+  &__hex-outer { transform-origin: 240px 260px; animation: hexRotate 20s linear infinite; }
+  &__hex-mid   { transform-origin: 240px 260px; animation: hexRotateRev 14s linear infinite; }
+  &__hex-inner { transform-origin: 240px 245px; filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.8)); }
+
+  &__dot {
+    &--1 { animation: dotPulse 3.1s ease-in-out infinite; }
+    &--2 { animation: dotPulse 4.2s ease-in-out infinite 0.7s; }
+    &--3 { animation: dotPulse 2.8s ease-in-out infinite 1.2s; }
+    &--4 { animation: dotPulse 3.6s ease-in-out infinite 0.4s; }
+    &--5 { animation: dotPulse 4.5s ease-in-out infinite 1.8s; }
+    &--6 { animation: dotPulse 3.3s ease-in-out infinite 0.9s; }
+  }
+
+  &__text {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    margin: $spacing-4 0 $spacing-8;
+  }
+
+  &__title {
+    margin: 0 0 $spacing-2;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    font-family: $font-family-mono;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $color-neon-cyan;
+    text-shadow: 0 0 20px rgba(0, 229, 255, 0.6), 0 0 40px rgba(0, 229, 255, 0.2);
+  }
+
+  &__desc {
+    margin: 0;
+    font-size: $font-size-sm;
+    font-family: $font-family-mono;
+    color: $color-digital-text-sub;
+    line-height: $line-height-relaxed;
+    max-width: 260px;
+  }
+
+  &__data-tag {
+    position: absolute;
+    font-size: 10px;
+    font-family: $font-family-mono;
+    letter-spacing: 0.1em;
+    color: rgba(0, 229, 255, 0.3);
+    text-transform: uppercase;
+    pointer-events: none;
+    user-select: none;
+
+    &--1 { top: $spacing-5;    left: $spacing-4; }
+    &--2 { top: $spacing-5;    right: $spacing-4; text-align: right; }
+    &--3 { bottom: $spacing-5; left: $spacing-4; }
+  }
+}

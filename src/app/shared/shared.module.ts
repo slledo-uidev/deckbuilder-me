@@ -39,6 +39,7 @@ import { ArchetypeVersionsModalComponent } from './components/molecules/archetyp
 import { CreateArchetypeModalComponent } from './components/molecules/create-archetype-modal/create-archetype-modal.component';
 import { ViewDeckModalComponent } from './components/molecules/view-deck-modal/view-deck-modal.component';
 import { UserSettingsModalComponent } from './components/molecules/user-settings-modal/user-settings-modal.component';
+import { AuthVisualComponent } from './components/molecules/auth-visual/auth-visual.component';
 
 // Organisms
 import { CardGridComponent } from './components/organisms/card-grid/card-grid.component';
@@ -80,6 +81,7 @@ const COMPONENTS = [
   CreateArchetypeModalComponent,
   ViewDeckModalComponent,
   UserSettingsModalComponent,
+  AuthVisualComponent,
   // Organisms
   CardGridComponent,
   DeckStatsPanelComponent,

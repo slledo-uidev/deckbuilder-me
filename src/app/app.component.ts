@@ -65,6 +65,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private checkLoginRoute(url: string): void {
-    this.isLoginPage = url === '/login' || url.startsWith('/login');
+    this.isLoginPage = url === '/login' || url.startsWith('/login')
+                    || url === '/register' || url.startsWith('/register');
   }
 }

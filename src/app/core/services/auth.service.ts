@@ -63,6 +63,8 @@ export class AuthService {
       options: { data: { displayName } }
     });
     return error ? error.message : null;
+    // Profile insertion is handled server-side by the DB trigger
+    // handle_new_user() on auth.users INSERT (security definer → bypasses RLS)
   }
 
   /**

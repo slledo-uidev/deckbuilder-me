@@ -2,7 +2,7 @@
 @import 'mixins';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Layout raíz
+// Layout raíz (compactado para acomodar más campos sin scroll)
 // ─────────────────────────────────────────────────────────────────────────────
 .login {
   display: flex;
@@ -12,13 +12,12 @@
   padding: $spacing-4;
   overflow-y: auto;
 
-  // ── Panel exterior (card split) ────────────────────────────────────────
   &__panel {
     display: grid;
     grid-template-columns: 1.5fr 2fr;
     width: 100%;
     max-width: 900px;
-    min-height: 580px;
+    min-height: auto;
     border-radius: $border-radius-md;
     overflow: hidden;
     box-shadow:
@@ -31,9 +30,6 @@
     }
   }
 
-  // ─────────────────────────────────────────────────────────────────────
-  // PANEL DERECHO — Formulario
-  // ─────────────────────────────────────────────────────────────────────
   &__form-panel {
     display: flex;
     flex-direction: column;
@@ -41,12 +37,9 @@
     padding: $spacing-6 $spacing-8;
     background: $color-cyber-800;
 
-    @media (max-width: $breakpoint-lg) {
-      padding: $spacing-4 $spacing-6;
-    }
+    @media (max-width: $breakpoint-lg) { padding: $spacing-4 $spacing-6; }
   }
 
-  // Logo
   &__logo {
     display: flex;
     align-items: center;
@@ -71,10 +64,7 @@
     text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
   }
 
-  // Cabecera del formulario
-  &__header {
-    margin-bottom: $spacing-3;
-  }
+  &__header { margin-bottom: $spacing-3; }
 
   &__title {
     margin: 0 0 $spacing-1;
@@ -92,18 +82,9 @@
     text-align: center;
   }
 
-  // Formulario
-  &__form {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-3;
-  }
+  &__form { display: flex; flex-direction: column; gap: $spacing-3; }
 
-  &__field {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-1;
-  }
+  &__field { display: flex; flex-direction: column; gap: $spacing-1; }
 
   &__label {
     font-size: $font-size-xs;
@@ -114,11 +95,8 @@
     color: $color-digital-text-sub;
   }
 
-  &__error {
-    margin: 0;
-  }
+  &__error { margin: 0; }
 
-  // Switch de modo
   &__switch {
     display: flex;
     align-items: center;
@@ -154,19 +132,4 @@
       text-decoration-color: $color-neon-cyan;
     }
   }
-
-  &__container {
-    width: 100%;
-    max-width: 400px;
-  }
-
-  &__card {
-    padding: $theme-spacing-8;
-
-    @media (max-width: $theme-breakpoint-md) {
-      padding: $theme-spacing-6;
-    }
-  }
-
-  
 }
