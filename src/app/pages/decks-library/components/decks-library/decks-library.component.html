@@ -169,7 +169,9 @@
     [deck]="viewingDeck"
     [allCards]="allCards"
     (close)="onViewModalClose()"
-    (openInEditor)="onOpenInEditor(viewingDeck!)">
+    (openInEditor)="onOpenInEditor(viewingDeck!)"
+    (exportDeck)="onExportDeck(viewingDeck!.id)"
+    (deleteDeck)="onDeleteDeck(viewingDeck!.id)">
   </app-view-deck-modal>
 
   <!-- Manage archetypes modal -->

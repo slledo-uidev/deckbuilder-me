@@ -67,8 +67,9 @@
   }
 
   &__textarea {
-    resize: vertical;
-    min-height: 80px;
+    resize: none;
+    min-height: 72px;
+    max-height: 120px;
   }
 
   &__error {

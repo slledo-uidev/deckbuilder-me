@@ -331,7 +331,6 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   }
   
   onLoadDeck(deck: Deck): void {
-    // Open the view-only modal for this deck
     this.viewingDeck = deck;
     this.isViewModalOpen = true;
   }

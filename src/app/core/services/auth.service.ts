@@ -24,7 +24,14 @@ export class AuthService {
   public readonly currentUser$: Observable<AppUser | null> = this.appUserSubject$.asObservable();
 
   constructor() {
-    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
+    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey, {
+      auth: {
+        // Evita NavigatorLockAcquireTimeoutError cuando varias operaciones
+        // de auth compiten por el lock (carga de sesión + signup/login simultáneos)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        lock: ((_name: string, _acquireTimeout: number, fn: () => Promise<unknown>) => fn()) as any
+      }
+    });
 
     // Restore session on app load
     this.supabase.auth.getSession().then(({ data }) => {

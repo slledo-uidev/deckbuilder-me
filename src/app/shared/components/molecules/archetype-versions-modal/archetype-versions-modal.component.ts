@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, HostBinding } from '@angular/core';
 import { Deck, DeckArchetypeGroup, Archetype } from '@core/models';
 
 export type DeckActionType = 'load' | 'export' | 'delete';
@@ -31,6 +31,8 @@ export class ArchetypeVersionsModalComponent implements OnChanges {
   @Output() newVersion = new EventEmitter<Deck>();
   @Output() favoriteToggled = new EventEmitter<{ deck: Deck; isFavorite: boolean }>();
 
+  @HostBinding('class.is-closing') isClosingAnim = false;
+
   /** Id del deck que tiene el confirm de borrado abierto */
   pendingDeleteId: string | null = null;
 
@@ -52,14 +54,19 @@ export class ArchetypeVersionsModalComponent implements OnChanges {
   }
 
   onClose(): void {
-    this.pendingDeleteId = null;
-    this.isEditingSidebar = false;
-    this.closed.emit();
+    if (this.isClosingAnim) return;
+    this.isClosingAnim = true;
+    setTimeout(() => {
+      this.isClosingAnim = false;
+      this.pendingDeleteId = null;
+      this.isEditingSidebar = false;
+      this.closed.emit();
+    }, 420);
   }
 
   onLoad(deck: Deck): void {
     this.deckAction.emit({ action: 'load', deck });
-    this.onClose();
+    // No cerramos el modal — el view-deck se abre encima
   }
 
   onOpenEditor(deck: Deck): void {

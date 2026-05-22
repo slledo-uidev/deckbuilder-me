@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { Deck, Card } from '@core/models';
 
 export type ViewDeckTab = 'preview' | 'decklist';
@@ -6,7 +7,18 @@ export type ViewDeckTab = 'preview' | 'decklist';
 @Component({
   selector: 'app-view-deck-modal',
   templateUrl: './view-deck-modal.component.html',
-  styleUrls: ['./view-deck-modal.component.scss']
+  styleUrls: ['./view-deck-modal.component.scss'],
+  animations: [
+    trigger('slidePanel', [
+      transition(':enter', [
+        style({ transform: 'translateY(100%)' }),
+        animate('520ms cubic-bezier(0.32, 0.72, 0, 1)', style({ transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('520ms cubic-bezier(0.32, 0.72, 0, 1)', style({ transform: 'translateY(100%)' }))
+      ])
+    ])
+  ]
 })
 export class ViewDeckModalComponent implements OnChanges, OnDestroy {
   @Input() isVisible = false;
@@ -15,6 +27,8 @@ export class ViewDeckModalComponent implements OnChanges, OnDestroy {
 
   @Output() close = new EventEmitter<void>();
   @Output() openInEditor = new EventEmitter<void>();
+  @Output() exportDeck = new EventEmitter<void>();
+  @Output() deleteDeck = new EventEmitter<void>();
 
   activeTab: ViewDeckTab = 'preview';
 
@@ -39,6 +53,14 @@ export class ViewDeckModalComponent implements OnChanges, OnDestroy {
 
   onOpenInEditor(): void {
     this.openInEditor.emit();
+  }
+
+  onExportDeck(): void {
+    this.exportDeck.emit();
+  }
+
+  onDeleteDeck(): void {
+    this.deleteDeck.emit();
   }
 
   getCombinedCardList() {

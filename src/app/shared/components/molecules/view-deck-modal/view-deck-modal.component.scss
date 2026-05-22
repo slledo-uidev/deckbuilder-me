@@ -4,34 +4,29 @@
 .view-deck-modal {
   position: fixed;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: $z-index-modal;
-  padding: $spacing-4;
 
   &__backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(5, 8, 16, 0.85);
-    backdrop-filter: blur(6px);
+    background: rgba(5, 8, 16, 0.6);
+    backdrop-filter: blur(4px);
+    animation: vdmFadeIn 0.3s ease-out;
   }
 
   &__content {
-    position: relative;
+    position: absolute;
+    inset: 0;
     background: $color-cyber-700;
-    border: 1px solid $color-cyber-400;
-    width: 900px;
-    max-width: 100%;
-    max-height: 90vh;
-    border-radius: $border-radius-md;
+    border-radius: $border-radius-xl $border-radius-xl 0 0;
     padding: $spacing-3;
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 0 32px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.6);
     z-index: 2;
-    animation: slideUp 0.25s ease-out;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 
+    // Línea neon sutil en el borde superior
     &::before {
       content: '';
       position: absolute;
@@ -51,15 +46,6 @@
     margin-bottom: $spacing-2;
     border-bottom: 1px solid $color-cyber-500;
     flex-shrink: 0;
-
-    h3 {
-      margin: 0;
-      font-size: $font-size-lg;
-      font-weight: $font-weight-bold;
-      font-family: $font-family-mono;
-      letter-spacing: 0.04em;
-      color: $color-digital-text;
-    }
 
     app-icon-button button {
       background: none;
@@ -83,11 +69,53 @@
     }
   }
 
+  &__title {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    font-family: $font-family-mono;
+    letter-spacing: 0.04em;
+    color: $color-digital-text;
+  }
+
+  // ── Body: 2 columnas ─────────────────────────────────────────────────────
+  &__body {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: $spacing-3;
+    overflow: hidden;
+
+    @media (max-width: $breakpoint-md) {
+      grid-template-columns: 1fr;
+      overflow-y: auto;
+    }
+  }
+
+  // ── Columna izquierda ────────────────────────────────────────────────────
+  &__left {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+    padding-right: $spacing-1;
+    min-height: 0;
+
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb { background: $color-cyber-400; }
+  }
+
+  // ── Meta: thumb + info ────────────────────────────────────────────────────
   &__meta {
     display: flex;
     gap: $spacing-3;
     align-items: flex-start;
-    margin-bottom: $spacing-3;
+    background: rgba($color-cyber-800, 0.4);
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    padding: $spacing-3;
     flex-shrink: 0;
   }
 
@@ -103,77 +131,80 @@
   &__info {
     display: flex;
     flex-direction: column;
-    gap: $spacing-1;
+    gap: $spacing-2;
 
     p {
       margin: 0;
-      font-size: $font-size-sm;
-      color: $color-digital-text-sub;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
 
       strong {
-        color: $color-digital-text;
+        font-size: 10px;
         font-family: $font-family-mono;
-        font-size: $font-size-xs;
+        font-weight: $font-weight-bold;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.08em;
+        color: $color-digital-text-dim;
+      }
+
+      span {
+        font-size: $font-size-sm;
+        color: $color-digital-text;
       }
     }
   }
 
-  // ── Pestañas ──────────────────────────────────────────────────────────────
-  &__tabs {
+  // ── Columna derecha ───────────────────────────────────────────────────────
+  &__right {
     display: flex;
-    gap: 0;
-    margin-bottom: $spacing-3;
-    border-bottom: 1px solid $color-cyber-500;
-    flex-shrink: 0;
+    flex-direction: column;
+    gap: $spacing-3;
+    min-height: 0;
+    overflow: hidden;
   }
 
-  &__tab {
-    padding: $spacing-2 $spacing-3;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    font-size: $font-size-sm;
-    font-family: $font-family-mono;
-    font-weight: $font-weight-semibold;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: $color-digital-text-sub;
-    cursor: pointer;
-    transition: color 0.2s ease, border-color 0.2s ease;
+  // ── Acciones del deck ─────────────────────────────────────────────────────
+  &__actions {
+    display: flex;
+    flex-direction: row;
+    gap: $spacing-2;
+    background: rgba($color-cyber-800, 0.4);
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    padding: $spacing-3;
+    flex-shrink: 0;
 
-    &:hover { color: $color-digital-text; }
+    &-main {
+      display: flex;
+      gap: $spacing-2;
+    }
 
-    &--active {
-      color: $color-neon-cyan;
-      border-bottom-color: $color-neon-cyan;
+    &-danger {
+      margin-left: auto;
     }
   }
 
-  // ── Contenido de pestaña ──────────────────────────────────────────────────
-  &__tab-content {
+  // ── Decklist ──────────────────────────────────────────────────────────────
+  &__decklist {
     flex: 1;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: $spacing-3;
     min-height: 0;
+    background: rgba($color-cyber-800, 0.4);
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    padding: $spacing-3;
 
     &::-webkit-scrollbar { width: 4px; }
     &::-webkit-scrollbar-track { background: transparent; }
     &::-webkit-scrollbar-thumb { background: $color-cyber-400; }
   }
 
-  // ── Zona (Digi-Eggs / Main Deck) ──────────────────────────────────────────
-  &__zone {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-2;
-  }
-
-  &__zone-label {
+  // ── Labels de sección ────────────────────────────────────────────────────
+  &__section-label {
     display: flex;
     align-items: center;
     gap: $spacing-2;
@@ -186,8 +217,8 @@
     padding-bottom: $spacing-1;
     border-bottom: 1px solid $color-cyber-500;
 
-    &--egg  { color: #FFC107; }
-    &--main { color: $color-neon-cyan; }
+    &--egg  { color: #FFC107; border-bottom-color: rgba(255, 193, 7, 0.3); }
+    &--main { color: $color-neon-cyan; border-bottom-color: rgba(0, 229, 255, 0.3); }
   }
 
   &__zone-count {
@@ -198,7 +229,18 @@
     margin-left: auto;
   }
 
-  // ── Preview: grid de imágenes ──────────────────────────────────────────────
+  // ── Contenedor grids de imágenes ──────────────────────────────────────────
+  &__card-grids {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+    background: rgba($color-cyber-800, 0.4);
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    padding: $spacing-3;
+  }
+
+  // ── Grid de imágenes ──────────────────────────────────────────────────────
   &__card-grid {
     display: flex;
     flex-wrap: wrap;
@@ -228,6 +270,11 @@
       aspect-ratio: 5/7;
       object-fit: cover;
     }
+
+    &--egg {
+      border-color: rgba(255, 193, 7, 0.4);
+      &:hover { border-color: rgba(255, 193, 7, 0.8); }
+    }
   }
 
   &__card-qty {
@@ -244,78 +291,7 @@
     border: 1px solid rgba(0, 229, 255, 0.3);
     line-height: 1.4;
   }
-  // ── Separador Digi-Eggs dentro del grid ───────────────────────────────────
-  &__egg-sep {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: $spacing-2;
-    margin: $spacing-1 0;
-    font-size: $font-size-xs;
-    font-family: $font-family-mono;
-    font-weight: $font-weight-bold;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #FFC107;
-    padding-top: $spacing-2;
-    border-top: 1px solid rgba(255, 193, 7, 0.3);
-  }
 
-  &__main-sep {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: $spacing-2;
-    margin: $spacing-1 0;
-    font-size: $font-size-xs;
-    font-family: $font-family-mono;
-    font-weight: $font-weight-bold;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: $color-neon-cyan;
-    padding-top: $spacing-2;
-    border-top: 1px solid rgba(0, 229, 255, 0.3);
-  }
-
-  &__card-thumb {
-    &--egg {
-      border-color: rgba(255, 193, 7, 0.5);
-
-      &:hover {
-        border-color: rgba(255, 193, 7, 0.8);
-      }
-    }
-  }
-
-  // ── Separador Digi-Eggs dentro de la lista ────────────────────────────────
-  &__list-sep {
-    display: flex;
-    align-items: center;
-    gap: $spacing-2;
-    font-size: $font-size-xs;
-    font-family: $font-family-mono;
-    font-weight: $font-weight-bold;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #FFC107;
-    padding: $spacing-2 $spacing-2 $spacing-1;
-    margin-top: $spacing-1;
-    border-top: 1px solid rgba(255, 193, 7, 0.3);
-    list-style: none;
-    cursor: default;
-    &:hover { background-color: transparent; }
-
-    &--main {
-      color: $color-neon-cyan;
-      border-top-color: rgba(0, 229, 255, 0.3);
-    }
-  }
-
-  &__list-egg {
-    .qty--egg {
-      color: #FFC107;
-    }
-  }
   // ── Decklist: lista de texto ───────────────────────────────────────────────
   &__list-items {
     list-style: none;
@@ -339,15 +315,7 @@
     }
   }
 
-  &__footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: $spacing-2;
-    margin-top: $spacing-3;
-    flex-shrink: 0;
-    padding-top: $spacing-2;
-    border-top: 1px solid $color-cyber-500;
-  }
+  &__list-egg .qty--egg { color: #FFC107; }
 
   .qty {
     width: 30px;
@@ -373,7 +341,7 @@
   }
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(16px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes vdmFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }

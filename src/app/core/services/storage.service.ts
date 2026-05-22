@@ -17,7 +17,7 @@ export class StorageService {
   private readonly DECKS_KEY_BASE = 'deckbuilder.decks';
   private readonly LEGACY_DECKS_KEY = 'deckbuilder.decks'; // Old key for migration
   private readonly COLLECTION_KEY = 'deckbuilder.collection';
-  private readonly SETTINGS_KEY = 'deckbuilder.settings';
+  private readonly SETTINGS_KEY_BASE = 'deckbuilder.settings';
   private readonly ARCHETYPES_KEY_BASE = 'deckbuilder.archetypes';
 
   // Decks cache
@@ -346,26 +346,32 @@ export class StorageService {
     }
   }
   
+  private getUserSettingsKey(): string {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) return this.SETTINGS_KEY_BASE;
+    return `${this.SETTINGS_KEY_BASE}.${currentUser.id}`;
+  }
+
   /**
-   * Get app settings
+   * Get app settings (per user)
    */
   public getSettings(): any {
     try {
-      const settingsJson = localStorage.getItem(this.SETTINGS_KEY);
-      return settingsJson ? JSON.parse(settingsJson) : {};
+      const settingsJson = localStorage.getItem(this.getUserSettingsKey());
+      return settingsJson ? JSON.parse(settingsJson) : { libraryMode: 'decklist' };
     } catch (error) {
       console.error('Failed to load settings from localStorage', error);
-      return {};
+      return { libraryMode: 'decklist' };
     }
   }
   
   /**
-   * Save app settings
+   * Save app settings (per user)
    */
   public saveSettings(settings: any): boolean {
     try {
       const settingsJson = JSON.stringify(settings);
-      localStorage.setItem(this.SETTINGS_KEY, settingsJson);
+      localStorage.setItem(this.getUserSettingsKey(), settingsJson);
       return true;
     } catch (error) {
       console.error('Failed to save settings to localStorage', error);

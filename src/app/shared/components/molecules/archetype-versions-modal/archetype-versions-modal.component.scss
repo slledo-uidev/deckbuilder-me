@@ -2,12 +2,49 @@
 @import 'mixins';
 
 
-// Override: el modal__body no hace scroll — lo hará la columna derecha
-:host ::ng-deep .modal__body {
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  padding: $theme-spacing-3;
+// ─── Override: app-modal se convierte en panel fullscreen con slide desde abajo ───
+:host ::ng-deep {
+  .modal__backdrop {
+    align-items: flex-end;
+    justify-content: stretch;
+    backdrop-filter: blur(4px);
+    background: rgba(5, 8, 16, 0.6);
+    padding: 0;
+  }
+
+  .modal__dialog,
+  .modal__dialog--small,
+  .modal__dialog--medium,
+  .modal__dialog--large {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: $border-radius-xl $border-radius-xl 0 0 !important;
+    margin: 0 !important;
+    box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.6) !important;
+    animation: avmPanelSlideUp 0.52s cubic-bezier(0.32, 0.72, 0, 1) !important;
+  }
+
+  // el modal__body ocupa todo el espacio restante
+  .modal__body {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: $theme-spacing-3;
+    min-height: 0;
+  }
+}
+
+// Cierre: el selector correcto — :host.is-closing (fuera de ::ng-deep)
+:host.is-closing ::ng-deep {
+  .modal__dialog,
+  .modal__dialog--small,
+  .modal__dialog--medium,
+  .modal__dialog--large {
+    animation: avmPanelSlideDown 0.52s cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
+  }
 }
 
 // ─── Contenedor interno del modal ────────────────────────────────────────────
@@ -15,7 +52,8 @@
   // Ocupa todo el espacio disponible del modal__body
   display: flex;
   flex-direction: column;
-  height: 480px;
+  flex: 1;
+  min-height: 0;
 
   // ─── Layout 2 columnas ─────────────────────────────────────────────────────
   &__layout {
@@ -186,7 +224,9 @@
     background-color: $color-cyber-800;
     color: $color-digital-text;
     outline: none;
-    resize: vertical;
+    resize: none;
+    min-height: 72px;
+    max-height: 120px;
     box-sizing: border-box;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
@@ -244,7 +284,7 @@
     flex-direction: column;
     min-width: 0;
     height: 100%;
-    max-height: calc(90vh - 120px);
+    max-height: calc(100vh - 120px);
     overflow-y: auto;
 
     &::-webkit-scrollbar { width: 4px; }
@@ -447,4 +487,14 @@
     color: $color-error;
     white-space: nowrap;
   }
+}
+
+@keyframes avmPanelSlideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes avmPanelSlideDown {
+  from { transform: translateY(0); }
+  to   { transform: translateY(100%); }
 }

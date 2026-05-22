@@ -21,6 +21,9 @@ export class CardGalleryComponent implements OnInit, OnDestroy {
   searchText = '';
   currentFilter: CardFilter = {};
   filtersExpanded = false;
+
+  selectedCard: Card | null = null;
+  isCardViewerOpen = false;
   
   private destroy$ = new Subject<void>();
   
@@ -102,8 +105,13 @@ export class CardGalleryComponent implements OnInit, OnDestroy {
   }
   
   onCardClick(card: Card): void {
-    
-    // TODO: Open card detail modal
+    this.selectedCard = card;
+    this.isCardViewerOpen = true;
+  }
+
+  onCardViewerClose(): void {
+    this.isCardViewerOpen = false;
+    this.selectedCard = null;
   }
   
   private applyFilters(): void {

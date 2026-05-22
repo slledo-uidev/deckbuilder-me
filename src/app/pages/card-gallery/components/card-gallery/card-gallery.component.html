@@ -68,9 +68,16 @@
         <app-card-grid
           [cards]="filteredCards"
           [loading]="loading"
+          [mode]="'view'"
           (cardClick)="onCardClick($event)" />
       </div>
     </section>
 
   </div>
 </div>
+
+<app-card-viewer-modal
+  [isVisible]="isCardViewerOpen"
+  [card]="selectedCard"
+  (close)="onCardViewerClose()">
+</app-card-viewer-modal>

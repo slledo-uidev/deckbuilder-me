@@ -46,11 +46,7 @@
 
   </div>
 
-  <div modal-footer>
-    <div class="row row--gap">
-      <app-button variant="outline" (clicked)="onCancel()">Cancel</app-button>
-      <app-button variant="primary" (clicked)="onConfirm()">Create Archetype</app-button>
-    </div>
-  </div>
+  <app-button modal-footer variant="outline" (clicked)="onCancel()">Cancel</app-button>
+  <app-button modal-footer variant="primary" (clicked)="onConfirm()">Create Archetype</app-button>
 
 </app-modal>

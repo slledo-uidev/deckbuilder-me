@@ -1,0 +1,252 @@
+@import 'variables';
+@import 'mixins';
+
+.card-viewer-modal {
+  position: fixed;
+  inset: 0;
+  z-index: $z-index-modal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-4;
+  animation: cvmFadeIn 0.2s ease-out;
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 8, 16, 0.88);
+    backdrop-filter: blur(6px);
+  }
+
+  &__dialog {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: $spacing-6;
+    background: $color-cyber-700;
+    border: 1px solid $color-cyber-400;
+    border-radius: $border-radius-md;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 0 32px rgba(0, 0, 0, 0.6);
+    max-width: 860px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+    animation: cvmSlideUp 0.25s ease-out;
+
+    // neon top line
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.5) 40%, rgba(0, 229, 255, 0.5) 60%, transparent);
+    }
+
+    @media (max-width: $breakpoint-sm) {
+      flex-direction: column;
+      max-height: 95vh;
+      overflow-y: auto;
+    }
+  }
+
+  &__close {
+    position: absolute;
+    top: $spacing-3;
+    right: $spacing-3;
+    z-index: 2;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: $border-radius-sm;
+    color: $color-digital-text-sub;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease;
+
+    &:hover {
+      color: $color-neon-cyan;
+      border-color: rgba(0, 229, 255, 0.3);
+    }
+  }
+
+  // ─── LEFT SIDE: image ────────────────────────────────────────────────────
+  &__image-side {
+    flex-shrink: 0;
+    width: 260px;
+    padding: $spacing-5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($color-cyber-800, 0.5);
+    border-right: 1px solid $color-cyber-500;
+
+    @media (max-width: $breakpoint-sm) {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid $color-cyber-500;
+      padding: $spacing-4;
+    }
+  }
+
+  &__image-wrap {
+    width: 100%;
+    aspect-ratio: 7 / 10;
+    border-radius: $border-radius-sm;
+    overflow: hidden;
+    position: relative;
+    background: $color-cyber-800;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 229, 255, 0.1);
+  }
+
+  &__image-skeleton {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, $color-cyber-700 25%, $color-cyber-600 50%, $color-cyber-700 75%);
+    background-size: 200% 200%;
+    animation: cvmSkeleton 1.4s ease infinite;
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__image-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: $color-digital-text-dim;
+  }
+
+  // ─── RIGHT SIDE: info ────────────────────────────────────────────────────
+  &__info-side {
+    flex: 1;
+    padding: $spacing-5 $spacing-6 $spacing-5 $spacing-5;
+    padding-right: calc(#{$spacing-6} + 32px); // offset for close button
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+    min-width: 0;
+
+    @media (max-width: $breakpoint-sm) {
+      padding: $spacing-4;
+    }
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-1;
+  }
+
+  &__name {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-digital-text;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  &__id {
+    font-size: $font-size-sm;
+    font-family: $font-family-mono;
+    color: $color-neon-cyan-dim;
+    margin: 0;
+    letter-spacing: 0.08em;
+  }
+
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-2;
+  }
+
+  // ─── Stats grid ─────────────────────────────────────────────────────────
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: $spacing-2;
+    background: rgba($color-cyber-800, 0.5);
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    padding: $spacing-3;
+  }
+
+  &__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__stat-label {
+    font-size: 10px;
+    font-family: $font-family-mono;
+    color: $color-digital-text-dim;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  &__stat-value {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+    color: $color-digital-text;
+    font-family: $font-family-mono;
+  }
+
+  // ─── Effects ────────────────────────────────────────────────────────────
+  &__effects {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+  }
+
+  &__effect-block {
+    background: rgba($color-cyber-800, 0.4);
+    border: 1px solid $color-cyber-500;
+    border-left: 3px solid rgba(0, 229, 255, 0.5);
+    border-radius: $border-radius-sm;
+    padding: $spacing-3;
+  }
+
+  &__effect-label {
+    font-size: 10px;
+    font-family: $font-family-mono;
+    color: $color-neon-cyan-dim;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0 0 $spacing-1;
+    font-weight: $font-weight-bold;
+  }
+
+  &__effect-text {
+    font-size: $font-size-sm;
+    color: $color-digital-text-sub;
+    line-height: 1.6;
+    margin: 0;
+    white-space: pre-wrap;
+  }
+}
+
+@keyframes cvmFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes cvmSlideUp {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes cvmSkeleton {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

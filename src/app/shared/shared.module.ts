@@ -41,6 +41,7 @@ import { ViewDeckModalComponent } from './components/molecules/view-deck-modal/v
 import { UserSettingsModalComponent } from './components/molecules/user-settings-modal/user-settings-modal.component';
 import { AuthVisualComponent } from './components/molecules/auth-visual/auth-visual.component';
 import { ToastComponent } from './components/molecules/toast/toast.component';
+import { CardViewerModalComponent } from './components/molecules/card-viewer-modal/card-viewer-modal.component';
 
 // Organisms
 import { CardGridComponent } from './components/organisms/card-grid/card-grid.component';
@@ -84,6 +85,7 @@ const COMPONENTS = [
   UserSettingsModalComponent,
   AuthVisualComponent,
   ToastComponent,
+  CardViewerModalComponent,
   // Organisms
   CardGridComponent,
   DeckStatsPanelComponent,

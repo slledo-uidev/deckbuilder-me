@@ -11,6 +11,8 @@ export class CardGridComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() cards: Card[] = [];
   @Input() loading = false;
   @Input() emptyMessage = 'No cards found';
+  /** 'add' = deck-builder behaviour | 'view' = card-gallery behaviour */
+  @Input() mode: 'add' | 'view' = 'add';
   @Output() cardClick = new EventEmitter<Card>();
   @Output() cardAdd = new EventEmitter<Card>();
   
@@ -60,7 +62,11 @@ export class CardGridComponent implements OnChanges, AfterViewInit, OnDestroy {
   }
   
   onAddCard(card: Card): void {
-    this.cardAdd.emit(card);
+    if (this.mode === 'view') {
+      this.cardClick.emit(card);
+    } else {
+      this.cardAdd.emit(card);
+    }
   }
   
   ngOnChanges(): void {

@@ -1,137 +1,125 @@
-<div class="view-deck-modal" *ngIf="isVisible">
+<div class="view-deck-modal" *ngIf="isVisible" @slidePanel>
   <div class="view-deck-modal__backdrop" (click)="onClose()"></div>
   <div class="view-deck-modal__content">
 
+    <!-- HEADER: solo nombre -->
     <header class="view-deck-modal__header">
-      <h3>{{ deck?.name }}</h3>
+      <h3 class="view-deck-modal__title">{{ deck?.name }}</h3>
       <app-icon-button icon="x" ariaLabel="Cerrar" size="medium" (clicked)="onClose()"></app-icon-button>
     </header>
 
-    <section class="view-deck-modal__meta">
-      <img
-        *ngIf="deck?.placeholderCardId; else noThumb"
-        [src]="getPlaceholderUrl(deck?.placeholderCardId)"
-        alt="thumb"
-        class="view-deck-modal__thumb">
-      <ng-template #noThumb>
-        <img
-          [src]="getPlaceholderUrl(getCombinedCardList()[0]?.cardId)"
-          alt="thumb"
-          class="view-deck-modal__thumb">
-      </ng-template>
-      <div class="view-deck-modal__info">
-        <p><strong>Archetype:</strong> {{ deck?.archetype || '—' }}</p>
-        <p><strong>Main:</strong> {{ getMainCount(deck) }} cards</p>
-        <p><strong>Digi-Eggs:</strong> {{ getDigiEggCount(deck) }} cards</p>
-      </div>
-    </section>
+    <!-- BODY: 2 columnas -->
+    <div class="view-deck-modal__body">
 
-    <!-- Pestañas -->
-    <nav class="view-deck-modal__tabs">
-      <button
-        class="view-deck-modal__tab"
-        [class.view-deck-modal__tab--active]="activeTab === 'preview'"
-        (click)="setTab('preview')">
-        Preview
-      </button>
-      <button
-        class="view-deck-modal__tab"
-        [class.view-deck-modal__tab--active]="activeTab === 'decklist'"
-        (click)="setTab('decklist')">
-        Decklist
-      </button>
-    </nav>
+      <!-- IZQUIERDA: info + grid de imágenes -->
+      <section class="view-deck-modal__left">
 
-    <!-- TAB: Preview -->
-    <section class="view-deck-modal__tab-content" *ngIf="activeTab === 'preview'">
-
-      <!-- Main Deck primero -->
-      <div class="view-deck-modal__zone" *ngIf="deck?.mainDeck?.length">
-        <p class="view-deck-modal__zone-label view-deck-modal__zone-label--main">
-          Main Deck
-          <span class="view-deck-modal__zone-count">{{ getMainCount(deck) }}</span>
-        </p>
-        <div class="view-deck-modal__card-grid">
-          <!-- Digi-Eggs primero -->
-          <div class="view-deck-modal__egg-sep" *ngIf="deck?.digiEggs?.length">
-            <span>Digi-Eggs</span>
-            <span class="view-deck-modal__zone-count">{{ getDigiEggCount(deck) }}</span>
-          </div>
-          <div
-            class="view-deck-modal__card-thumb view-deck-modal__card-thumb--egg"
-            *ngFor="let dc of deck?.digiEggs">
-            <img
-              [src]="getPlaceholderUrl(dc.cardId)"
-              [alt]="getCardName(dc.cardId)"
-              [title]="getCardName(dc.cardId)">
-            <span class="view-deck-modal__card-qty" *ngIf="dc.quantity > 1">
-              x{{ dc.quantity }}
-            </span>
-          </div>
-          <!-- Separador Main Deck -->
-          <div class="view-deck-modal__main-sep" *ngIf="deck?.mainDeck?.length">
-            <span>Main Deck</span>
-            <span class="view-deck-modal__zone-count">{{ getMainCount(deck) }}</span>
-          </div>
-          <div
-            class="view-deck-modal__card-thumb"
-            *ngFor="let dc of deck?.mainDeck">
-            <img
-              [src]="getPlaceholderUrl(dc.cardId)"
-              [alt]="getCardName(dc.cardId)"
-              [title]="getCardName(dc.cardId)">
-            <span class="view-deck-modal__card-qty" *ngIf="dc.quantity > 1">
-              x{{ dc.quantity }}
-            </span>
+        <!-- Preview card + info -->
+        <div class="view-deck-modal__meta">
+          <img
+            class="view-deck-modal__thumb"
+            [src]="getPlaceholderUrl(deck?.placeholderCardId || getCombinedCardList()[0].cardId)"
+            alt="thumb">
+          <div class="view-deck-modal__info">
+            <p *ngIf="deck?.archetype">
+              <strong>Archetype</strong>
+              <span>{{ deck?.archetype }}</span>
+            </p>
+            <p>
+              <strong>Main</strong>
+              <span>{{ getMainCount(deck) }} cards</span>
+            </p>
+            <p>
+              <strong>Digi-Eggs</strong>
+              <span>{{ getDigiEggCount(deck) }} cards</span>
+            </p>
           </div>
         </div>
-      </div>
 
-    </section>
+        <!-- Grid imágenes -->
+        <div class="view-deck-modal__card-grids">
+          <ng-container *ngIf="deck?.digiEggs?.length">
+            <p class="view-deck-modal__section-label view-deck-modal__section-label--egg">
+              Digi-Eggs <span class="view-deck-modal__zone-count">{{ getDigiEggCount(deck) }}</span>
+            </p>
+            <div class="view-deck-modal__card-grid">
+              <div class="view-deck-modal__card-thumb view-deck-modal__card-thumb--egg"
+                *ngFor="let dc of deck?.digiEggs">
+                <img [src]="getPlaceholderUrl(dc.cardId)" [alt]="getCardName(dc.cardId)" [title]="getCardName(dc.cardId)">
+                <span class="view-deck-modal__card-qty" *ngIf="dc.quantity > 1">x{{ dc.quantity }}</span>
+              </div>
+            </div>
+          </ng-container>
 
-    <!-- TAB: Decklist -->
-    <section class="view-deck-modal__tab-content" *ngIf="activeTab === 'decklist'">
+          <ng-container *ngIf="deck?.mainDeck?.length">
+            <p class="view-deck-modal__section-label view-deck-modal__section-label--main">
+              Main Deck <span class="view-deck-modal__zone-count">{{ getMainCount(deck) }}</span>
+            </p>
+            <div class="view-deck-modal__card-grid">
+              <div class="view-deck-modal__card-thumb"
+                *ngFor="let dc of deck?.mainDeck">
+                <img [src]="getPlaceholderUrl(dc.cardId)" [alt]="getCardName(dc.cardId)" [title]="getCardName(dc.cardId)">
+                <span class="view-deck-modal__card-qty" *ngIf="dc.quantity > 1">x{{ dc.quantity }}</span>
+              </div>
+            </div>
+          </ng-container>
+        </div>
 
-      <!-- Main Deck primero -->
-      <div class="view-deck-modal__zone" *ngIf="deck?.mainDeck?.length">
-        <p class="view-deck-modal__zone-label view-deck-modal__zone-label--main">
-          Main Deck
-          <span class="view-deck-modal__zone-count">{{ getMainCount(deck) }}</span>
-        </p>
-        <ul class="view-deck-modal__list-items">
-          <!-- Digi-Eggs primero -->
-          <li class="view-deck-modal__list-sep" *ngIf="deck?.digiEggs?.length">
-            <span>Digi-Eggs</span>
-            <span class="view-deck-modal__zone-count">{{ getDigiEggCount(deck) }}</span>
-          </li>
-          <li class="view-deck-modal__list-egg" *ngFor="let dc of deck?.digiEggs">
-            <span class="qty qty--egg">{{ dc.quantity }}x</span>
-            <span class="name">{{ getCardName(dc.cardId) }}</span>
-            <span class="card-id">{{ dc.cardId }}</span>
-          </li>
-          <!-- Separador Main Deck -->
-          <li class="view-deck-modal__list-sep view-deck-modal__list-sep--main" *ngIf="deck?.mainDeck?.length">
-            <span>Main Deck</span>
-            <span class="view-deck-modal__zone-count">{{ getMainCount(deck) }}</span>
-          </li>
-          <li *ngFor="let dc of deck?.mainDeck">
-            <span class="qty">{{ dc.quantity }}x</span>
-            <span class="name">{{ getCardName(dc.cardId) }}</span>
-            <span class="card-id">{{ dc.cardId }}</span>
-          </li>
-        </ul>
-      </div>
+      </section>
 
-    </section>
+      <!-- DERECHA: acciones + decklist -->
+      <aside class="view-deck-modal__right">
 
-    <footer class="view-deck-modal__footer">
-      <app-button variant="ghost" size="medium" (clicked)="onClose()">
-        Cerrar
-      </app-button>
-      <app-button variant="primary" size="medium" (clicked)="onOpenInEditor()">
-        Open in Editor
-      </app-button>
-    </footer>
+        <!-- Acciones -->
+        <div class="view-deck-modal__actions">
+          <div class="view-deck-modal__actions-main">
+            <app-button variant="primary" size="square-sm" title="Editar" (clicked)="onOpenInEditor()">
+              <lucide-angular name="pencil" [size]="16" class="lucide-icon"></lucide-angular>
+            </app-button>
+            <app-button variant="outline" size="square-sm" title="Exportar" (clicked)="onExportDeck()">
+              <lucide-angular name="download" [size]="16" class="lucide-icon"></lucide-angular>
+            </app-button>
+          </div>
+          <div class="view-deck-modal__actions-danger">
+            <app-button variant="danger" size="medium" (clicked)="onDeleteDeck()">
+              <lucide-angular name="trash-2" [size]="14" class="lucide-icon"></lucide-angular>
+              Eliminar
+            </app-button>
+          </div>
+        </div>
+
+        <!-- Decklist -->
+        <div class="view-deck-modal__decklist">
+          <ng-container *ngIf="deck?.digiEggs?.length">
+            <p class="view-deck-modal__section-label view-deck-modal__section-label--egg">
+              Digi-Eggs <span class="view-deck-modal__zone-count">{{ getDigiEggCount(deck) }}</span>
+            </p>
+            <ul class="view-deck-modal__list-items">
+              <li class="view-deck-modal__list-egg" *ngFor="let dc of deck?.digiEggs">
+                <span class="qty qty--egg">{{ dc.quantity }}x</span>
+                <span class="name">{{ getCardName(dc.cardId) }}</span>
+                <span class="card-id">{{ dc.cardId }}</span>
+              </li>
+            </ul>
+          </ng-container>
+
+          <ng-container *ngIf="deck?.mainDeck?.length">
+            <p class="view-deck-modal__section-label view-deck-modal__section-label--main">
+              Main Deck <span class="view-deck-modal__zone-count">{{ getMainCount(deck) }}</span>
+            </p>
+            <ul class="view-deck-modal__list-items">
+              <li *ngFor="let dc of deck?.mainDeck">
+                <span class="qty">{{ dc.quantity }}x</span>
+                <span class="name">{{ getCardName(dc.cardId) }}</span>
+                <span class="card-id">{{ dc.cardId }}</span>
+              </li>
+            </ul>
+          </ng-container>
+        </div>
+
+      </aside>
+
+    </div><!-- /.body -->
 
   </div>
 </div>

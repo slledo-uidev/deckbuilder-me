@@ -1,0 +1,103 @@
+<div class="card-viewer-modal" *ngIf="isVisible">
+  <div class="card-viewer-modal__backdrop" (click)="onBackdropClick()"></div>
+
+  <div class="card-viewer-modal__dialog" (click)="$event.stopPropagation()">
+
+    <!-- Close button -->
+    <button class="card-viewer-modal__close" (click)="onClose()" aria-label="Cerrar">
+      <lucide-angular name="x" [size]="20"></lucide-angular>
+    </button>
+
+    <ng-container *ngIf="card">
+      <!-- LEFT: Card image -->
+      <div class="card-viewer-modal__image-side">
+        <div class="card-viewer-modal__image-wrap" [class.card-viewer-modal__image-wrap--loaded]="imageLoaded">
+          <div *ngIf="!imageLoaded" class="card-viewer-modal__image-skeleton"></div>
+          <img
+            *ngIf="!imageError"
+            class="card-viewer-modal__image"
+            [src]="card.imageUrl"
+            [alt]="card.name"
+            (load)="onImageLoad()"
+            (error)="onImageError()"
+          />
+          <div *ngIf="imageError" class="card-viewer-modal__image-fallback">
+            <lucide-angular name="image-off" [size]="40"></lucide-angular>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Card info -->
+      <div class="card-viewer-modal__info-side">
+        <!-- Header -->
+        <div class="card-viewer-modal__header">
+          <h2 class="card-viewer-modal__name">{{ card.name }}</h2>
+          <p class="card-viewer-modal__id">{{ card.id }}</p>
+        </div>
+
+        <!-- Badges row -->
+        <div class="card-viewer-modal__badges">
+          <app-badge [variant]="getTypeBadgeVariant(card.type)" size="medium">
+            {{ card.type }}
+          </app-badge>
+          <app-badge
+            *ngFor="let color of card.color"
+            [variant]="getColorBadgeVariant(color)"
+            size="medium">
+            {{ color }}
+          </app-badge>
+          <app-badge variant="default" size="medium">{{ card.rarity }}</app-badge>
+        </div>
+
+        <!-- Stats grid -->
+        <div class="card-viewer-modal__stats">
+          <div class="card-viewer-modal__stat" *ngIf="card.cost != null">
+            <span class="card-viewer-modal__stat-label">Play Cost</span>
+            <span class="card-viewer-modal__stat-value">{{ card.cost }}</span>
+          </div>
+          <div class="card-viewer-modal__stat" *ngIf="card.level != null">
+            <span class="card-viewer-modal__stat-label">Level</span>
+            <span class="card-viewer-modal__stat-value">Lv.{{ card.level }}</span>
+          </div>
+          <div class="card-viewer-modal__stat" *ngIf="card.dp != null">
+            <span class="card-viewer-modal__stat-label">DP</span>
+            <span class="card-viewer-modal__stat-value">{{ card.dp }}</span>
+          </div>
+          <div class="card-viewer-modal__stat" *ngIf="card.digivolutionCost != null">
+            <span class="card-viewer-modal__stat-label">Digivolution</span>
+            <span class="card-viewer-modal__stat-value">{{ card.digivolutionCost }}</span>
+          </div>
+          <div class="card-viewer-modal__stat" *ngIf="card.form">
+            <span class="card-viewer-modal__stat-label">Form</span>
+            <span class="card-viewer-modal__stat-value">{{ card.form }}</span>
+          </div>
+          <div class="card-viewer-modal__stat" *ngIf="card.attribute">
+            <span class="card-viewer-modal__stat-label">Attribute</span>
+            <span class="card-viewer-modal__stat-value">{{ card.attribute }}</span>
+          </div>
+          <div class="card-viewer-modal__stat">
+            <span class="card-viewer-modal__stat-label">Set</span>
+            <span class="card-viewer-modal__stat-value">{{ card.set }}</span>
+          </div>
+        </div>
+
+        <!-- Effects -->
+        <div class="card-viewer-modal__effects">
+          <div class="card-viewer-modal__effect-block" *ngIf="card.effect">
+            <p class="card-viewer-modal__effect-label">Effect</p>
+            <p class="card-viewer-modal__effect-text">{{ card.effect }}</p>
+          </div>
+          <div class="card-viewer-modal__effect-block" *ngIf="card.inheritedEffect">
+            <p class="card-viewer-modal__effect-label">Inherited Effect</p>
+            <p class="card-viewer-modal__effect-text">{{ card.inheritedEffect }}</p>
+          </div>
+          <div class="card-viewer-modal__effect-block" *ngIf="card.securityEffect">
+            <p class="card-viewer-modal__effect-label">Security Effect</p>
+            <p class="card-viewer-modal__effect-text">{{ card.securityEffect }}</p>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

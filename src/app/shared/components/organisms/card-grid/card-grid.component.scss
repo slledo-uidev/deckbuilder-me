@@ -65,6 +65,11 @@
       white-space: nowrap;
       width: 100%;
     }
+
+    // En modo view, el texto del hover cambia
+    .card-grid__container--view & {
+      &::after { content: '\1F441  VIEW CARD'; }
+    }
     
     &:hover {
       transform: translateY(-4px);

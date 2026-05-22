@@ -11,13 +11,13 @@
   
   <!-- Card Grid -->
   <div *ngIf="!loading && cards.length > 0">
-    <div class="card-grid__container">
+    <div class="card-grid__container" [class.card-grid__container--view]="mode === 'view'">
       <div
         *ngFor="let card of displayedCards"
         class="card-grid__item"
         [ngClass]="getCardColorClass(card)"
         (click)="onAddCard(card)"
-        [attr.aria-label]="'Add ' + card.name + ' to deck'"
+        [attr.aria-label]="(mode === 'view' ? 'View ' : 'Add ') + card.name"
         tabindex="0"
         role="button"
       >
