@@ -14,6 +14,22 @@ export interface DeckCard {
   quantity: number;
 }
 
+interface ImportCloudDeckPayload {
+  id?: string;
+  family_id?: string;
+  version_name?: string;
+  card_list?: Array<{ cardId: string; quantity: number; isEgg?: boolean }>;
+}
+
+interface OpenInEditorPayload {
+  id?: string;
+  name: string;
+  cardList: Array<{ cardId: string; quantity: number }>;
+  supabaseFamilyId?: string;
+  supabaseVersionId?: string;
+  isNewVersion?: boolean;
+}
+
 @Component({
   selector: 'app-deck-builder',
   templateUrl: './deck-builder.component.html',
@@ -767,6 +783,39 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   private generateDeckId(): string {
     return `deck_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
+
+  private isValidDeckCardEntry(value: unknown): value is { cardId: string; quantity: number; isEgg?: boolean } {
+    return !!value
+      && typeof value === 'object'
+      && typeof (value as any).cardId === 'string'
+      && typeof (value as any).quantity === 'number'
+      && Number.isFinite((value as any).quantity)
+      && (value as any).quantity > 0;
+  }
+
+  private isValidOpenInEditorPayload(value: unknown): value is OpenInEditorPayload {
+    return !!value
+      && typeof value === 'object'
+      && typeof (value as any).name === 'string'
+      && Array.isArray((value as any).cardList)
+      && (value as any).cardList.every((entry: unknown) => this.isValidDeckCardEntry(entry));
+  }
+
+  private isValidCloudImportPayload(value: unknown): value is ImportCloudDeckPayload {
+    return !!value
+      && typeof value === 'object'
+      && Array.isArray((value as any).card_list)
+      && (value as any).card_list.every((entry: unknown) => this.isValidDeckCardEntry(entry));
+  }
+
+  private parseSessionJson<T>(raw: string | null): T | null {
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as T;
+    } catch {
+      return null;
+    }
+  }
   /**
    * Load a deck version imported from Supabase (stored temporarily in sessionStorage).
    * Called when the builder receives queryParam cloudImport=true.
@@ -774,11 +823,15 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   private loadCloudImport(): void {
     try {
       const raw = sessionStorage.getItem('import_cloud_deck');
-      if (!raw) return;
+      const parsed = this.parseSessionJson<unknown>(raw);
+      if (!parsed || !this.isValidCloudImportPayload(parsed)) {
+        sessionStorage.removeItem('import_cloud_deck');
+        return;
+      }
       sessionStorage.removeItem('import_cloud_deck');
 
-      const version = JSON.parse(raw);
-      const cardList: any[] = version.card_list ?? [];
+      const version = parsed;
+      const cardList = version.card_list ?? [];
 
       this.digiEggs = [];
       this.mainDeck = [];
@@ -818,9 +871,13 @@ export class DeckBuilderComponent implements OnInit, OnDestroy {
   private loadOpenInEditor(): void {
     try {
       const raw = sessionStorage.getItem('open_in_editor');
-      if (!raw) return;
+      const parsed = this.parseSessionJson<unknown>(raw);
+      if (!parsed || !this.isValidOpenInEditorPayload(parsed)) {
+        sessionStorage.removeItem('open_in_editor');
+        return;
+      }
       sessionStorage.removeItem('open_in_editor');
-      const payload: { id?: string; name: string; cardList: { cardId: string; quantity: number }[]; supabaseFamilyId?: string; supabaseVersionId?: string; isNewVersion?: boolean } = JSON.parse(raw);
+      const payload = parsed;
 
       this.digiEggs = [];
       this.mainDeck = [];

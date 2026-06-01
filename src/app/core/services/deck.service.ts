@@ -130,10 +130,14 @@ export class DeckService {
    * Only called when the user explicitly loads a deck to edit/view.
    */
   async getDeckDetails(deckId: string): Promise<DeckVersion> {
+    const userId = this.auth.currentUserId;
+    if (!userId) throw new Error('No hay usuario autenticado.');
+
     const { data, error } = await this.supabase
       .from('decks')
       .select('*')
       .eq('id', deckId)
+      .eq('user_id', userId)
       .single();
 
     if (error) throw error;
@@ -333,10 +337,14 @@ export class DeckService {
    * Delete a DeckFamily (and all its versions via DB cascade).
    */
   async deleteFamily(familyId: string): Promise<void> {
+    const userId = this.auth.currentUserId;
+    if (!userId) throw new Error('No hay usuario autenticado.');
+
     const { error } = await this.supabase
       .from('deck_families')
       .delete()
-      .eq('id', familyId);
+      .eq('id', familyId)
+      .eq('user_id', userId);
 
     if (error) throw error;
   }
@@ -356,6 +364,18 @@ export class DeckService {
     // user_id es obligatorio en la tabla decks
     const userId = this.auth.currentUserId;
     if (!userId) throw new Error('No hay usuario autenticado.');
+
+    const { data: family, error: familyError } = await this.supabase
+      .from('deck_families')
+      .select('id')
+      .eq('id', familyId)
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (familyError) throw familyError;
+    if (!family) {
+      throw new Error('No se puede usar una familia que no pertenece al usuario autenticado.');
+    }
 
     const payload: any = {
       family_id: familyId,
@@ -399,10 +419,14 @@ export class DeckService {
    * Fetch all DeckVersions for a given DeckFamily.
    */
   async getVersionsByFamily(familyId: string): Promise<DeckVersion[]> {
+    const userId = this.auth.currentUserId;
+    if (!userId) throw new Error('No hay usuario autenticado.');
+
     const { data, error } = await this.supabase
       .from('decks')
       .select('*')
       .eq('family_id', familyId)
+      .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -416,6 +440,9 @@ export class DeckService {
     versionId: string,
     changes: { card_list?: DeckCard[]; version_name?: string; notes?: string; stats?: Record<string, unknown>; thumbnailCardId?: string }
   ): Promise<DeckVersion> {
+    const userId = this.auth.currentUserId;
+    if (!userId) throw new Error('No hay usuario autenticado.');
+
     // Map JS-friendly change keys to DB column names (thumbnailCardId -> thumbnail_card_id)
     const payload: any = { ...changes };
     if ((changes as any).thumbnailCardId !== undefined) {
@@ -427,6 +454,7 @@ export class DeckService {
       .from('decks')
       .update(payload)
       .eq('id', versionId)
+      .eq('user_id', userId)
       .select()
       .single();
 
@@ -442,10 +470,14 @@ export class DeckService {
    * Delete a single DeckVersion.
    */
   async deleteVersion(versionId: string): Promise<void> {
+    const userId = this.auth.currentUserId;
+    if (!userId) throw new Error('No hay usuario autenticado.');
+
     const { error } = await this.supabase
       .from('decks')
       .delete()
-      .eq('id', versionId);
+      .eq('id', versionId)
+      .eq('user_id', userId);
 
     if (error) throw error;
   }

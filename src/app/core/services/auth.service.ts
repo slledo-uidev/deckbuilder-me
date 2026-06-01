@@ -26,6 +26,10 @@ export class AuthService {
   constructor() {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey, {
       auth: {
+        storage: sessionStorage,
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
         // Evita NavigatorLockAcquireTimeoutError cuando varias operaciones
         // de auth compiten por el lock (carga de sesión + signup/login simultáneos)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
