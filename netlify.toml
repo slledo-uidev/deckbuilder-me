@@ -2,6 +2,11 @@
   command = "npm run build"
   publish = "dist/deckbuilder-me"
 
+[build.environment]
+  NODE_VERSION = "20"
+  NPM_CONFIG_REGISTRY = "https://registry.npmjs.org/"
+  NPM_CONFIG_ALWAYS_AUTH = "false"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

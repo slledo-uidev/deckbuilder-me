@@ -75,6 +75,15 @@ El proyecto ya incluye configuración lista para Netlify en [netlify.toml](netli
 3. Añade las variables de entorno de Supabase si las gestionas desde el panel de Netlify.
 4. Publica el sitio; las rutas de Angular quedan resueltas con el redirect SPA.
 
+#### Troubleshooting Netlify (npm E401)
+
+Si Netlify falla en `Installing dependencies` con `npm ERR! code E401`:
+
+1. Revisa en Netlify variables heredadas como `NPM_TOKEN`, `NPM_AUTH_TOKEN`, `NODE_AUTH_TOKEN` o `NPM_CONFIG_USERCONFIG` y elimdnalas si no usas paquetes privados.
+1. Revisa en Netlify variables heredadas como `NPM_TOKEN`, `NPM_AUTH_TOKEN`, `NODE_AUTH_TOKEN` o `NPM_CONFIG_USERCONFIG` y eliminalas si no usas paquetes privados.
+2. Este repo fuerza el registro publico con `.npmrc` y `NPM_CONFIG_REGISTRY` en `netlify.toml`.
+3. Vuelve a desplegar con cache limpio (`Clear cache and deploy site`).
+
 ## Development Standards
 
 ### SCSS + BEM Methodology
