@@ -84,6 +84,8 @@ Si Netlify falla en `Installing dependencies` con `npm ERR! code E401`:
 2. Este repo fuerza el registro publico con `.npmrc` y `NPM_CONFIG_REGISTRY` en `netlify.toml`.
 3. Vuelve a desplegar con cache limpio (`Clear cache and deploy site`).
 
+Nota: si tu organizacion inyecta configuracion global de npm (por ejemplo Artifactory privado), el comando de build en `netlify.toml` ya fuerza `NPM_CONFIG_USERCONFIG=$PWD/.npmrc` para ignorar esa configuracion heredada.
+
 ## Development Standards
 
 ### SCSS + BEM Methodology

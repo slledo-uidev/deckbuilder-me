@@ -1,11 +1,12 @@
 [build]
-  command = "npm run build"
+  command = "NPM_CONFIG_USERCONFIG=$PWD/.npmrc npm ci --registry=https://registry.npmjs.org/ && npm run build"
   publish = "dist/deckbuilder-me"
 
 [build.environment]
   NODE_VERSION = "20"
   NPM_CONFIG_REGISTRY = "https://registry.npmjs.org/"
   NPM_CONFIG_ALWAYS_AUTH = "false"
+  NPM_CONFIG_USERCONFIG = "/opt/build/repo/.npmrc"
 
 [[redirects]]
   from = "/*"
