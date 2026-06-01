@@ -64,6 +64,17 @@ npm run build
 # Output will be in dist/deckbuilder-me
 ```
 
+### Deploy en Netlify
+
+El proyecto ya incluye configuración lista para Netlify en [netlify.toml](netlify.toml).
+
+1. Conecta el repositorio en Netlify.
+2. Usa estos valores de build:
+  - Build command: `npm run build`
+  - Publish directory: `dist/deckbuilder-me`
+3. Añade las variables de entorno de Supabase si las gestionas desde el panel de Netlify.
+4. Publica el sitio; las rutas de Angular quedan resueltas con el redirect SPA.
+
 ## Development Standards
 
 ### SCSS + BEM Methodology
