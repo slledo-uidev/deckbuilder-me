@@ -257,6 +257,79 @@ export class DeckService {
   }
 
   /**
+   * Fetches all deck versions for the current user directly from the `decks`
+   * table, joined with their parent family for archetype/name context.
+   * Ordered by creation date descending. Used for the 'decklist' view.
+   */
+  async getDecksFlat(): Promise<import('@models/deck.model').Deck[]> {
+    const userId = this.auth.currentUserId;
+    if (!userId) throw new Error('No hay usuario autenticado.');
+
+    const { data, error } = await this.supabase
+      .from('decks')
+      .select(`
+        id,
+        version_name,
+        card_list,
+        notes,
+        created_at,
+        thumbnail_card_id,
+        deck_families!inner (
+          id,
+          name,
+          archetype,
+          description,
+          user_id
+        )
+      `)
+      .eq('deck_families.user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    return (data as any[]).map(row => {
+      const family = row.deck_families;
+      const cardList: any[] = row.card_list ?? [];
+      const digiEggs = cardList.filter(c => c.isEgg === true).map(c => ({ cardId: c.cardId, quantity: c.quantity }));
+      const mainDeck = cardList.filter(c => c.isEgg !== true).map(c => ({ cardId: c.cardId, quantity: c.quantity }));
+
+      return {
+        id: row.id,
+        name: row.version_name ?? family.name,
+        description: family.description,
+        supabaseFamilyId: family.id,
+        supabaseVersionId: row.id,
+        digiEggs,
+        mainDeck,
+        sideDeck: [],
+        colors: [],
+        archetype: family.archetype ?? family.name,
+        placeholderCardId: row.thumbnail_card_id ?? undefined,
+        createdAt: new Date(row.created_at),
+        updatedAt: new Date(row.created_at)
+      };
+    });
+  }
+
+  /**
+   * Fetches all DeckFamilies with their nested deck versions (full relational
+   * query). Used for the 'advanced' view.
+   */
+  async getFamiliesWithDecks(): Promise<DeckFamilyWithVersions[]> {
+    const userId = this.auth.currentUserId;
+    if (!userId) throw new Error('No hay usuario autenticado.');
+
+    const { data, error } = await this.supabase
+      .from('deck_families')
+      .select('*, decks(*)')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data as unknown as DeckFamilyWithVersions[];
+  }
+
+  /**
    * Delete a DeckFamily (and all its versions via DB cascade).
    */
   async deleteFamily(familyId: string): Promise<void> {
@@ -280,20 +353,24 @@ export class DeckService {
     versionName: string,
     options: { notes?: string; archetype?: string; thumbnailCardId?: string } = {}
   ): Promise<DeckVersion> {
-    // Build insert payload and ensure archetype is never null: default to 'no-family'
+    // user_id es obligatorio en la tabla decks
+    const userId = this.auth.currentUserId;
+    if (!userId) throw new Error('No hay usuario autenticado.');
+
     const payload: any = {
       family_id: familyId,
+      user_id: userId,
       version_name: versionName,
       card_list: cards
     };
     if (options.notes !== undefined) payload.notes = options.notes;
-    // If archetype is explicitly provided use it; otherwise default to 'no-family'
+    // archetype: usar el proporcionado o heredar el de la familia (se resuelve en DB via trigger si no se pasa)
     payload.archetype = options.archetype !== undefined && options.archetype !== null
       ? options.archetype
       : 'no-family';
-    // Support thumbnail card id persistence in DB
-    if ((options as any).thumbnailCardId !== undefined) {
-      payload.thumbnail_card_id = (options as any).thumbnailCardId;
+    // thumbnail_card_id: carta portada del mazo
+    if (options.thumbnailCardId !== undefined) {
+      payload.thumbnail_card_id = options.thumbnailCardId;
     }
 
     const { data, error } = await this.supabase

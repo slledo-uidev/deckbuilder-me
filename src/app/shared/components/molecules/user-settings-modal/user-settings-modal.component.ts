@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { AppUser } from '@models/user.model';
-import { StorageService } from '@services/storage.service';
+import { ProfileService, DefaultLibraryView } from '@services/profile.service';
 
-export type LibraryMode = 'decklist' | 'advanced';
+export type LibraryMode = DefaultLibraryView;
 
 @Component({
   selector: 'app-user-settings-modal',
@@ -17,12 +17,11 @@ export class UserSettingsModalComponent implements OnChanges {
 
   libraryMode: LibraryMode = 'decklist';
 
-  constructor(private storageService: StorageService) {}
+  constructor(private profileService: ProfileService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isVisible']?.currentValue === true) {
-      const settings = this.storageService.getSettings();
-      this.libraryMode = settings?.libraryMode || 'decklist';
+      this.libraryMode = this.profileService.defaultLibraryView;
     }
   }
 
@@ -31,8 +30,7 @@ export class UserSettingsModalComponent implements OnChanges {
   }
 
   onSave(): void {
-    const settings = this.storageService.getSettings();
-    this.storageService.saveSettings({ ...settings, libraryMode: this.libraryMode });
+    this.profileService.setDefaultLibraryView(this.libraryMode);
     this.libraryModeChanged.emit(this.libraryMode);
     this.closed.emit();
   }

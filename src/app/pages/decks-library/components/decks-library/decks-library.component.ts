@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { StorageService, CardService, DeckService } from '@core/services';
+import { StorageService, CardService, DeckService, ProfileService } from '@core/services';
+import { DefaultLibraryView } from '@core/services/profile.service';
 import { Deck, Card, DeckArchetypeGroup, Archetype, DeckFamilyWithVersions, DeckFamily } from '@core/models';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { groupDecksByArchetype } from '@shared/utils/deck.utils';
 import { DeckAction, ArchetypeUpdateData } from '@shared/components/molecules/archetype-versions-modal/archetype-versions-modal.component';
 import { CreateArchetypeData } from '@shared/components/molecules/create-archetype-modal/create-archetype-modal.component';
@@ -97,13 +98,18 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
     private storageService: StorageService,
     private router: Router,
     private cardService: CardService,
-    private deckService: DeckService
+    private deckService: DeckService,
+    private profileService: ProfileService
   ) { }
 
   ngOnInit(): void {
-    // Set initial tab based on user preference
-    const settings = this.storageService.getSettings();
-    this.showAdvanced = settings?.libraryMode === 'advanced';
+    // Escuchar la preferencia del usuario y recargar datos al cambiar de vista
+    this.profileService.defaultLibraryView$
+      .pipe(takeUntil(this.destroy$), distinctUntilChanged())
+      .subscribe(view => {
+        this.showAdvanced = view === 'advanced';
+        this.loadViewData(view);
+      });
 
     // Load all cards
     this.cardService.cards$
@@ -126,29 +132,77 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
       .subscribe(archetypes => {
         this.archetypes = archetypes;
       });
-
-    // Load cloud library from Supabase
-    this.loadCloudLibrary();
   }
 
-  // ─── Supabase library ───────────────────────────────────────────────────────
+  // ─── Motor de carga dinámica ─────────────────────────────────────────────
 
-  async loadCloudLibrary(): Promise<void> {
+  /**
+   * Carga los datos de Supabase según la vista activa:
+   * - 'decklist' → consulta directa a `decks` ordenada por fecha.
+   * - 'advanced'  → consulta relacional a `deck_families` con `decks` anidadas.
+   * En ambos casos sincroniza localStorage para que las vistas reactivas
+   * (archetypeGroups, decks$) se actualicen automáticamente.
+   */
+  async loadViewData(view: DefaultLibraryView): Promise<void> {
     this.cloudLoading = true;
     this.cloudError = null;
     try {
-      // Sync localStorage from Supabase (source of truth)
-      const remoteDecks = await this.deckService.getDecksForSync();
-      this.storageService.replaceAllDecks(remoteDecks);
+      if (view === 'decklist') {
+        // Query directa a la tabla decks ordenada por fecha
+        const flatDecks = await this.deckService.getDecksFlat();
+        this.storageService.replaceAllDecks(flatDecks);
+      } else {
+        // Consulta relacional deck_families con decks anidadas (incluye thumbnail_card_id y archetype)
+        const [families, famWithVersions] = await Promise.all([
+          this.deckService.getFamilies(),
+          this.deckService.getFamiliesWithDecks()
+        ]);
+        this.dbFamilies = families;
+        this.cloudFamilies = famWithVersions;
 
-      this.cloudFamilies = await this.deckService.getUserLibrary();
-      this.dbFamilies = await this.deckService.getFamilies();
+        // Construir decks planos desde las familias relacionales para que
+        // archetypeGroups tenga thumbnail_card_id actualizado desde Supabase
+        const flatDecks = famWithVersions.flatMap((fam: any) =>
+          (fam.decks ?? []).map((v: any) => {
+            const cardList: any[] = v.card_list ?? [];
+            const digiEggs = cardList.filter((c: any) => c.isEgg === true).map((c: any) => ({ cardId: c.cardId, quantity: c.quantity }));
+            const mainDeck = cardList.filter((c: any) => c.isEgg !== true).map((c: any) => ({ cardId: c.cardId, quantity: c.quantity }));
+            return {
+              id: v.id,
+              name: v.version_name ?? fam.name,
+              description: fam.description,
+              supabaseFamilyId: fam.id,
+              supabaseVersionId: v.id,
+              digiEggs,
+              mainDeck,
+              sideDeck: [],
+              colors: [],
+              archetype: v.archetype ?? fam.archetype ?? fam.name,
+              placeholderCardId: v.thumbnail_card_id ?? undefined,
+              createdAt: new Date(v.created_at ?? fam.created_at),
+              updatedAt: new Date(v.created_at ?? fam.created_at)
+            };
+          })
+        );
+        this.storageService.replaceAllDecks(flatDecks);
+      }
     } catch (error) {
-      console.error('Error loading cloud library:', error);
-      this.cloudError = 'No se pudo cargar la librería en la nube.';
+      console.error('[DecksLibrary] Error loading view data:', error);
+      this.cloudError = 'No se pudo cargar la librería. Inténtalo de nuevo.';
     } finally {
       this.cloudLoading = false;
     }
+  }
+
+  /**
+   * Cambia la vista, la persiste en el perfil del usuario (Supabase)
+   * y recarga los datos correspondientes.
+   */
+  async toggleView(): Promise<void> {
+    const next: DefaultLibraryView = this.showAdvanced ? 'decklist' : 'advanced';
+    await this.profileService.setDefaultLibraryView(next);
+    // El subject de profileService emite el nuevo valor →
+    // la suscripción en ngOnInit llama a loadViewData(next) automáticamente.
   }
 
   /**
@@ -183,6 +237,9 @@ export class DecksLibraryComponent implements OnInit, OnDestroy {
   
   onToggleAdvanced(value: boolean): void {
     this.showAdvanced = value;
+    // Persist preference to Supabase → profileService emitirá el nuevo valor
+    // que a su vez dispara loadViewData() desde la suscripción en ngOnInit
+    this.profileService.setDefaultLibraryView(value ? 'advanced' : 'decklist');
   }
 
   // ─── Advanced view handlers ─────────────────────────────────────────────────

@@ -1,0 +1,148 @@
+
+<div class="deck-lab-panel">
+
+  <!-- Grade + Score -->
+  <div class="deck-lab-panel__header">
+    <div class="deck-lab-panel__grade">
+      <div class="deck-lab-panel__grade-circle" [ngClass]="evaluation?.grade">
+        {{ evaluation?.grade }}
+      </div>
+      <div class="deck-lab-panel__score">{{ evaluation?.score }}/100</div>
+    </div>
+    <div class="deck-lab-panel__engine-info">
+      <div class="deck-lab-panel__engine">{{ evaluation?.engine }}</div>
+      <div class="deck-lab-panel__types">
+        <span *ngFor="let key of metrics?.typeDistribution | keyvalue" class="deck-lab-panel__type">
+          {{ key.key }}: {{ getTypeValue(key.value).count }}
+        </span>
+      </div>
+    </div>
+    <div class="deck-lab-panel__header-stats">
+      <div class="deck-lab-panel__stat">
+        <span class="deck-lab-panel__stat-label">Brick Rate</span>
+        <span class="deck-lab-panel__stat-value"
+          [ngClass]="{
+            'deck-lab-panel__stat-value--ok':   consistencia?.brickRate < 10,
+            'deck-lab-panel__stat-value--warn':  consistencia?.brickRate >= 10 && consistencia?.brickRate <= 20,
+            'deck-lab-panel__stat-value--bad':   consistencia?.brickRate > 20
+          }">
+          {{ consistencia?.brickRate | number:'1.0-0' }}%
+        </span>
+      </div>
+      <div class="deck-lab-panel__stat">
+        <span class="deck-lab-panel__stat-label">Mulligan</span>
+        <span class="deck-lab-panel__stat-tag"
+          [ngClass]="{
+            'deck-lab-panel__stat-tag--ok':   consistencia?.mulliganRecomendacion === 'EXCELENTE',
+            'deck-lab-panel__stat-tag--warn': consistencia?.mulliganRecomendacion === 'ESTABLE',
+            'deck-lab-panel__stat-tag--bad':  consistencia?.mulliganRecomendacion === 'RECOMENDADO'
+          }">
+          {{ consistencia?.mulliganRecomendacion }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div class="deck-lab-panel__alerts" *ngIf="(evaluation?.alerts ?? []).length > 0">
+    <div class="deck-lab-panel__alerts-title">
+      <lucide-angular name="flask-conical" [size]="12" class="deck-lab-panel__alerts-title-icon"></lucide-angular>
+      Alertas del Sistema
+    </div>
+    <div class="deck-lab-panel__alerts-list">
+      <div *ngFor="let alert of evaluation?.alerts"
+          class="deck-lab-panel__alert"
+          [ngClass]="isCritical(alert) ? 'deck-lab-panel__alert--critical' : 'deck-lab-panel__alert--info'">
+        <span class="deck-lab-panel__alert-icon">
+          <lucide-angular *ngIf="isCritical(alert)" name="alert-circle" [size]="14" class="lucide-icon"></lucide-angular>
+          <lucide-angular *ngIf="!isCritical(alert)" name="info" [size]="14" class="lucide-icon"></lucide-angular>
+        </span>
+        <span class="deck-lab-panel__alert-text">{{ alert }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="deck-lab-panel__alerts deck-lab-panel__alerts--ok" *ngIf="!(evaluation?.alerts ?? []).length">
+    <span class="deck-lab-panel__alert-icon">
+      <lucide-angular name="check" [size]="14" class="lucide-icon"></lucide-angular>
+    </span>
+    Sin alertas críticas
+  </div>
+
+  <div class="deck-lab-panel__layout-grid">
+    <div class="deck-lab-panel__layout-left">
+      <div class="deck-lab-panel__section" *ngIf="breakdown.length">
+        <div class="deck-lab-panel__section-title">
+          <lucide-angular name="layout" [size]="12" class="lucide-icon"></lucide-angular>
+          Desglose de nota del deck
+        </div>
+
+        <div class="deck-lab-panel__bar-chart deck-lab-panel__bar-chart--score">
+          <div *ngFor="let item of breakdown" class="deck-lab-panel__bar-row deck-lab-panel__bar-row--score">
+            <span class="deck-lab-panel__bar-label deck-lab-panel__bar-label--score">{{ item.label }}</span>
+            <div class="deck-lab-panel__bar-track">
+              <div
+                class="deck-lab-panel__bar-fill"
+                [style.width.%]="getBreakdownPercent(item)"
+                [style.background]="getBreakdownBarColor(item)">
+              </div>
+            </div>
+            <span class="deck-lab-panel__bar-count">{{ item.score }}/{{ item.max }}</span>
+          </div>
+        </div>
+
+        <div class="deck-lab-panel__score-notes">
+          <div *ngFor="let item of breakdown" class="deck-lab-panel__score-note">
+            <span class="deck-lab-panel__score-note-label">{{ item.label }}:</span>
+            <span>{{ item.detail }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deck-lab-panel__layout-right">
+      <!-- Type Distribution -->
+      <div class="deck-lab-panel__section" *ngIf="metrics?.typeDistribution">
+        <div class="deck-lab-panel__section-title">
+          <lucide-angular name="bar-chart-3" [size]="12" class="lucide-icon"></lucide-angular>
+          Distribución por tipo
+        </div>
+        <div class="deck-lab-panel__bar-chart">
+          <div *ngFor="let key of metrics?.typeDistribution | keyvalue" class="deck-lab-panel__bar-row">
+            <span class="deck-lab-panel__bar-label">{{ key.key }}</span>
+            <div class="deck-lab-panel__bar-track">
+              <div
+                class="deck-lab-panel__bar-fill"
+                [style.width.%]="getTypeValue(key.value).percent"
+                [style.background]="getTypeColor(key.key)">
+              </div>
+            </div>
+            <span class="deck-lab-panel__bar-count">
+              {{ getTypeValue(key.value).count }} ({{ getTypeDistributionPercent(getTypeValue(key.value).count) }}%)
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Searchers -->
+      <div class="deck-lab-panel__section" *ngIf="cards.length">
+        <div class="deck-lab-panel__section-title">
+          <lucide-angular name="search" [size]="12" class="lucide-icon"></lucide-angular>
+          Buscadores ({{ totalSearchers }})
+        </div>
+        <div class="deck-lab-panel__bar-chart">
+          <div *ngFor="let type of (searchersByType | keyvalue)" class="deck-lab-panel__bar-row">
+            <span class="deck-lab-panel__bar-label">{{ type.key }}</span>
+            <div class="deck-lab-panel__bar-track">
+              <div
+                class="deck-lab-panel__bar-fill"
+                [style.width.%]="getSearcherPercent(type.value)"
+                [style.background]="getTypeColor(type.key)">
+              </div>
+            </div>
+            <span class="deck-lab-panel__bar-count">{{ type.value }} ({{ getSearcherPercent(type.value) | number:'1.0-0' }}%)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

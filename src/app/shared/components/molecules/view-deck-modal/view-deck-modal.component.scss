@@ -345,3 +345,547 @@
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DECK LAB PANEL
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Botón Lab en actions ──────────────────────────────────────────────────────
+.view-deck-modal__lab-btn--active {
+  app-button button,
+  button {
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+  }
+}
+
+// ── Panel principal ───────────────────────────────────────────────────────────
+.deck-lab {
+  position: absolute;
+  // Queda justo debajo del header; ocupa el resto del modal
+  top: calc(#{$spacing-3} * 2 + 1.125rem + #{$spacing-1}); // aprox altura del header
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  background: #070b14;
+  border-top: 1px solid rgba(0, 229, 255, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  // Línea neon superior
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 5%;
+    right: 5%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00e5ff 40%, #00e5ff 60%, transparent);
+    opacity: 0.6;
+  }
+
+  // ── Header del Lab ──────────────────────────────────────────────────────────
+  &__header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: $spacing-2 $spacing-3;
+    border-bottom: 1px solid rgba(0, 229, 255, 0.15);
+    flex-shrink: 0;
+  }
+
+  &__header-title {
+    font-family: $font-family-mono;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+    color: #00e5ff;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+    justify-self: start;
+  }
+
+  &__badge {
+    font-size: 9px;
+    padding: 2px 6px;
+    border: 1px solid rgba(0, 229, 255, 0.4);
+    border-radius: $border-radius-sm;
+    color: rgba(0, 229, 255, 0.7);
+    letter-spacing: 0.12em;
+    justify-self: end;
+  }
+
+  &__close {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: $border-radius-sm;
+    color: $color-digital-text-sub;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+
+    &:hover {
+      color: #00e5ff;
+      border-color: rgba(0, 229, 255, 0.3);
+    }
+  }
+
+  // ── Body scrollable ─────────────────────────────────────────────────────────
+  &__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: $spacing-2 $spacing-3 $spacing-3;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+    
+    &--block{
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: $spacing-2;
+    }
+  }
+
+  // ── Grid principal 2/3 + 1/3 ───────────────────────────────────────────────
+  &__main-grid {
+    // display: grid;
+    // grid-template-columns: 2fr 1fr;
+    gap: $spacing-2;
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__col {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+  }
+
+  &__body-inner {
+
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.3); border-radius: 2px; }
+  }
+
+  // ── Módulos ─────────────────────────────────────────────────────────────────
+  &__module {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(0, 229, 255, 0.12);
+    border-radius: $border-radius-md;
+    padding: $spacing-2 $spacing-3;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+
+    &--practice {
+      border-color: rgba(124, 77, 255, 0.2);
+    }
+  }
+
+  &__module-title {
+    margin: 0;
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(0, 229, 255, 0.8);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  // ── Botón Simular ────────────────────────────────────────────────────────────
+  &__sim-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(0, 229, 255, 0.1), rgba(0, 229, 255, 0.05));
+    border: 1px solid rgba(0, 229, 255, 0.4);
+    border-radius: $border-radius-sm;
+    color: #00e5ff;
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    align-self: flex-start;
+
+    &:hover {
+      background: rgba(0, 229, 255, 0.12);
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+    }
+  }
+
+  &__sim-note {
+    font-size: 9px;
+    opacity: 0.6;
+    font-weight: $font-weight-normal;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  // ── Métricas ─────────────────────────────────────────────────────────────────
+  &__metrics {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+    flex: 1;
+  }
+
+  &__metric {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-1;
+    .row{
+      display: flex;
+      width: 100%;
+      gap: $spacing-1;
+    }
+  }
+
+  &__metric-label {
+    font-size: $font-size-xs;
+    font-family: $font-family-mono;
+    color: $color-digital-text-sub;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__metric-value {
+    font-size: $font-size-xl;
+    font-family: $font-family-mono;
+    font-weight: $font-weight-bold;
+    text-align: right;
+    align-self: center;
+  }
+
+  &__metric--danger  &__metric-value { color: #ff1744; }
+  &__metric--success &__metric-value { color: #00e676; }
+  &__metric--info    &__metric-value { color: #2979ff; }
+
+  &__metric-bar {
+
+    height: 40px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: $border-radius-sm;
+    overflow: hidden;
+  }
+
+  &__metric-fill {
+    height: 100%;
+    border-radius: $border-radius-sm;
+    transition: width 0.6s ease;
+
+    &--danger  { background: linear-gradient(90deg, #ff1744, #ff616f); }
+    &--success { background: linear-gradient(90deg, #00e676, #69f0ae); }
+    &--info    { background: linear-gradient(90deg, #2979ff, #82b1ff); }
+  }
+
+  &__metric-desc {
+
+    font-size: 10px;
+    color: $color-digital-text-dim;
+  }
+
+  // ── Mulligan Advisor ─────────────────────────────────────────────────────────
+  &__mulligan {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: $border-radius-sm;
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+
+    &--keep {
+      background: rgba(0, 230, 118, 0.08);
+      border-color: rgba(0, 230, 118, 0.3);
+      color: #00e676;
+    }
+
+    &--mulligan {
+      background: rgba(255, 23, 68, 0.08);
+      border-color: rgba(255, 23, 68, 0.3);
+      color: #ff1744;
+    }
+  }
+
+  &__mulligan-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    .deck-lab__mulligan--keep    & { background: #00e676; box-shadow: 0 0 6px #00e676; }
+    .deck-lab__mulligan--mulligan & { background: #ff1744; box-shadow: 0 0 6px #ff1744; }
+  }
+
+  // ── Bar chart (nivel y coste) ────────────────────────────────────────────────
+  &__bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &--compact {
+      gap: 4px;
+    }
+  }
+
+  &__bar-row {
+    display: grid;
+    grid-template-columns: 36px 1fr 28px;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__bar-label {
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    color: $color-digital-text-sub;
+    text-align: right;
+  }
+
+  &__bar-track {
+    height: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  &__bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    min-width: 2px;
+  }
+
+  &__bar-count {
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    color: $color-digital-text;
+    text-align: left;
+  }
+
+  // ── Alert de curva ────────────────────────────────────────────────────────────
+  &__alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    background: rgba(255, 171, 0, 0.08);
+    border: 1px solid rgba(255, 171, 0, 0.3);
+    border-radius: $border-radius-sm;
+    padding: 8px 12px;
+    font-size: $font-size-xs;
+    color: #ffab00;
+    line-height: 1.4;
+
+    .lucide-icon {
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+  }
+
+  // ── Pie chart + leyenda ────────────────────────────────────────────────────────
+  &__type-layout {
+    display: flex;
+    gap: $spacing-3;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  &__pie {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 2px solid rgba(0, 229, 255, 0.15);
+  }
+
+  &__type-legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+
+  &__type-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: $font-size-xs;
+  }
+
+  &__type-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &__type-name {
+    flex: 1;
+    color: $color-digital-text;
+    font-family: $font-family-mono;
+  }
+
+  &__type-pct {
+    font-family: $font-family-mono;
+    font-weight: $font-weight-bold;
+    color: $color-digital-text;
+  }
+
+  &__type-count {
+    color: $color-digital-text-dim;
+    font-size: 10px;
+  }
+
+  // ── Mano de práctica ─────────────────────────────────────────────────────────
+  &__practice-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__practice-zone {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-1;
+    flex: 1;
+
+    &--security .deck-lab__practice-card-cover {
+      display: block;
+    }
+  }
+
+  &__practice-row {
+    display: flex;
+    gap: $spacing-2;
+
+    .deck-lab__practice-zone {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  &__practice-zone-label {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: $font-family-mono;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $color-digital-text-sub;
+  }
+
+  &__practice-zone-count {
+    margin-left: auto;
+    font-weight: $font-weight-bold;
+    color: $color-digital-text;
+  }
+
+  &__practice-cards {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+  }
+
+  &__practice-card {
+    flex: 1 1 0;
+    min-width: 0;
+    border-radius: $border-radius-sm;
+    overflow: hidden;
+    border: 1px solid rgba(124, 77, 255, 0.3);
+    position: relative;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+    cursor: default;
+
+    &:hover {
+      transform: translateY(-3px);
+      border-color: rgba(124, 77, 255, 0.7);
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      aspect-ratio: 5/7;
+      object-fit: cover;
+    }
+
+    &--facedown img {
+      filter: brightness(0.45) saturate(0);
+    }
+  }
+
+  &__practice-card-cover {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(0, 229, 255, 0.05) 0px,
+      rgba(0, 229, 255, 0.05) 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    border: 1px solid rgba(0, 229, 255, 0.2);
+  }
+
+  &__mulligan-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(124, 77, 255, 0.08);
+    border: 1px solid rgba(124, 77, 255, 0.4);
+    border-radius: $border-radius-sm;
+    color: #7c4dff;
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 8px 16px;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: background 0.2s, box-shadow 0.2s;
+
+    &:hover:not(:disabled) {
+      background: rgba(124, 77, 255, 0.14);
+      box-shadow: 0 0 10px rgba(124, 77, 255, 0.25);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  &__empty {
+    margin: 0;
+    font-size: $font-size-xs;
+    color: $color-digital-text-dim;
+    font-family: $font-family-mono;
+  }
+}

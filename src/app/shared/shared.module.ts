@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgChartsModule } from 'ng2-charts';
-import { LucideAngularModule, X, ChevronDown, ChevronUp, Plus, Minus, Trash2, Check, AlertCircle, Info, Save, Download, Upload, Filter, Search, BarChart3, PieChart, Layout, Layers, Package, Inbox, RotateCcw, Sun, Moon, User, LogOut, Folder, Grid, Pencil, Star, FilePlus, Eye, Settings } from 'lucide-angular';
+import { LucideAngularModule, X, ChevronDown, ChevronUp, Plus, Minus, Trash2, Check, AlertCircle, Info, Save, Download, Upload, Filter, Search, BarChart3, PieChart, Layout, Layers, Package, Inbox, RotateCcw, Sun, Moon, User, LogOut, Folder, Grid, Pencil, Star, FilePlus, Eye, Settings, FlaskConical, Shield } from 'lucide-angular';
 
 // Atoms
 import { ButtonComponent } from './components/atoms/button/button.component';
@@ -38,6 +38,7 @@ import { ArchetypeCardComponent } from './components/molecules/archetype-card/ar
 import { ArchetypeVersionsModalComponent } from './components/molecules/archetype-versions-modal/archetype-versions-modal.component';
 import { CreateArchetypeModalComponent } from './components/molecules/create-archetype-modal/create-archetype-modal.component';
 import { ViewDeckModalComponent } from './components/molecules/view-deck-modal/view-deck-modal.component';
+import { DeckLabPanelModule } from './components/molecules/deck-lab-panel/deck-lab-panel.module';
 import { UserSettingsModalComponent } from './components/molecules/user-settings-modal/user-settings-modal.component';
 import { AuthVisualComponent } from './components/molecules/auth-visual/auth-visual.component';
 import { ToastComponent } from './components/molecules/toast/toast.component';
@@ -100,7 +101,8 @@ const COMPONENTS = [
     FormsModule,
     RouterModule,
     NgChartsModule,
-    LucideAngularModule.pick({ 
+    DeckLabPanelModule,
+    LucideAngularModule.pick({
       X, 
       ChevronDown, 
       ChevronUp, 
@@ -132,7 +134,9 @@ const COMPONENTS = [
       Pencil,
       Star,
       FilePlus,
-      Eye
+      Eye,
+      FlaskConical,
+      Shield
     })
   ],
   exports: [...COMPONENTS, LucideAngularModule]

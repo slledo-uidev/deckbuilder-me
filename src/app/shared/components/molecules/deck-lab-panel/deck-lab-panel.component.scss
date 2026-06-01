@@ -1,0 +1,441 @@
+@import 'variables';
+@import 'mixins';
+
+:host {
+  display: block;
+}
+
+.deck-lab-panel {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+  width: 100%;
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // HEADER: Grade + Score + Engine
+  // ──────────────────────────────────────────────────────────────────────────
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-3;
+    padding: $spacing-3;
+    background: rgba($color-cyber-800, 0.4);
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    flex-shrink: 0;
+
+    @media (max-width: $breakpoint-md) {
+      flex-wrap: wrap;
+    }
+  }
+
+  &__grade {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  &__grade-circle {
+    width: 48px;
+    height: 48px;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    font-family: $font-family-mono;
+    border-radius: $border-radius-sm;
+    border: 1px solid $color-cyber-500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $color-cyber-800;
+    color: $color-digital-text;
+    transition: $transition-base;
+
+    &.A {
+      background: rgba(0, 230, 118, 0.15);
+      color: $color-success;
+      border-color: rgba(0, 230, 118, 0.4);
+    }
+    &.B {
+      background: rgba(0, 229, 255, 0.15);
+      color: $color-neon-cyan;
+      border-color: rgba(0, 229, 255, 0.4);
+    }
+    &.C {
+      background: rgba(255, 171, 0, 0.15);
+      color: $color-warning;
+      border-color: rgba(255, 171, 0, 0.4);
+    }
+    &.F {
+      background: rgba(255, 23, 68, 0.15);
+      color: $color-error;
+      border-color: rgba(255, 23, 68, 0.4);
+    }
+  }
+
+  &__score {
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    color: $color-digital-text-dim;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__engine-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__header-stats {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    margin-left: auto;
+
+    @media (max-width: $breakpoint-md) {
+      width: 100%;
+      margin-left: 0;
+      justify-content: flex-start;
+      padding-top: $spacing-1;
+      border-top: 1px solid rgba($color-cyber-500, 0.5);
+    }
+  }
+
+  &__engine {
+    font-family: $font-family-mono;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+    color: $color-digital-text;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+
+  &__types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  &__type {
+    font-size: $font-size-xs;
+    color: $color-digital-text-sub;
+    font-family: $font-family-mono;
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // ALERTS SECTION
+  // ──────────────────────────────────────────────────────────────────────────
+  &__alerts {
+    padding: $spacing-3;
+    background: rgba($color-cyber-800, 0.4);
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+
+    &--ok {
+      border-color: rgba(0, 230, 118, 0.3);
+      background: rgba(0, 230, 118, 0.08);
+      color: rgba(0, 230, 118, 0.8);
+      font-size: $font-size-sm;
+      display: flex;
+      align-items: center;
+      gap: $spacing-1;
+    }
+  }
+
+  &__alerts-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: $font-size-xs;
+    font-family: $font-family-mono;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $color-digital-text-dim;
+    margin-bottom: $spacing-2;
+    padding-bottom: $spacing-1;
+    border-bottom: 1px solid $color-cyber-500;
+  }
+
+  &__alerts-title-icon {
+    color: rgba(0, 229, 255, 0.85);
+    flex-shrink: 0;
+  }
+
+  &__alerts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: $font-size-sm;
+    color: $color-digital-text-sub;
+    line-height: $line-height-normal;
+    padding: 6px 8px;
+    border-radius: $border-radius-sm;
+    background: rgba($color-cyber-900, 0.35);
+    border: 1px solid transparent;
+
+    &--critical {
+      background: rgba(255, 23, 68, 0.08);
+      border-color: rgba(255, 23, 68, 0.25);
+      color: rgba(255, 80, 100, 0.9);
+    }
+
+    &--info {
+      background: rgba(0, 229, 255, 0.06);
+      border-color: rgba(0, 229, 255, 0.18);
+      color: $color-digital-text-sub;
+    }
+  }
+
+  &__alert-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    color: inherit;
+  }
+
+  &__alert-text {
+    flex: 1;
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // SECTIONS: Distribution, Searchers
+  // ──────────────────────────────────────────────────────────────────────────
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+    padding: $spacing-3;
+    background: rgba($color-cyber-800, 0.4);
+    border: 1px solid $color-cyber-500;
+    border-radius: $border-radius-sm;
+    height: 100%;
+  }
+
+  &__section-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: $font-size-xs;
+    font-family: $font-family-mono;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(0, 229, 255, 0.8);
+    margin: 0 0 $spacing-1 0;
+    padding-bottom: $spacing-2;
+    border-bottom: 1px solid $color-cyber-500;
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // DISTRIBUTION ITEMS
+  // ──────────────────────────────────────────────────────────────────────────
+  &__layout-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: $spacing-2;
+
+    @media (max-width: $breakpoint-md) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__layout-left,
+  &__layout-right {
+    min-width: 0;
+  }
+
+  &__layout-right {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+  }
+
+  &__bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &--score {
+      gap: $spacing-2;
+    }
+  }
+
+  &__bar-row {
+    display: grid;
+    grid-template-columns: 56px 1fr 56px;
+    align-items: center;
+    gap: 8px;
+
+    &--score {
+      grid-template-columns: 140px 1fr 56px;
+
+      @media (max-width: $breakpoint-md) {
+        grid-template-columns: 100px 1fr 52px;
+      }
+    }
+  }
+
+  &__bar-label {
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    color: $color-digital-text-sub;
+    text-align: right;
+    white-space: nowrap;
+
+    &--score {
+      text-align: left;
+      white-space: normal;
+      line-height: 1.2;
+    }
+  }
+
+  &__bar-track {
+    height: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  &__bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    min-width: 2px;
+  }
+
+  &__bar-count {
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    color: $color-digital-text;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  &__score-notes {
+    margin-top: $spacing-1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__score-note {
+    font-size: $font-size-xs;
+    color: $color-digital-text-sub;
+    line-height: $line-height-normal;
+  }
+
+  &__score-note-label {
+    color: $color-digital-text;
+    font-family: $font-family-mono;
+    font-weight: $font-weight-medium;
+    margin-right: 4px;
+  }
+
+  &__distribution {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  &__dist-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: $font-size-sm;
+    padding: 8px 0;
+    color: $color-digital-text;
+    border-bottom: 1px solid rgba($color-cyber-500, 0.3);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__dist-label {
+    color: $color-digital-text-sub;
+    font-size: $font-size-sm;
+  }
+
+  &__dist-value {
+    font-family: $font-family-mono;
+    font-size: $font-size-sm;
+    color: $color-digital-text;
+    font-weight: $font-weight-medium;
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // STATS: Brick Rate + Mulligan
+  // ──────────────────────────────────────────────────────────────────────────
+  &__stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 0 $spacing-1;
+    min-width: 88px;
+  }
+
+  &__stat-label {
+    font-size: $font-size-xs;
+    font-family: $font-family-mono;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $color-digital-text-dim;
+  }
+
+  &__stat-value {
+    font-family: $font-family-mono;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $color-digital-text;
+    transition: color 0.2s;
+
+    &--ok   { color: $color-success; }
+    &--warn { color: $color-warning; }
+    &--bad  { color: $color-error;   }
+  }
+
+  &__stat-tag {
+    font-family: $font-family-mono;
+    font-size: 11px;
+    font-weight: $font-weight-semibold;
+    padding: 3px 8px;
+    border-radius: $border-radius-sm;
+    border: 1px solid $color-cyber-500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $color-digital-text-sub;
+    background: rgba($color-cyber-900, 0.5);
+    transition: $transition-base;
+
+    &--ok   { 
+      background: rgba(0, 230, 118, 0.12);
+      color: rgba(0, 230, 118, 0.85);
+      border-color: rgba(0, 230, 118, 0.3);
+    }
+    &--warn { 
+      background: rgba(255, 171, 0, 0.12);
+      color: rgba(255, 171, 0, 0.85);
+      border-color: rgba(255, 171, 0, 0.3);
+    }
+    &--bad  { 
+      background: rgba(255, 23, 68, 0.12);
+      color: rgba(255, 23, 68, 0.85);
+      border-color: rgba(255, 23, 68, 0.3);
+    }
+  }
+}

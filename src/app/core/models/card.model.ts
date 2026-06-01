@@ -78,3 +78,27 @@ export interface Card {
   // Release info
   releaseDate?: string;       // ISO-like date from API (e.g. "2025-11-25 10:12:18")
 }
+
+/**
+ * EnhancedCard extends Card with strategic TCG analysis fields.
+ * These fields are derived at mapping time from the raw API effect text
+ * and are never stored in the API — they exist only in the client layer.
+ */
+export interface EnhancedCard extends Card {
+  /** True when the card's effect searches cards from the deck (e.g. "Reveal the top X" / "Reveal cards"). */
+  isSearcher: boolean;
+
+  /** True when the card is a Tamer that provides a memory guarantee (setter, mitigator, o motor pasivo). */
+  providesMemoryGuarantee: boolean;
+
+  /**
+   * Archetype / trait tokens extracted from bracket notation in the effect text
+   * (e.g. [Royal Knight], [X-Antibody], [Twilight]) plus
+   * any bracket-enclosed tokens found in the `attribute` field.
+   * Each entry is the bare label without brackets, deduplicated.
+   */
+  archetypes: string[];
+
+  /** True when the card has Counter/Blast-Digivolve interrupt mechanics. */
+  isBlastDigivolve: boolean;
+}

@@ -79,6 +79,15 @@
             <app-button variant="outline" size="square-sm" title="Exportar" (clicked)="onExportDeck()">
               <lucide-angular name="download" [size]="16" class="lucide-icon"></lucide-angular>
             </app-button>
+            <app-button
+              [variant]="labOpen ? 'primary' : 'outline'"
+              size="square-sm"
+              title="Deck Lab"
+              class="view-deck-modal__lab-btn"
+              [class.view-deck-modal__lab-btn--active]="labOpen"
+              (clicked)="toggleLab()">
+              <lucide-angular name="flask-conical" [size]="16" class="lucide-icon"></lucide-angular>
+            </app-button>
           </div>
           <div class="view-deck-modal__actions-danger">
             <app-button variant="danger" size="medium" (clicked)="onDeleteDeck()">
@@ -120,6 +129,184 @@
       </aside>
 
     </div><!-- /.body -->
+
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <!-- DECK LAB PANEL                                                        -->
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <div class="deck-lab" *ngIf="labOpen" @labSlide>
+
+      <!-- Lab header -->
+      <div class="deck-lab__header">
+        <span class="deck-lab__header-title">Digi Lab</span>
+        <button class="deck-lab__close" (click)="toggleLab()" aria-label="Cerrar Lab">
+          <lucide-angular name="chevron-down" [size]="20" class="lucide-icon"></lucide-angular>
+        </button>
+        <span class="deck-lab__badge">STATS</span>
+      </div>
+
+      <!-- Lab scrollable body -->
+      <div class="deck-lab__body">
+        <div class="deck-lab__body--block">
+          <!-- Panel de Score y Evaluación General -->
+          <deck-lab-panel class="deck-lab__module" [cards]="deckLabCards"></deck-lab-panel>
+        
+          <!-- ── GRID PRINCIPAL: 2/3 + 1/3 ──────────────────────────────────── -->
+          <div class="deck-lab__main-grid">
+  
+            <!-- A: Optimizador de Mano (2/3) -->
+            <section class="deck-lab__module">
+              <h4 class="deck-lab__module-title">
+                <lucide-angular name="bar-chart-3" [size]="14" class="lucide-icon"></lucide-angular>
+                Optimizador de Mano Inicial
+              </h4>
+  
+              <div class="deck-lab__metrics" *ngIf="labResults">
+                <!-- Brick Rate -->
+                <div class="deck-lab__metric deck-lab__metric--danger">
+                  <div class="deck-lab__metric-label">Brick Rate</div>
+                  <div style="display: flex; align-items: center; width: 100%; gap: 10px;">
+                    <div class="deck-lab__metric-bar" style="flex:1;">
+                      <div class="deck-lab__metric-fill deck-lab__metric-fill--danger"
+                        [style.width.%]="labResults.brickRate"></div>
+                    </div>
+                    <div class="deck-lab__metric-value">{{ labResults.brickRate | number:'1.0-0' }}%</div>
+                  </div>
+                  <div class="deck-lab__metric-desc">Manos con 0 Lv3 (injugables)</div>
+                </div>
+
+                <!-- Going First -->
+                <div class="deck-lab__metric deck-lab__metric--success">
+                  <div class="deck-lab__metric-label">Salida Óptima T1 (Going First)</div>
+                  <div style="display: flex; align-items: center; width: 100%; gap: 10px;">
+                    <div class="deck-lab__metric-bar" style="flex:1;">
+                      <div class="deck-lab__metric-fill deck-lab__metric-fill--success"
+                        [style.width.%]="labResults.optimalT1"></div>
+                    </div>
+                    <div class="deck-lab__metric-value">{{ labResults.optimalT1 }}%</div>
+                  </div>
+                  <div class="deck-lab__metric-desc">Lv3 + buscador o Lv3 + Tamer</div>
+                </div>
+
+                <!-- Going Second -->
+                <div class="deck-lab__metric deck-lab__metric--info">
+                  <div class="deck-lab__metric-label">Consistencia T2 (Going Second)</div>
+                  <div style="display: flex; align-items: center; width: 100%; gap: 10px;">
+                    <div class="deck-lab__metric-bar" style="flex:1;">
+                      <div class="deck-lab__metric-fill deck-lab__metric-fill--info"
+                        [style.width.%]="labResults.consistencyT2"></div>
+                    </div>
+                    <div class="deck-lab__metric-value">{{ labResults.consistencyT2 }}%</div>
+                  </div>
+                  <div class="deck-lab__metric-desc">Éxito con carta extra de robo</div>
+                </div>
+  
+              </div>
+            </section>
+  
+            <!-- B: columna 1/3 con Pirámide + Distribución -->
+            <div class="deck-lab__col">
+  
+              <!-- Pirámide de Evolución -->
+              <section class="deck-lab__module" *ngIf="labLevelCurve.length > 0">
+                <h4 class="deck-lab__module-title">
+                  <lucide-angular name="bar-chart-3" [size]="14" class="lucide-icon"></lucide-angular>
+                  Distribución de digi/lv
+                </h4>
+  
+                <div class="deck-lab__alert" *ngIf="labCurveAlert">
+                  <lucide-angular name="alert-circle" [size]="12" class="lucide-icon"></lucide-angular>
+                  {{ labCurveAlert }}
+                </div>
+  
+                <div class="deck-lab__bar-chart">
+                  <div class="deck-lab__bar-row" *ngFor="let entry of labLevelCurve">
+                    <span class="deck-lab__bar-label">{{ entry.label }}</span>
+                    <div class="deck-lab__bar-track">
+                      <div class="deck-lab__bar-fill"
+                           [style.width.%]="entry.pct"
+                           [style.background]="entry.color"></div>
+                    </div>
+                    <span class="deck-lab__bar-count">{{ entry.count }}</span>
+                  </div>
+                </div>
+              </section>
+  
+            </div><!-- /.deck-lab__col -->
+          </div><!-- /.deck-lab__main-grid -->
+        </div>
+
+
+        <!-- ── MANO DE PRÁCTICA INTERACTIVA ───────────────────────────────── -->
+        <section class="deck-lab__module deck-lab__module--practice">
+          <div class="deck-lab__practice-header">
+            <h4 class="deck-lab__module-title">
+              <lucide-angular name="layers" [size]="14" class="lucide-icon"></lucide-angular>
+              Situación de Partida
+            </h4>
+            <button class="deck-lab__mulligan-btn" (click)="_dealPracticeHand()" [disabled]="!practiceState">
+              <lucide-angular name="rotate-ccw" [size]="14" class="lucide-icon"></lucide-angular>
+              Nueva Partida
+            </button>
+          </div>
+
+          <ng-container *ngIf="practiceState; else emptyHand">
+
+            <div class="deck-lab__practice-row">
+
+              <!-- MANO -->
+              <div class="deck-lab__practice-zone">
+                <p class="deck-lab__practice-zone-label">
+                  <lucide-angular name="layers" [size]="11" class="lucide-icon"></lucide-angular>
+                  Mano inicial
+                  <span class="deck-lab__practice-zone-count">{{ practiceState.hand.length }}</span>
+                </p>
+                <div class="deck-lab__practice-cards">
+                  <div class="deck-lab__practice-card" *ngFor="let c of practiceState.hand" [title]="c.name">
+                    <img [src]="c.imageUrl" [alt]="c.name">
+                  </div>
+                </div>
+              </div>
+
+              <!-- SEGURIDAD -->
+              <div class="deck-lab__practice-zone deck-lab__practice-zone--security">
+                <p class="deck-lab__practice-zone-label">
+                  <lucide-angular name="shield" [size]="11" class="lucide-icon"></lucide-angular>
+                  Vidas
+                  <span class="deck-lab__practice-zone-count">{{ practiceState.security.length }}</span>
+                </p>
+                <div class="deck-lab__practice-cards">
+                  <div class="deck-lab__practice-card deck-lab__practice-card--facedown" *ngFor="let c of practiceState.security" [title]="c.name">
+                    <img [src]="c.imageUrl" [alt]="c.name">
+                    <div class="deck-lab__practice-card-cover"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- MAZO A ROBAR (solo 5) -->
+              <div class="deck-lab__practice-zone deck-lab__practice-zone--draw">
+                <p class="deck-lab__practice-zone-label">
+                  <lucide-angular name="package" [size]="11" class="lucide-icon"></lucide-angular>
+                  Próximas a robar
+                  <span class="deck-lab__practice-zone-count">5</span>
+                </p>
+                <div class="deck-lab__practice-cards">
+                  <div class="deck-lab__practice-card" *ngFor="let c of practiceState.drawPile.slice(0, 5)" [title]="c.name">
+                    <img [src]="c.imageUrl" [alt]="c.name">
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /.deck-lab__practice-row -->
+
+          </ng-container>
+
+          <ng-template #emptyHand>
+            <p class="deck-lab__empty">El mazo no tiene suficientes cartas para simular una partida.</p>
+          </ng-template>
+        </section>
+
+      </div><!-- /.deck-lab__body -->
+    </div><!-- /.deck-lab -->
 
   </div>
 </div>
